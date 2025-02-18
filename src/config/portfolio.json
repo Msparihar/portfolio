@@ -1,0 +1,39 @@
+{
+  "name": "[Your Name]",
+  "title": "Full Stack Developer",
+  "bio": "A passionate Full Stack Developer who loves building things for the web. Currently working on exciting projects and always learning new technologies.",
+  "skills": {
+    "languages": ["JavaScript/TypeScript", "Python", "HTML/CSS"],
+    "frameworks": ["React/Next.js", "Node.js/Express", "Tailwind CSS"],
+    "tools": ["Git/GitHub", "Docker", "AWS/Vercel", "MongoDB/PostgreSQL"]
+  },
+  "projects": [
+    {
+      "name": "Project One",
+      "description": "Description of project one - what it does, its purpose, and impact",
+      "techStack": ["React", "Node.js", "MongoDB"],
+      "github": "github.com/yourusername/project-one",
+      "live": "https://project-one.example.com"
+    },
+    {
+      "name": "Project Two",
+      "description": "Description of project two - what it does, its purpose, and impact",
+      "techStack": ["Next.js", "TypeScript", "Tailwind"],
+      "github": "github.com/yourusername/project-two",
+      "live": "https://project-two.example.com"
+    },
+    {
+      "name": "Project Three",
+      "description": "Description of project three - what it does, its purpose, and impact",
+      "techStack": ["Vue.js", "Express", "PostgreSQL"],
+      "github": "github.com/yourusername/project-three",
+      "live": "https://project-three.example.com"
+    }
+  ],
+  "contact": {
+    "email": "your.email@example.com",
+    "github": "github.com/yourusername",
+    "linkedin": "linkedin.com/in/yourusername",
+    "twitter": "@yourusername"
+  }
+}
