@@ -1,59 +1,140 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
-import ProjectCard from './ProjectCard';
-import LoadingDots from '../ui/LoadingDots';
+import { useTheme } from 'next-themes';
+import Image from 'next/image';
+import { ExternalLink, Github, Star, GitFork } from 'lucide-react';
+import portfolioData from '@/config/portfolio.json';
+import { TerminalLoader } from '../ui/LoadingDots';
 
-const ProjectGrid = () => {
+// Placeholder images for projects that don't have their own
+const placeholderImages = [
+  '/images/projects/placeholder-1.jpg',
+  '/images/projects/placeholder-2.jpg',
+  '/images/projects/placeholder-3.jpg',
+  '/images/projects/placeholder-4.jpg',
+];
+
+const ProjectCard = ({ project, isDark }) => {
+  // Get a placeholder image based on project name hash
+  const getPlaceholderImage = (name) => {
+    const hash = name.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
+    return placeholderImages[hash % placeholderImages.length];
+  };
+
+  // Image source - either from project or placeholder
+  const imageSrc = project.image || getPlaceholderImage(project.name);
+
+  return (
+    <div className={`group relative overflow-hidden rounded-xl transition-all duration-300 ${
+      isDark ? 'bg-gray-900 hover:bg-gray-800' : 'bg-white hover:bg-gray-50'
+    } border ${isDark ? 'border-gray-800' : 'border-gray-200'} shadow-sm hover:shadow-md`}>
+      {/* Project Image with Overlay */}
+      <div className="relative h-48 overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-b from-black/20 to-black/70 z-10"></div>
+        <Image
+          src={imageSrc}
+          alt={project.name}
+          width={600}
+          height={400}
+          className="object-cover w-full h-full transition-transform duration-500 group-hover:scale-105"
+        />
+        <div className="absolute bottom-0 left-0 right-0 p-4 z-20">
+          <h3 className="text-lg font-bold text-white mb-1 group-hover:text-green-400 transition-colors">
+            {project.name}
+          </h3>
+        </div>
+      </div>
+
+      {/* Project Body */}
+      <div className="p-4">
+        <p className={`text-sm ${isDark ? 'text-gray-300' : 'text-gray-600'} mb-4 line-clamp-3`}>
+          {project.description}
+        </p>
+
+        {/* Tech Stack */}
+        <div className="flex flex-wrap gap-2 mb-4">
+          {project.techStack.map((tech, i) => (
+            <span
+              key={i}
+              className={`text-xs px-2 py-1 rounded-full ${
+                isDark
+                  ? 'bg-gray-800 text-gray-300'
+                  : 'bg-gray-100 text-gray-700'
+              }`}
+            >
+              {tech}
+            </span>
+          ))}
+        </div>
+
+        {/* Project Links & Stats */}
+        <div className="flex items-center justify-between mt-auto pt-3 border-t border-gray-200 dark:border-gray-800">
+          <div className="flex space-x-3">
+            {project.github && (
+              <a
+                href={`https://${project.github}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={`inline-flex items-center ${
+                  isDark ? 'text-gray-400 hover:text-white' : 'text-gray-500 hover:text-gray-900'
+                }`}
+                aria-label="GitHub"
+              >
+                <Github size={16} />
+              </a>
+            )}
+            {project.live && (
+              <a
+                href={project.live}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={`inline-flex items-center ${
+                  isDark ? 'text-gray-400 hover:text-white' : 'text-gray-500 hover:text-gray-900'
+                }`}
+                aria-label="Live site"
+              >
+                <ExternalLink size={16} />
+              </a>
+            )}
+          </div>
+
+          {project.stats && (
+            <div className="flex items-center space-x-3">
+              <div className="flex items-center text-xs text-gray-500">
+                <Star size={14} className="mr-1" />
+                <span>{project.stats.stars}</span>
+              </div>
+              <div className="flex items-center text-xs text-gray-500">
+                <GitFork size={14} className="mr-1" />
+                <span>{project.stats.forks}</span>
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const ProjectGrid = ({ searchQuery = '', activeFilter = 'all' }) => {
+  const { theme } = useTheme();
+  const isDark = theme === 'dark';
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [filteredProjects, setFilteredProjects] = useState([]);
 
   useEffect(() => {
     const fetchProjects = async () => {
       try {
-        // Temporary mock data until GitHub integration is complete
-        const mockProjects = [
-          {
-            name: "Portfolio Website",
-            description: "A modern portfolio website built with Next.js, featuring a terminal-style interface and interactive project showcase.",
-            techStack: ["Next.js", "React", "TailwindCSS", "Framer Motion"],
-            github: "https://github.com/username/portfolio",
-            live: "https://portfolio.example.com",
-            stats: {
-              stars: 25,
-              forks: 8
-            }
-          },
-          {
-            name: "Project Manager",
-            description: "Full-stack project management application with real-time updates and team collaboration features.",
-            techStack: ["React", "Node.js", "MongoDB", "Socket.io"],
-            github: "https://github.com/username/project-manager",
-            live: "https://project-manager.example.com",
-            stats: {
-              stars: 15,
-              forks: 3
-            }
-          },
-          {
-            name: "E-commerce Platform",
-            description: "Modern e-commerce platform with cart management, payment processing, and order tracking.",
-            techStack: ["Next.js", "Stripe", "PostgreSQL", "Prisma"],
-            github: "https://github.com/username/e-commerce",
-            stats: {
-              stars: 12,
-              forks: 4
-            }
-          }
-        ];
+        // Add a short delay to simulate data loading
+        await new Promise(resolve => setTimeout(resolve, 800));
 
-        // Simulate loading time
-        await new Promise(resolve => setTimeout(resolve, 1500));
-        setProjects(mockProjects);
+        // Use projects from the portfolio data
+        setProjects(portfolioData.projects);
         setLoading(false);
       } catch (err) {
-        setError(err.message);
+        console.error('Error loading projects:', err);
         setLoading(false);
       }
     };
@@ -61,51 +142,104 @@ const ProjectGrid = () => {
     fetchProjects();
   }, []);
 
-  if (error) {
+  // Filter projects based on search and filter criteria
+  useEffect(() => {
+    if (projects.length === 0) return;
+
+    let filtered = [...projects];
+
+    // Apply search filter if query exists
+    if (searchQuery) {
+      const query = searchQuery.toLowerCase();
+      filtered = filtered.filter(project => {
+        const nameMatch = project.name.toLowerCase().includes(query);
+        const descMatch = project.description.toLowerCase().includes(query);
+        const techMatch = project.techStack.some(tech =>
+          tech.toLowerCase().includes(query)
+        );
+        return nameMatch || descMatch || techMatch;
+      });
+    }
+
+    // Apply technology filter if not 'all'
+    if (activeFilter !== 'all') {
+      filtered = filtered.filter(project => {
+        const techStack = project.techStack.map(tech => tech.toLowerCase());
+        return techStack.some(tech => tech.includes(activeFilter.toLowerCase()));
+      });
+    }
+
+    setFilteredProjects(filtered);
+  }, [projects, searchQuery, activeFilter]);
+
+  if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-[200px] text-red-500/80">
-        <p>Error loading projects: {error}</p>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {[...Array(3)].map((_, index) => (
+          <div
+            key={index}
+            className={`h-72 rounded-xl animate-pulse ${
+              isDark ? 'bg-gray-800' : 'bg-gray-100'
+            }`}
+          >
+            <div className={`h-48 w-full ${isDark ? 'bg-gray-700' : 'bg-gray-200'} rounded-t-xl`}></div>
+            <div className="p-4">
+              <div className={`h-4 w-3/4 ${isDark ? 'bg-gray-700' : 'bg-gray-200'} rounded mb-2`}></div>
+              <div className={`h-3 w-1/2 ${isDark ? 'bg-gray-700' : 'bg-gray-200'} rounded`}></div>
+            </div>
+          </div>
+        ))}
       </div>
     );
   }
 
-  if (projects.length === 0 && !loading) {
+  if (filteredProjects.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-[200px] text-muted-foreground">
-        <p className="mb-4">No projects found.</p>
-        <div className="flex items-center gap-2">
-          <span className="text-green-500/80">$</span>
-          <span>Check back later for updates</span>
-        </div>
+      <div className={`flex flex-col items-center justify-center py-16 ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
+        {searchQuery || activeFilter !== 'all' ? (
+          <>
+            <div className="text-center mb-4">
+              <h3 className="text-xl font-semibold mb-2">No matching projects found</h3>
+              <p>Try adjusting your search or filter criteria</p>
+            </div>
+            <div className="flex gap-2 mt-2">
+              {activeFilter !== 'all' && (
+                <button
+                  onClick={() => setActiveFilter('all')}
+                  className="px-3 py-1 bg-green-500 text-white text-sm rounded-md hover:bg-green-600 transition-colors"
+                >
+                  Clear Filters
+                </button>
+              )}
+            </div>
+          </>
+        ) : (
+          <div className="text-center">
+            <h3 className="text-xl font-semibold mb-2">No projects added yet</h3>
+            <p>Check back later for updates on my latest work</p>
+          </div>
+        )}
       </div>
     );
   }
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-      {loading ? (
-        [...Array(6)].map((_, index) => (
-          <div
-            key={index}
-            className="h-64 rounded-lg bg-black/90 animate-pulse"
-          >
-            <div className="absolute inset-0 bg-grid-small-white/[0.05]" />
-            <div className="p-6 relative">
-              <div className="h-6 w-32 bg-green-500/10 rounded mb-4" />
-              <div className="space-y-2">
-                <div className="h-4 w-full bg-green-500/10 rounded" />
-                <div className="h-4 w-3/4 bg-green-500/10 rounded" />
-                <div className="h-4 w-1/2 bg-green-500/10 rounded" />
-              </div>
-            </div>
-          </div>
-        ))
-      ) : (
-        projects.map((project, index) => (
-          <ProjectCard key={index} project={project} />
-        ))
+    <>
+      {/* Results summary if filtering is active */}
+      {(searchQuery || activeFilter !== 'all') && (
+        <div className={`mb-6 text-sm ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
+          Found {filteredProjects.length} project{filteredProjects.length !== 1 ? 's' : ''}
+          {activeFilter !== 'all' && ` with ${activeFilter}`}
+          {searchQuery && ` matching "${searchQuery}"`}
+        </div>
       )}
-    </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {filteredProjects.map((project, index) => (
+          <ProjectCard key={index} project={project} isDark={isDark} />
+        ))}
+      </div>
+    </>
   );
 };
 

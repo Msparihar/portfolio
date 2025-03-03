@@ -2,30 +2,43 @@
 
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
-import ProjectGrid from "@/components/projects/ProjectGrid";
+import BlogGrid from "@/components/blog/BlogGrid";
 import { useTheme } from "next-themes";
 import { X, Search, Filter, ArrowLeft } from "lucide-react";
 import { ThemeToggle } from "@/components/theme-toggle";
 
-const ProjectsPage = () => {
+const BlogPage = () => {
   const router = useRouter();
   const { theme } = useTheme();
   const [searchQuery, setSearchQuery] = useState("");
   const [activeFilter, setActiveFilter] = useState("all");
 
   const filterOptions = [
-    { id: "all", label: "All Projects" },
-    { id: "nextjs", label: "Next.js" },
+    { id: "all", label: "All Posts" },
     { id: "react", label: "React" },
-    { id: "tailwind", label: "Tailwind" },
+    { id: "next.js", label: "Next.js" },
+    { id: "typescript", label: "TypeScript" },
     { id: "python", label: "Python" },
     { id: "fastapi", label: "FastAPI" },
+    { id: "web development", label: "Web Development" },
   ];
 
   // Handle search clear
   const handleClearSearch = () => {
     setSearchQuery("");
   };
+
+  // Add event listener for clearing filters from child components
+  React.useEffect(() => {
+    const handleClearFilters = () => {
+      setActiveFilter("all");
+    };
+
+    document.addEventListener("clearFilters", handleClearFilters);
+    return () => {
+      document.removeEventListener("clearFilters", handleClearFilters);
+    };
+  }, []);
 
   const isDark = theme === "dark";
 
@@ -56,7 +69,7 @@ const ProjectsPage = () => {
               } text-sm font-medium`}
             >
               <span className="terminal-prompt text-green-500 mr-1">$</span>
-              ls -la /projects
+              cat /blog/index.md
             </span>
             <ThemeToggle />
           </div>
@@ -65,9 +78,9 @@ const ProjectsPage = () => {
         {/* Page Title */}
         <div className={`mb-8 ${isDark ? "text-white" : "text-gray-900"}`}>
           <h1 className="text-3xl font-bold mb-2 flex items-center gap-2">
-            <span className="text-green-500">Projects</span>
+            <span className="text-green-500">Blog</span>
             <span className="text-xs bg-green-500/20 text-green-500 px-2 py-0.5 rounded-full font-normal">
-              Portfolio
+              Insights & Tutorials
             </span>
           </h1>
           <p
@@ -75,9 +88,8 @@ const ProjectsPage = () => {
               isDark ? "text-gray-400" : "text-gray-600"
             } max-w-2xl`}
           >
-            A collection of projects I&apos;ve built using various technologies.
-            Each project showcases different skills and challenges I&apos;ve
-            overcome.
+            Thoughts, tutorials, and insights on web development, programming, and technology.
+            Explore the latest articles or use the search to find specific topics.
           </p>
         </div>
 
@@ -102,7 +114,7 @@ const ProjectsPage = () => {
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search projects..."
+                placeholder="Search blog posts..."
                 className={`block w-full pl-10 pr-10 py-2 rounded-lg text-sm focus:ring-2 focus:ring-green-500 focus:outline-none
                 ${
                   isDark
@@ -186,8 +198,8 @@ const ProjectsPage = () => {
 
           {/* Content */}
           <div className="relative z-10 p-6">
-            {/* Projects grid */}
-            <ProjectGrid
+            {/* Blog posts grid */}
+            <BlogGrid
               searchQuery={searchQuery}
               activeFilter={activeFilter}
             />
@@ -198,4 +210,4 @@ const ProjectsPage = () => {
   );
 };
 
-export default ProjectsPage;
+export default BlogPage;

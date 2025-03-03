@@ -1,0 +1,25 @@
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="512" height="512" rx="128" fill="#000000" />
+
+  <!-- Terminal window -->
+  <rect x="96" y="96" width="320" height="320" rx="16" stroke="#10B981" stroke-width="16" fill="#0A0A0A" />
+
+  <!-- Terminal header -->
+  <rect x="96" y="96" width="320" height="48" fill="#10B981" />
+
+  <!-- Window buttons -->
+  <circle cx="128" cy="120" r="8" fill="#FFFFFF" />
+  <circle cx="160" cy="120" r="8" fill="#FFFFFF" />
+  <circle cx="192" cy="120" r="8" fill="#FFFFFF" />
+
+  <!-- Command line cursor and text -->
+  <rect x="128" y="208" width="16" height="32" fill="#10B981">
+    <animate attributeName="opacity" values="1;0;1" dur="1.5s" repeatCount="indefinite" />
+  </rect>
+
+  <!-- Command output lines -->
+  <rect x="128" y="272" width="192" height="8" fill="#10B981" opacity="0.7" />
+  <rect x="128" y="304" width="256" height="8" fill="#10B981" opacity="0.5" />
+  <rect x="128" y="336" width="128" height="8" fill="#10B981" opacity="0.3" />
+</svg>
