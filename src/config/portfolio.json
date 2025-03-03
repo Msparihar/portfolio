@@ -1,5 +1,5 @@
 {
-  "name": "[Your Name]",
+  "name": "Manish Singh Parihar",
   "title": "Full Stack Developer",
   "bio": "A passionate Full Stack Developer who loves building things for the web with modern technologies. Specializing in React, TypeScript, Next.js, and Python/FastAPI backend development.",
   "skills": {
@@ -17,28 +17,28 @@
       "name": "Terminal Portfolio",
       "description": "A terminal-themed portfolio website built with Next.js and Tailwind CSS. Features a fully interactive terminal experience with custom commands.",
       "techStack": ["Next.js", "React", "Tailwind CSS", "TypeScript"],
-      "github": "github.com/yourusername/portfolio",
+      "github": "github.com/Msparihar/portfolio",
       "live": "https://portfolio.example.com"
     },
     {
       "name": "E-Commerce Platform",
       "description": "A full-stack e-commerce platform with product listings, shopping cart, user authentication, and payment processing.",
       "techStack": ["React", "Node.js", "MongoDB", "Stripe API"],
-      "github": "github.com/yourusername/ecommerce",
+      "github": "github.com/Msparihar/ecommerce",
       "live": "https://ecommerce.example.com"
     },
     {
       "name": "API Gateway Service",
       "description": "A microservice API gateway that handles authentication, rate limiting, and request routing for a distributed system.",
       "techStack": ["FastAPI", "Python", "PostgreSQL", "Docker"],
-      "github": "github.com/yourusername/api-gateway",
+      "github": "github.com/Msparihar/api-gateway",
       "live": "https://api.example.com"
     },
     {
       "name": "Real-time Chat Application",
       "description": "A real-time chat application with private messaging, group chats, and file sharing capabilities.",
       "techStack": ["Next.js", "Socket.io", "Redis", "Tailwind CSS"],
-      "github": "github.com/yourusername/chat-app",
+      "github": "github.com/Msparihar/chat-app",
       "live": "https://chat.example.com"
     }
   ],
@@ -75,26 +75,26 @@
     }
   ],
   "contact": {
-    "email": "your.email@example.com",
-    "github": "github.com/yourusername",
-    "linkedin": "linkedin.com/in/yourusername",
-    "twitter": "@yourusername"
+    "email": "manishsparihar@gmail.com",
+    "github": "github.com/Msparihar",
+    "linkedin": "linkedin.com/in/manishsparihar",
+    "twitter": "@manishs_parihar"
   },
   "socials": [
     {
       "platform": "GitHub",
       "icon": "github",
-      "url": "https://github.com/yourusername"
+      "url": "https://github.com/Msparihar"
     },
     {
       "platform": "LinkedIn",
       "icon": "linkedin",
-      "url": "https://linkedin.com/in/yourusername"
+      "url": "https://www.linkedin.com/in/manishsparihar/"
     },
     {
       "platform": "Twitter",
       "icon": "twitter",
-      "url": "https://twitter.com/yourusername"
+      "url": "https://x.com/manishs_parihar"
     }
   ]
 }
