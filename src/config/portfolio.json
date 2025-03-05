@@ -1,65 +1,176 @@
 {
   "name": "Manish Singh Parihar",
-  "title": "Full Stack Developer",
-  "bio": "A passionate Full Stack Developer who loves building things for the web with modern technologies. Specializing in React, TypeScript, Next.js, and Python/FastAPI backend development.",
+  "title": "Full Stack & AI Engineer",
+  "bio": "A versatile engineer specializing in both Full Stack Development and Artificial Intelligence. Experienced in building modern web applications with Next.js and FastAPI, as well as developing AI solutions including computer vision systems, language models, and intelligent document processing systems. Passionate about creating innovative solutions that combine cutting-edge AI with robust web technologies.",
   "skills": {
-    "languages": ["JavaScript/TypeScript", "Python", "HTML/CSS", "SQL"],
+    "languages": ["Python", "JavaScript/TypeScript", "SQL", "HTML/CSS"],
     "frameworks": [
       "React/Next.js",
-      "Node.js/Express",
       "FastAPI",
+      "PyTorch",
+      "TensorFlow",
+      "Node.js/Express",
       "Tailwind CSS"
     ],
-    "tools": ["Git/GitHub", "Docker", "AWS/Vercel", "MongoDB/PostgreSQL"]
+    "tools": [
+      "Git/GitHub",
+      "Docker",
+      "AWS/Vercel",
+      "MongoDB/PostgreSQL",
+      "Hugging Face",
+      "LangChain"
+    ],
+    "ai_ml": [
+      "Computer Vision",
+      "Natural Language Processing",
+      "Large Language Models",
+      "Deep Learning",
+      "Document Processing"
+    ]
   },
   "projects": [
     {
-      "name": "Terminal Portfolio",
-      "description": "A terminal-themed portfolio website built with Next.js and Tailwind CSS. Features a fully interactive terminal experience with custom commands.",
-      "techStack": ["Next.js", "React", "Tailwind CSS", "TypeScript"],
-      "github": "github.com/Msparihar/portfolio",
-      "live": "https://portfolio.example.com"
+      "name": "Novel Writing AI with LLaMA 3.1",
+      "description": "Fine-tuned LLaMA 3.1 model specifically for novel writing. Created a custom dataset of epic novels and trained the model to generate high-quality narrative content. The model is publicly available on Hugging Face for the writing community.",
+      "image": "/images/llama-3.1-novel.png",
+      "techStack": [
+        "Python",
+        "LLaMA 3.1",
+        "PyTorch",
+        "Transformers",
+        "HuggingFace"
+      ],
+      "github": "https://huggingface.co/Eldritch/llama-3-1-novel",
+      "live": "https://huggingface.co/datasets/Eldritch/epic-novels"
     },
     {
-      "name": "E-Commerce Platform",
-      "description": "A full-stack e-commerce platform with product listings, shopping cart, user authentication, and payment processing.",
-      "techStack": ["React", "Node.js", "MongoDB", "Stripe API"],
-      "github": "github.com/Msparihar/ecommerce",
-      "live": "https://ecommerce.example.com"
+      "name": "Globetrotter",
+      "description": "A real-time country guessing game built with Next.js and FastAPI. Players compete to identify countries based on various clues in an interactive global challenge. Features live multiplayer functionality and a modern, engaging user interface.",
+      "techStack": [
+        "Next.js",
+        "FastAPI",
+        "WebSocket",
+        "PostgreSQL",
+        "TailwindCSS"
+      ],
+      "github": "github.com/Msparihar/globetrotter",
+      "live": "https://globetrotter.example.com"
     },
     {
-      "name": "API Gateway Service",
-      "description": "A microservice API gateway that handles authentication, rate limiting, and request routing for a distributed system.",
-      "techStack": ["FastAPI", "Python", "PostgreSQL", "Docker"],
-      "github": "github.com/Msparihar/api-gateway",
-      "live": "https://api.example.com"
+      "name": "Video Super Resolution using GFPGAN",
+      "description": "Developed a video enhancement system using GFPGAN model to upscale and improve video quality. The system processes videos frame by frame, enhancing visual quality and allowing users to download the improved videos.",
+      "techStack": ["Python", "GFPGAN", "PyTorch", "OpenCV", "FastAPI"],
+      "github": "github.com/Msparihar/Video-Super-Resolution-using-GFPGAN",
+      "live": "https://video-super-resolution.example.com"
     },
     {
-      "name": "Real-time Chat Application",
-      "description": "A real-time chat application with private messaging, group chats, and file sharing capabilities.",
-      "techStack": ["Next.js", "Socket.io", "Redis", "Tailwind CSS"],
-      "github": "github.com/Msparihar/chat-app",
-      "live": "https://chat.example.com"
+      "name": "Transcriber",
+      "description": "Built an AI-powered tool that automatically generates captions and transcripts for YouTube videos in 67 languages, with summarization capabilities in 133 languages. Integrates multiple language models for accurate transcription and translation.",
+      "techStack": ["Python", "FastAPI", "React", "Whisper", "Transformers"],
+      "github": "github.com/Msparihar/Transcriber",
+      "live": "https://transcriber.example.com"
+    },
+    {
+      "name": "Medical Chatbot using Llama2",
+      "description": "Created an intelligent healthcare chatbot powered by Llama2 that answers medical queries based on provided documentation. Implements RAG (Retrieval Augmented Generation) for accurate and context-aware responses.",
+      "techStack": ["Python", "Llama2", "LangChain", "FastAPI", "React"],
+      "github": "github.com/Msparihar/Medical-Chatbot-using-Llama2",
+      "live": "https://medical-chatbot.example.com"
+    },
+    {
+      "name": "Shortify",
+      "description": "A high-performance URL shortener built with Next.js 14 & FastAPI. Features Redis caching, real-time analytics, and a modern UI with shadcn/ui. Fully dockerized and production-ready.",
+      "techStack": ["Next.js 14", "FastAPI", "Redis", "Docker", "shadcn/ui"],
+      "github": "github.com/Msparihar/shortify",
+      "live": "https://shortify.example.com"
+    },
+    {
+      "name": "Fire Detection System",
+      "description": "Developed a real-time fire detection system using YOLOv5, capable of identifying fires through camera feeds. Provides an alternative to traditional smoke detectors with visual detection capabilities.",
+      "techStack": ["Python", "YOLOv5", "PyTorch", "OpenCV", "FastAPI"],
+      "github": "github.com/Msparihar/Fire-Detection-using-YoloV5",
+      "live": "https://fire-detection.example.com"
+    },
+    {
+      "name": "Kidney Disease Prediction",
+      "description": "Web application utilizing machine learning to assess kidney disease risk. Features an intuitive interface for users to input health data and receive personalized risk assessments.",
+      "techStack": [
+        "Python",
+        "Scikit-learn",
+        "FastAPI",
+        "React",
+        "TailwindCSS"
+      ],
+      "github": "github.com/Msparihar/Kidney-Disease-Prediction",
+      "live": "https://kidney-prediction.example.com"
+    },
+    {
+      "name": "Resume Parser",
+      "description": "AI-powered resume parsing system that extracts structured information from resumes in various formats. Uses advanced NLP techniques to accurately identify and categorize professional details.",
+      "techStack": ["Python", "Spacy", "FastAPI", "React", "MongoDB"],
+      "github": "github.com/Msparihar/Resume-Parser",
+      "live": "https://resume-parser.example.com"
+    },
+    {
+      "name": "Know Your PPT",
+      "description": "Innovative tool that converts PowerPoint files into semantically rich text using vision language models. Enables better understanding and analysis of presentation content.",
+      "techStack": [
+        "Python",
+        "Vision Language Models",
+        "OCR",
+        "FastAPI",
+        "React"
+      ],
+      "github": "github.com/Msparihar/know-your-ppt",
+      "live": "https://know-your-ppt.example.com"
+    },
+    {
+      "name": "Deep Speech 2",
+      "description": "Implementation of the Deep Speech 2 model for speech-to-text conversion. Trained on a comprehensive dataset of audio recordings for real-time transcription capabilities.",
+      "techStack": ["Python", "PyTorch", "Deep Speech 2", "CUDA", "FastAPI"],
+      "github": "github.com/Msparihar/deep-speech-2",
+      "live": "https://deep-speech.example.com"
+    },
+    {
+      "name": "Data Wizard",
+      "description": "Comprehensive data analysis and visualization platform. Features automated data cleaning, statistical analysis, and interactive visualizations for better data insights.",
+      "techStack": ["Python", "Pandas", "Plotly", "Streamlit", "Scikit-learn"],
+      "github": "github.com/Msparihar/Data-Wizard",
+      "live": "https://data-wizard.example.com"
+    },
+    {
+      "name": "Students Performance Analysis",
+      "description": "Educational analytics platform that analyzes student performance data to identify patterns and provide actionable insights for educators and administrators.",
+      "techStack": ["Python", "Pandas", "Seaborn", "Streamlit", "PostgreSQL"],
+      "github": "github.com/Msparihar/Students-Performance-Analysis",
+      "live": "https://student-analysis.example.com"
+    },
+    {
+      "name": "Django Expenses Website",
+      "description": "Full-featured expense tracking application built with Django. Includes budget management, expense categorization, and detailed financial reporting.",
+      "techStack": ["Python", "Django", "PostgreSQL", "Chart.js", "Bootstrap"],
+      "github": "github.com/Msparihar/django-expenses-website",
+      "live": "https://expenses-tracker.example.com"
     }
   ],
   "experience": [
     {
+      "position": "Software Engineer",
+      "company": "StringifyAI",
+      "duration": "2024 - Present",
+      "description": "Developing intelligent document processing systems and advanced chatbots. Building AI-powered solutions for automated document analysis and information retrieval."
+    },
+    {
       "position": "Senior Full Stack Developer",
       "company": "Tech Innovators Inc.",
-      "duration": "2022 - Present",
-      "description": "Leading development of web applications using React, TypeScript, and Node.js. Implementing CI/CD pipelines and mentoring junior developers."
+      "duration": "2022 - 2024",
+      "description": "Led development of web applications using React, TypeScript, and Node.js. Implemented CI/CD pipelines and mentored junior developers."
     },
     {
       "position": "Full Stack Developer",
       "company": "Digital Solutions Ltd.",
       "duration": "2020 - 2022",
       "description": "Developed and maintained web applications using React and Python. Collaborated with design team to implement user interfaces."
-    },
-    {
-      "position": "Junior Developer",
-      "company": "Startup Ventures",
-      "duration": "2018 - 2020",
-      "description": "Worked on frontend development using HTML, CSS, and JavaScript. Assisted in database design and API integration."
     }
   ],
   "education": [
