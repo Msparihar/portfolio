@@ -5,8 +5,6 @@ import { useTheme } from 'next-themes';
 import Image from 'next/image';
 import { ExternalLink, Github, Star, GitFork } from 'lucide-react';
 import portfolioData from '@/config/portfolio.json';
-import { TerminalLoader } from '../ui/LoadingDots';
-
 // Placeholder images for projects that don't have their own
 const placeholderImages = [
   '/images/projects/placeholder-1.jpg',
@@ -120,32 +118,11 @@ const ProjectCard = ({ project, isDark }) => {
 const ProjectGrid = ({ searchQuery = '', activeFilter = 'all' }) => {
   const { theme } = useTheme();
   const isDark = theme === 'dark';
-  const [projects, setProjects] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [filteredProjects, setFilteredProjects] = useState([]);
-
-  useEffect(() => {
-    const fetchProjects = async () => {
-      try {
-        // Add a short delay to simulate data loading
-        await new Promise(resolve => setTimeout(resolve, 800));
-
-        // Use projects from the portfolio data
-        setProjects(portfolioData.projects);
-        setLoading(false);
-      } catch (err) {
-        console.error('Error loading projects:', err);
-        setLoading(false);
-      }
-    };
-
-    fetchProjects();
-  }, []);
+  const [projects] = useState(portfolioData.projects);
+  const [filteredProjects, setFilteredProjects] = useState(portfolioData.projects);
 
   // Filter projects based on search and filter criteria
   useEffect(() => {
-    if (projects.length === 0) return;
-
     let filtered = [...projects];
 
     // Apply search filter if query exists
@@ -171,27 +148,6 @@ const ProjectGrid = ({ searchQuery = '', activeFilter = 'all' }) => {
 
     setFilteredProjects(filtered);
   }, [projects, searchQuery, activeFilter]);
-
-  if (loading) {
-    return (
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {[...Array(3)].map((_, index) => (
-          <div
-            key={index}
-            className={`h-72 rounded-xl animate-pulse ${
-              isDark ? 'bg-gray-800' : 'bg-gray-100'
-            }`}
-          >
-            <div className={`h-48 w-full ${isDark ? 'bg-gray-700' : 'bg-gray-200'} rounded-t-xl`}></div>
-            <div className="p-4">
-              <div className={`h-4 w-3/4 ${isDark ? 'bg-gray-700' : 'bg-gray-200'} rounded mb-2`}></div>
-              <div className={`h-3 w-1/2 ${isDark ? 'bg-gray-700' : 'bg-gray-200'} rounded`}></div>
-            </div>
-          </div>
-        ))}
-      </div>
-    );
-  }
 
   if (filteredProjects.length === 0) {
     return (
