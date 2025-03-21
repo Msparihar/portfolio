@@ -44,8 +44,17 @@
       "live": "https://huggingface.co/datasets/Eldritch/epic-novels"
     },
     {
+      "name": "Fire Detection System",
+      "description": "Developed a real-time fire detection system using YOLOv5, capable of identifying fires through camera feeds. Provides an alternative to traditional smoke detectors with visual detection capabilities.",
+      "image": "/images/fire.gif",
+      "techStack": ["Python", "YOLOv5", "PyTorch", "OpenCV", "FastAPI"],
+      "github": "github.com/Msparihar/Fire-Detection-using-YoloV5",
+      "live": "https://fire-detection.example.com"
+    },
+    {
       "name": "Globetrotter",
       "description": "A real-time country guessing game built with Next.js and FastAPI. Players compete to identify countries based on various clues in an interactive global challenge. Features live multiplayer functionality and a modern, engaging user interface.",
+      "image": "/images/globetrotter.png",
       "techStack": [
         "Next.js",
         "FastAPI",
@@ -59,6 +68,7 @@
     {
       "name": "Video Super Resolution using GFPGAN",
       "description": "Developed a video enhancement system using GFPGAN model to upscale and improve video quality. The system processes videos frame by frame, enhancing visual quality and allowing users to download the improved videos.",
+      "image": "/images/video-super-resolution.png",
       "techStack": ["Python", "GFPGAN", "PyTorch", "OpenCV", "FastAPI"],
       "github": "github.com/Msparihar/Video-Super-Resolution-using-GFPGAN",
       "live": "https://video-super-resolution.example.com"
@@ -66,6 +76,7 @@
     {
       "name": "Transcriber",
       "description": "Built an AI-powered tool that automatically generates captions and transcripts for YouTube videos in 67 languages, with summarization capabilities in 133 languages. Integrates multiple language models for accurate transcription and translation.",
+      "image": "/images/youtube-transcriber.jpg",
       "techStack": ["Python", "FastAPI", "React", "Whisper", "Transformers"],
       "github": "github.com/Msparihar/Transcriber",
       "live": "https://transcriber.example.com"
@@ -73,6 +84,7 @@
     {
       "name": "Medical Chatbot using Llama2",
       "description": "Created an intelligent healthcare chatbot powered by Llama2 that answers medical queries based on provided documentation. Implements RAG (Retrieval Augmented Generation) for accurate and context-aware responses.",
+      "image": "/images/medical-chatbot.png",
       "techStack": ["Python", "Llama2", "LangChain", "FastAPI", "React"],
       "github": "github.com/Msparihar/Medical-Chatbot-using-Llama2",
       "live": "https://medical-chatbot.example.com"
@@ -80,53 +92,23 @@
     {
       "name": "Shortify",
       "description": "A high-performance URL shortener built with Next.js 14 & FastAPI. Features Redis caching, real-time analytics, and a modern UI with shadcn/ui. Fully dockerized and production-ready.",
+      "image": "/images/shortify.png",
       "techStack": ["Next.js 14", "FastAPI", "Redis", "Docker", "shadcn/ui"],
       "github": "github.com/Msparihar/shortify",
       "live": "https://shortify.example.com"
     },
     {
-      "name": "Fire Detection System",
-      "description": "Developed a real-time fire detection system using YOLOv5, capable of identifying fires through camera feeds. Provides an alternative to traditional smoke detectors with visual detection capabilities.",
-      "techStack": ["Python", "YOLOv5", "PyTorch", "OpenCV", "FastAPI"],
-      "github": "github.com/Msparihar/Fire-Detection-using-YoloV5",
-      "live": "https://fire-detection.example.com"
-    },
-    {
-      "name": "Kidney Disease Prediction",
-      "description": "Web application utilizing machine learning to assess kidney disease risk. Features an intuitive interface for users to input health data and receive personalized risk assessments.",
-      "techStack": [
-        "Python",
-        "Scikit-learn",
-        "FastAPI",
-        "React",
-        "TailwindCSS"
-      ],
-      "github": "github.com/Msparihar/Kidney-Disease-Prediction",
-      "live": "https://kidney-prediction.example.com"
-    },
-    {
-      "name": "Resume Parser",
-      "description": "AI-powered resume parsing system that extracts structured information from resumes in various formats. Uses advanced NLP techniques to accurately identify and categorize professional details.",
-      "techStack": ["Python", "Spacy", "FastAPI", "React", "MongoDB"],
-      "github": "github.com/Msparihar/Resume-Parser",
-      "live": "https://resume-parser.example.com"
-    },
-    {
       "name": "Know Your PPT",
       "description": "Innovative tool that converts PowerPoint files into semantically rich text using vision language models. Enables better understanding and analysis of presentation content.",
-      "techStack": [
-        "Python",
-        "Vision Language Models",
-        "OCR",
-        "FastAPI",
-        "React"
-      ],
-      "github": "github.com/Msparihar/know-your-ppt",
+      "image": "/images/ppt2desc.png",
+      "techStack": ["Python", "FastAPI", "React", "Whisper", "Transformers"],
+      "github": "github.com/Msparihar/Know-Your-PPT",
       "live": "https://know-your-ppt.example.com"
     },
     {
       "name": "Deep Speech 2",
       "description": "Implementation of the Deep Speech 2 model for speech-to-text conversion. Trained on a comprehensive dataset of audio recordings for real-time transcription capabilities.",
+      "image": "/images/deep-speech-2.png",
       "techStack": ["Python", "PyTorch", "Deep Speech 2", "CUDA", "FastAPI"],
       "github": "github.com/Msparihar/deep-speech-2",
       "live": "https://deep-speech.example.com"
@@ -134,23 +116,10 @@
     {
       "name": "Data Wizard",
       "description": "Comprehensive data analysis and visualization platform. Features automated data cleaning, statistical analysis, and interactive visualizations for better data insights.",
+      "image": "/images/data-wizard.jpg",
       "techStack": ["Python", "Pandas", "Plotly", "Streamlit", "Scikit-learn"],
       "github": "github.com/Msparihar/Data-Wizard",
       "live": "https://data-wizard.example.com"
-    },
-    {
-      "name": "Students Performance Analysis",
-      "description": "Educational analytics platform that analyzes student performance data to identify patterns and provide actionable insights for educators and administrators.",
-      "techStack": ["Python", "Pandas", "Seaborn", "Streamlit", "PostgreSQL"],
-      "github": "github.com/Msparihar/Students-Performance-Analysis",
-      "live": "https://student-analysis.example.com"
-    },
-    {
-      "name": "Django Expenses Website",
-      "description": "Full-featured expense tracking application built with Django. Includes budget management, expense categorization, and detailed financial reporting.",
-      "techStack": ["Python", "Django", "PostgreSQL", "Chart.js", "Bootstrap"],
-      "github": "github.com/Msparihar/django-expenses-website",
-      "live": "https://expenses-tracker.example.com"
     }
   ],
   "experience": [
@@ -159,30 +128,18 @@
       "company": "StringifyAI",
       "duration": "2024 - Present",
       "description": "Developing intelligent document processing systems and advanced chatbots. Building AI-powered solutions for automated document analysis and information retrieval."
-    },
-    {
-      "position": "Senior Full Stack Developer",
-      "company": "Tech Innovators Inc.",
-      "duration": "2022 - 2024",
-      "description": "Led development of web applications using React, TypeScript, and Node.js. Implemented CI/CD pipelines and mentored junior developers."
-    },
-    {
-      "position": "Full Stack Developer",
-      "company": "Digital Solutions Ltd.",
-      "duration": "2020 - 2022",
-      "description": "Developed and maintained web applications using React and Python. Collaborated with design team to implement user interfaces."
     }
   ],
   "education": [
     {
       "degree": "Bachelor of Science in Computer Science",
-      "institution": "University of Technology",
-      "year": "2018"
+      "institution": "Vellore Institute of Technology",
+      "year": "2020 - 2024"
     },
     {
-      "certification": "Full Stack Web Development",
-      "institution": "Coding Bootcamp",
-      "year": "2019"
+      "certification": "AWS Cloud Essentials",
+      "institution": "Amazon Web Services",
+      "year": "2024"
     }
   ],
   "contact": {
