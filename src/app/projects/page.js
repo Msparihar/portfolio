@@ -6,6 +6,8 @@ import ProjectGrid from "@/components/projects/ProjectGrid";
 import { useTheme } from "next-themes";
 import { X, Search, Filter, ArrowLeft } from "lucide-react";
 import { ThemeToggle } from "@/components/theme-toggle";
+import portfolioConfig from "@/config/portfolio.json";
+import { extractUniqueTags } from "@/lib/utils";
 
 const ProjectsPage = () => {
   const router = useRouter();
@@ -15,11 +17,12 @@ const ProjectsPage = () => {
 
   const filterOptions = [
     { id: "all", label: "All Projects" },
-    { id: "nextjs", label: "Next.js" },
-    { id: "react", label: "React" },
-    { id: "tailwind", label: "Tailwind" },
-    { id: "python", label: "Python" },
-    { id: "fastapi", label: "FastAPI" },
+    ...extractUniqueTags(
+      portfolioConfig.projects.map((project) => ({ tags: project.techStack }))
+    ).map((tech) => ({
+      id: tech.toLowerCase(),
+      label: tech,
+    })),
   ];
 
   // Handle search clear

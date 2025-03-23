@@ -6,6 +6,8 @@ import BlogGrid from "@/components/blog/BlogGrid";
 import { useTheme } from "next-themes";
 import { X, Search, Filter, ArrowLeft } from "lucide-react";
 import { ThemeToggle } from "@/components/theme-toggle";
+import portfolioConfig from "@/config/portfolio.json";
+import { extractUniqueTags } from "@/lib/utils";
 
 const BlogPage = () => {
   const router = useRouter();
@@ -15,12 +17,10 @@ const BlogPage = () => {
 
   const filterOptions = [
     { id: "all", label: "All Posts" },
-    { id: "llm", label: "LLM" },
-    { id: "rag", label: "RAG" },
-    { id: "machine learning", label: "Machine Learning" },
-    { id: "langchain", label: "LangChain" },
-    { id: "open source", label: "Open Source" },
-    { id: "computer vision", label: "Computer Vision" },
+    ...extractUniqueTags(portfolioConfig.blogs).map(tag => ({
+      id: tag.toLowerCase(),
+      label: tag
+    }))
   ];
 
   // Handle search clear

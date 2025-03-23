@@ -36,7 +36,7 @@
       "readTime": 10,
       "excerpt": "Learn how to fine-tune the Llama 32 Vision Language Model for your specific use cases with custom datasets.",
       "tags": ["LLM", "Computer Vision", "Machine Learning", "Fine-tuning"],
-      "image": "/images/fine-tune-llama-32-vision-language-model-on-custom-datasets.jpg",
+      "image": "/images/blog-finetune-llama.jpg",
       "url": "https://blog.futuresmart.ai/fine-tune-llama-32-vision-language-model-on-custom-datasets"
     },
     {
@@ -46,7 +46,7 @@
       "readTime": 8,
       "excerpt": "Discover how to effectively evaluate Retrieval-Augmented Generation (RAG) systems using LangSmith.",
       "tags": ["RAG", "LangSmith", "LLM", "Evaluation"],
-      "image": "/images/a-beginners-guide-to-evaluating-rag-systems-with-langsmith.jpg",
+      "image": "/images/blog-rag-evaluation.jpg",
       "url": "https://blog.futuresmart.ai/a-beginners-guide-to-evaluating-rag-systems-with-langsmith"
     },
     {
@@ -56,7 +56,7 @@
       "readTime": 12,
       "excerpt": "A comprehensive guide on setting up and running various open-source Large Language Models locally using Ollama.",
       "tags": ["LLM", "Ollama", "Open Source", "Local Development"],
-      "image": "/images/running-multiple-open-source-llms-locally-with-ollama.jpg",
+      "image": "/images/blog-ollama.jpg",
       "url": "https://blog.futuresmart.ai/running-multiple-open-source-llms-locally-with-ollama"
     },
     {
@@ -66,7 +66,7 @@
       "readTime": 15,
       "excerpt": "Step-by-step guide to creating a RAG-powered chatbot using Neo4j graph database and LangChain framework.",
       "tags": ["RAG", "Neo4j", "LangChain", "Chatbot", "LLM"],
-      "image": "/images/building-your-own-llm-rag-chatbot-with-neo4j-and-langchain.jpg",
+      "image": "/images/blog-neo4j.jpg",
       "url": "https://blog.futuresmart.ai/building-your-own-llm-rag-chatbot-with-neo4j-and-langchain"
     }
   ],
@@ -205,6 +205,11 @@
       "platform": "Twitter",
       "icon": "twitter",
       "url": "https://x.com/manishs_parihar"
+    },
+    {
+      "platform": "Hashnode",
+      "icon": "hashnode",
+      "url": "https://hashnode.com/@manishsparihar"
     }
   ]
 }

@@ -5,6 +5,13 @@ import { ThemeToggle } from "@/components/theme-toggle";
 import Link from "next/link";
 import portfolioData from '@/config/portfolio.json';
 import { useRouter } from "next/navigation";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import {
+  faGithub,
+  faLinkedinIn,
+  faTwitter,
+  faHashnode
+} from '@fortawesome/free-brands-svg-icons';
 
 const NavLink = ({ path, label, isActive = false }) => (
   <Link
@@ -68,18 +75,45 @@ export default function Home() {
               Tailwind CSS&quot;
             </span>
           </div>
-          <div className="mt-3 flex justify-center space-x-4">
-            <a href={`https://${portfolioData.contact.github}`} className="text-muted-foreground hover:text-green-500 transition-colors">
-              GitHub
+          <div className="mt-3 flex justify-center space-x-6">
+            <a
+              href={`https://${portfolioData.contact.github}`}
+              className="text-muted-foreground hover:text-[#333] dark:hover:text-white transition-colors flex items-center gap-2"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <FontAwesomeIcon icon={faGithub} className="w-5 h-5" />
+              <span>GitHub</span>
             </a>
-            <a href={`https://${portfolioData.contact.linkedin}`} className="text-muted-foreground hover:text-green-500 transition-colors">
-              LinkedIn
+            <a
+              href={`https://${portfolioData.contact.linkedin}`}
+              className="text-muted-foreground hover:text-[#0077B5] transition-colors flex items-center gap-2"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <FontAwesomeIcon icon={faLinkedinIn} className="w-5 h-5" />
+              <span>LinkedIn</span>
             </a>
             {portfolioData.contact.twitter && (
-              <a href={`https://twitter.com/${portfolioData.contact.twitter.replace('@', '')}`} className="text-muted-foreground hover:text-green-500 transition-colors">
-                Twitter
+              <a
+                href={`https://twitter.com/${portfolioData.contact.twitter.replace('@', '')}`}
+                className="text-muted-foreground hover:text-[#1DA1F2] transition-colors flex items-center gap-2"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <FontAwesomeIcon icon={faTwitter} className="w-5 h-5" />
+                <span>Twitter</span>
               </a>
             )}
+            <a
+              href="https://hashnode.com/@manishsparihar"
+              className="text-muted-foreground hover:text-[#2962FF] transition-colors flex items-center gap-2"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <FontAwesomeIcon icon={faHashnode} className="w-5 h-5" />
+              <span>Hashnode</span>
+            </a>
           </div>
         </footer>
       </div>
