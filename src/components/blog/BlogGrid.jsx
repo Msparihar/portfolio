@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { useTheme } from 'next-themes';
 import Image from 'next/image';
 import { Calendar, Clock, Tag, ExternalLink } from 'lucide-react';
+import portfolioConfig from '@/config/portfolio.json';
 import Link from 'next/link';
 import { TerminalLoader } from '../ui/LoadingDots';
 
@@ -88,12 +89,14 @@ const BlogCard = ({ post, isDark }) => {
         {/* Read More Link */}
         <div className="flex items-center justify-between mt-auto pt-3 border-t border-gray-200 dark:border-gray-800">
           <Link
-            href={`/blog/${post.slug}`}
+            href={post.url}
+            target="_blank"
+            rel="noopener noreferrer"
             className={`inline-flex items-center ${
               isDark ? 'text-green-400 hover:text-green-300' : 'text-green-600 hover:text-green-700'
             }`}
           >
-            Read More
+            Read Article
             <ExternalLink size={14} className="ml-1" />
           </Link>
         </div>
@@ -112,59 +115,8 @@ const BlogGrid = ({ searchQuery = '', activeFilter = 'all' }) => {
   useEffect(() => {
     const fetchPosts = async () => {
       try {
-        // Add a short delay to simulate data loading
         await new Promise(resolve => setTimeout(resolve, 800));
-
-        // Mock blog data for demonstration
-        const mockPosts = [
-          {
-            title: "Getting Started with Next.js",
-            slug: "getting-started-with-nextjs",
-            date: "2023-04-15",
-            readTime: 5,
-            excerpt: "Next.js is a powerful React framework that makes building modern web applications simple and efficient. Learn how to get started with this amazing tool.",
-            tags: ["React", "Next.js", "Web Development"],
-            image: "/images/blog/nextjs.jpg"
-          },
-          {
-            title: "Mastering Tailwind CSS",
-            slug: "mastering-tailwind-css",
-            date: "2023-05-20",
-            readTime: 8,
-            excerpt: "Tailwind CSS is a utility-first CSS framework that can speed up your development workflow. Discover how to use it effectively in your projects.",
-            tags: ["CSS", "Tailwind", "Frontend"],
-            image: "/images/blog/tailwind.jpg"
-          },
-          {
-            title: "Building APIs with FastAPI",
-            slug: "building-apis-with-fastapi",
-            date: "2023-06-10",
-            readTime: 10,
-            excerpt: "FastAPI is a modern Python framework for building high-performance APIs. Learn the key concepts and best practices for creating robust backend services.",
-            tags: ["Python", "FastAPI", "Backend", "API"],
-            image: "/images/blog/fastapi.jpg"
-          },
-          {
-            title: "The Power of TypeScript",
-            slug: "power-of-typescript",
-            date: "2023-07-05",
-            readTime: 7,
-            excerpt: "TypeScript adds static typing to JavaScript, making your code more robust and maintainable. Discover why it's becoming the standard for modern web development.",
-            tags: ["TypeScript", "JavaScript", "Web Development"],
-            image: "/images/blog/typescript.jpg"
-          },
-          {
-            title: "Containerizing Your Applications with Docker",
-            slug: "containerizing-applications-docker",
-            date: "2023-08-15",
-            readTime: 12,
-            excerpt: "Docker simplifies deployment and ensures consistency across different environments. Learn how to containerize your applications effectively.",
-            tags: ["Docker", "DevOps", "Deployment"],
-            image: "/images/blog/docker.jpg"
-          }
-        ];
-
-        setPosts(mockPosts);
+        setPosts(portfolioConfig.blogs);
         setLoading(false);
       } catch (err) {
         console.error('Error loading blog posts:', err);

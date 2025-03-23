@@ -28,6 +28,48 @@
       "Document Processing"
     ]
   },
+  "blogs": [
+    {
+      "title": "Fine-tune Llama 32 Vision Language Model on Custom Datasets",
+      "slug": "fine-tune-llama-32-vision-language-model-on-custom-datasets",
+      "date": "2024-03-20",
+      "readTime": 10,
+      "excerpt": "Learn how to fine-tune the Llama 32 Vision Language Model for your specific use cases with custom datasets.",
+      "tags": ["LLM", "Computer Vision", "Machine Learning", "Fine-tuning"],
+      "image": "/images/fine-tune-llama-32-vision-language-model-on-custom-datasets.jpg",
+      "url": "https://blog.futuresmart.ai/fine-tune-llama-32-vision-language-model-on-custom-datasets"
+    },
+    {
+      "title": "A Beginner's Guide to Evaluating RAG Systems with LangSmith",
+      "slug": "a-beginners-guide-to-evaluating-rag-systems-with-langsmith",
+      "date": "2024-03-15",
+      "readTime": 8,
+      "excerpt": "Discover how to effectively evaluate Retrieval-Augmented Generation (RAG) systems using LangSmith.",
+      "tags": ["RAG", "LangSmith", "LLM", "Evaluation"],
+      "image": "/images/a-beginners-guide-to-evaluating-rag-systems-with-langsmith.jpg",
+      "url": "https://blog.futuresmart.ai/a-beginners-guide-to-evaluating-rag-systems-with-langsmith"
+    },
+    {
+      "title": "Running Multiple Open-Source LLMs Locally with Ollama",
+      "slug": "running-multiple-open-source-llms-locally-with-ollama",
+      "date": "2024-03-10",
+      "readTime": 12,
+      "excerpt": "A comprehensive guide on setting up and running various open-source Large Language Models locally using Ollama.",
+      "tags": ["LLM", "Ollama", "Open Source", "Local Development"],
+      "image": "/images/running-multiple-open-source-llms-locally-with-ollama.jpg",
+      "url": "https://blog.futuresmart.ai/running-multiple-open-source-llms-locally-with-ollama"
+    },
+    {
+      "title": "Building Your Own LLM RAG Chatbot with Neo4j and LangChain",
+      "slug": "building-your-own-llm-rag-chatbot-with-neo4j-and-langchain",
+      "date": "2024-03-05",
+      "readTime": 15,
+      "excerpt": "Step-by-step guide to creating a RAG-powered chatbot using Neo4j graph database and LangChain framework.",
+      "tags": ["RAG", "Neo4j", "LangChain", "Chatbot", "LLM"],
+      "image": "/images/building-your-own-llm-rag-chatbot-with-neo4j-and-langchain.jpg",
+      "url": "https://blog.futuresmart.ai/building-your-own-llm-rag-chatbot-with-neo4j-and-langchain"
+    }
+  ],
   "projects": [
     {
       "name": "Novel Writing AI with LLaMA 3.1",

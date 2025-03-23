@@ -15,12 +15,12 @@ const BlogPage = () => {
 
   const filterOptions = [
     { id: "all", label: "All Posts" },
-    { id: "react", label: "React" },
-    { id: "next.js", label: "Next.js" },
-    { id: "typescript", label: "TypeScript" },
-    { id: "python", label: "Python" },
-    { id: "fastapi", label: "FastAPI" },
-    { id: "web development", label: "Web Development" },
+    { id: "llm", label: "LLM" },
+    { id: "rag", label: "RAG" },
+    { id: "machine learning", label: "Machine Learning" },
+    { id: "langchain", label: "LangChain" },
+    { id: "open source", label: "Open Source" },
+    { id: "computer vision", label: "Computer Vision" },
   ];
 
   // Handle search clear
