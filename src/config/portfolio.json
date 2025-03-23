@@ -90,78 +90,72 @@
       "description": "Developed a real-time fire detection system using YOLOv5, capable of identifying fires through camera feeds. Provides an alternative to traditional smoke detectors with visual detection capabilities.",
       "image": "/images/fire.gif",
       "techStack": ["Python", "YOLOv5", "PyTorch", "OpenCV", "FastAPI"],
-      "github": "github.com/Msparihar/Fire-Detection-using-YoloV5",
-      "live": "https://fire-detection.example.com"
-    },
-    {
-      "name": "Globetrotter",
-      "description": "A real-time country guessing game built with Next.js and FastAPI. Players compete to identify countries based on various clues in an interactive global challenge. Features live multiplayer functionality and a modern, engaging user interface.",
-      "image": "/images/globetrotter.png",
-      "techStack": [
-        "Next.js",
-        "FastAPI",
-        "WebSocket",
-        "PostgreSQL",
-        "TailwindCSS"
-      ],
-      "github": "github.com/Msparihar/globetrotter",
-      "live": "https://globetrotter.example.com"
+      "github": "https://github.com/Msparihar/Fire-Detection-using-YoloV5",
+      "live": "https://github.com/Msparihar/Fire-Detection-using-YoloV5"
     },
     {
       "name": "Video Super Resolution using GFPGAN",
       "description": "Developed a video enhancement system using GFPGAN model to upscale and improve video quality. The system processes videos frame by frame, enhancing visual quality and allowing users to download the improved videos.",
       "image": "/images/video-super-resolution.png",
       "techStack": ["Python", "GFPGAN", "PyTorch", "OpenCV", "FastAPI"],
-      "github": "github.com/Msparihar/Video-Super-Resolution-using-GFPGAN",
-      "live": "https://video-super-resolution.example.com"
+      "github": "https://github.com/Msparihar/Video-Super-Resolution-using-GFPGAN",
+      "live": "https://github.com/Msparihar/Video-Super-Resolution-using-GFPGAN"
+    },
+    {
+      "name": "Globetrotter",
+      "description": "A real-time country guessing game built with Next.js and FastAPI. Players compete to identify countries based on various clues in an interactive global challenge. Features live multiplayer functionality and a modern, engaging user interface.",
+      "image": "/images/globetrotter.png",
+      "techStack": ["Next.js", "FastAPI", "WebSocket", "PostgreSQL", "Redis"],
+      "github": "https://github.com/Msparihar/globetrotter",
+      "live": "https://github.com/Msparihar/globetrotter"
     },
     {
       "name": "Transcriber",
       "description": "Built an AI-powered tool that automatically generates captions and transcripts for YouTube videos in 67 languages, with summarization capabilities in 133 languages. Integrates multiple language models for accurate transcription and translation.",
       "image": "/images/youtube-transcriber.jpg",
       "techStack": ["Python", "FastAPI", "React", "Whisper", "Transformers"],
-      "github": "github.com/Msparihar/Transcriber",
-      "live": "https://transcriber.example.com"
+      "github": "https://github.com/Msparihar/Transcriber",
+      "live": "https://github.com/Msparihar/Transcriber"
     },
     {
       "name": "Medical Chatbot using Llama2",
       "description": "Created an intelligent healthcare chatbot powered by Llama2 that answers medical queries based on provided documentation. Implements RAG (Retrieval Augmented Generation) for accurate and context-aware responses.",
       "image": "/images/medical-chatbot.png",
       "techStack": ["Python", "Llama2", "LangChain", "FastAPI", "React"],
-      "github": "github.com/Msparihar/Medical-Chatbot-using-Llama2",
-      "live": "https://medical-chatbot.example.com"
+      "github": "https://github.com/Msparihar/Medical-Chatbot-using-Llama2",
+      "live": "https://github.com/Msparihar/Medical-Chatbot-using-Llama2"
     },
     {
       "name": "Shortify",
       "description": "A high-performance URL shortener built with Next.js 14 & FastAPI. Features Redis caching, real-time analytics, and a modern UI with shadcn/ui. Fully dockerized and production-ready.",
       "image": "/images/shortify.png",
-      "techStack": ["Next.js 14", "FastAPI", "Redis", "Docker", "shadcn/ui"],
-      "github": "github.com/Msparihar/shortify",
-      "live": "https://shortify.example.com"
+      "techStack": ["Next.js", "FastAPI", "Redis", "Docker"],
+      "github": "https://github.com/Msparihar/shortify",
+      "live": "https://github.com/Msparihar/shortify"
     },
     {
       "name": "Know Your PPT",
       "description": "Innovative tool that converts PowerPoint files into semantically rich text using vision language models. Enables better understanding and analysis of presentation content.",
       "image": "/images/ppt2desc.png",
-      "techStack": ["Python", "FastAPI", "React", "Whisper", "Transformers"],
-      "github": "github.com/Msparihar/Know-Your-PPT",
-      "live": "https://know-your-ppt.example.com"
+      "techStack": ["Python", "FastAPI", "LLMs", "Computer Vision"],
+      "github": "https://github.com/Msparihar/Know-Your-PPT",
+      "live": "https://github.com/Msparihar/Know-Your-PPT"
     },
     {
       "name": "Deep Speech 2",
       "description": "Implementation of the Deep Speech 2 model for speech-to-text conversion. Trained on a comprehensive dataset of audio recordings for real-time transcription capabilities.",
       "image": "/images/deep-speech-2.png",
-      "techStack": ["Python", "PyTorch", "Deep Speech 2", "CUDA", "FastAPI"],
-      "github": "github.com/Msparihar/deep-speech-2",
-      "live": "https://deep-speech.example.com"
+      "techStack": ["Python", "PyTorch", "Deep Speech 2", "STT", "FastAPI"],
+      "github": "https://github.com/Msparihar/deep-speech-2",
+      "live": "https://github.com/Msparihar/deep-speech-2"
     },
     {
       "name": "Data Wizard",
       "description": "Comprehensive data analysis and visualization platform. Features automated data cleaning, statistical analysis, and interactive visualizations for better data insights.",
       "image": "/images/data-wizard.jpg",
-      "techStack": ["Python", "Pandas", "Plotly", "Streamlit", "Scikit-learn"],
-      "github": "github.com/Msparihar/Data-Wizard",
-      "live": "https://data-wizard.example.com"
+      "techStack": ["Python", "Data Analysis"],
+      "github": "https://github.com/Msparihar/Data-Wizard",
+      "live": "https://github.com/Msparihar/Data-Wizard"
     }
   ],
   "experience": [

@@ -12,6 +12,7 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
+        <link rel="icon" href="/icons/terminal-favicon.svg" type="image/svg+xml" />
         <title>Manish Singh Parihar | Full Stack & AI Engineer</title>
       </head>
       <body>
