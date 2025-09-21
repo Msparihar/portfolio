@@ -61,6 +61,13 @@ Type 'help' to see available commands.`
   const [inputEnabled, setInputEnabled] = useState(true);
   const [isNavigating, setIsNavigating] = useState(false);
 
+ // Debug logging
+  useEffect(() => {
+    console.log('TerminalContext theme:', theme);
+    console.log('Input value:', input);
+    console.log('Theme-based color:', theme === 'dark' ? 'hsl(0, 0%, 98%)' : 'hsl(0, 0%, 3.9%)');
+  }, [theme, input]);
+
   useEffect(() => {
     setMounted(true);
   }, []);
@@ -412,7 +419,12 @@ export const Terminal = () => {
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={handleKeyDown}
               disabled={!inputEnabled}
-              className="flex-1 bg-transparent border-none outline-none text-foreground font-mono placeholder-muted-foreground"
+              className="flex-1 bg-transparent border-none outline-none font-mono placeholder-muted-foreground"
+              style={{
+                color: theme === 'dark' ? 'hsl(0, 0%, 98%)' : 'hsl(0, 0%, 3.9%)',
+                position: 'relative',
+                zIndex: 15
+              }}
               placeholder={inputEnabled ? "Type a command..." : "Processing..."}
               autoComplete="off"
             />
@@ -423,3 +435,4 @@ export const Terminal = () => {
     </div>
   );
 };
+
