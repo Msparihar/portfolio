@@ -1,6 +1,7 @@
 "use client";
 
 import { ThemeProvider } from "@/components/theme-provider";
+import { TerminalProvider } from "@/components/TerminalContext";
 import "./globals.css";
 import { config } from '@fortawesome/fontawesome-svg-core';
 import '@fortawesome/fontawesome-svg-core/styles.css';
@@ -22,7 +23,9 @@ export default function RootLayout({ children }) {
           enableSystem={false}
           disableTransitionOnChange
         >
-          {children}
+          <TerminalProvider>
+            {children}
+          </TerminalProvider>
         </ThemeProvider>
       </body>
     </html>

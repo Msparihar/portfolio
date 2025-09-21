@@ -33,6 +33,7 @@ const Terminal = () => {
   const { theme } = useTheme();
   const terminalRef = useRef(null);
   const inputRef = useRef(null);
+  const [mounted, setMounted] = useState(false);
   const [history, setHistory] = useState([
     {
       command: 'whoami',
@@ -49,6 +50,10 @@ Type 'help' to see available commands.`
   const [isNavigating, setIsNavigating] = useState(false);
   const [commandHistory, setCommandHistory] = useState([]);
   const [historyIndex, setHistoryIndex] = useState(-1);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   useEffect(() => {
     // Automatically scroll to bottom when content changes
@@ -79,6 +84,8 @@ Type 'help' to see available commands.`
 - exp | experience: View my work experience
 - edu | education: View my education
 - contact: Get my contact information
+- blog: View my blog
+- github: View GitHub contributions
 - cd [directory]: Navigate to a page (e.g., cd projects, cd contact, cd blog)
 - clear: Clear the terminal
 - echo [text]: Display text
@@ -136,7 +143,6 @@ Type 'help' to see available commands.`
           setIsNavigating(true);
           setInputEnabled(false);
 
-          // Faster navigation with immediate redirect and visual feedback
           const output = `Navigating to blog page...`;
           setTimeout(() => {
             router.push('/blog');
@@ -145,6 +151,18 @@ Type 'help' to see available commands.`
           return output;
         }
         return 'Navigation already in progress...';
+      }
+    },
+    github: {
+      description: 'View GitHub contributions',
+      execute: () => {
+        // Scroll to GitHub contributions section
+        const githubSection = document.querySelector('.github-contributions-section');
+        if (githubSection) {
+          githubSection.scrollIntoView({ behavior: 'smooth' });
+          return 'Scrolling to GitHub contributions...';
+        }
+        return 'GitHub contributions section not found.';
       }
     },
     whoami: {
@@ -419,20 +437,32 @@ Use the corresponding command to navigate to each section.`
             )}
           </div>
         ))}
+
+        {/* Terminal Input - positioned right after the last output */}
         <div className="flex items-center">
           <span className="text-green-500/80 mr-2">$</span>
           <div className="flex-1 relative">
-            <input
-              ref={inputRef}
-              type="text"
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              onKeyDown={handleKeyDown}
-              className="bg-transparent w-full outline-none absolute top-0 left-0 text-transparent caret-transparent"
-              placeholder="Type 'help' for available commands..."
-              disabled={!inputEnabled}
-              autoFocus
-            />
+            {mounted && (
+              <input
+                ref={inputRef}
+                type="text"
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                onKeyDown={handleKeyDown}
+                className="bg-transparent w-full outline-none absolute top-0 left-0 text-transparent caret-transparent"
+                placeholder={inputEnabled ? "Type 'help' for available commands..." : "Processing..."}
+                disabled={!inputEnabled}
+                autoFocus
+                autoComplete="off"
+                name="terminal-input"
+                suppressHydrationWarning
+              />
+            )}
+            {!mounted && (
+              <span className="inline-block" suppressHydrationWarning>
+                {/* placeholder during SSR to avoid mismatches */}
+              </span>
+            )}
             <span className="inline-block">
               {input}
               <span className="terminal-cursor inline-block w-2 h-4 -mb-1 bg-green-500/80"></span>

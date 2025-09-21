@@ -1,6 +1,6 @@
 "use client";
 
-import Terminal from "@/components/Terminal";
+import { Terminal } from "@/components/TerminalContext";
 import { ThemeToggle } from "@/components/theme-toggle";
 import Link from "next/link";
 import portfolioData from '@/config/portfolio.json';
@@ -12,6 +12,29 @@ import {
   faTwitter,
   faHashnode
 } from '@fortawesome/free-brands-svg-icons';
+import dynamic from 'next/dynamic';
+import { usePreloadPages } from '@/components/PreloadLink';
+
+// Dynamically import GithubContributions component for lazy loading
+const GithubContributions = dynamic(() => import('@/components/GithubContributions'), {
+  ssr: false, // This component uses client-side features like window, so disable SSR
+  loading: () => (
+    <div className="terminal-container p-6">
+      <div className="flex items-center mb-4">
+        <span className="terminal-prompt mr-2">$</span>
+        <span className="text-green-500/80">Loading GitHub contributions...</span>
+        <div className="ml-2 flex space-x-1">
+          <div className="w-2 h-2 bg-green-500/60 rounded-full animate-pulse"></div>
+          <div className="w-2 h-2 bg-green-500/60 rounded-full animate-pulse" style={{ animationDelay: '0.2s' }}></div>
+          <div className="w-2 h-2 bg-green-500/60 rounded-full animate-pulse" style={{ animationDelay: '0.4s' }}></div>
+        </div>
+      </div>
+      <div className="text-sm text-muted-foreground">
+        <span className="text-yellow-500/80">Tip:</span> If contributions don't load, check your internet connection or GitHub API status.
+      </div>
+    </div>
+  ),
+});
 
 const NavLink = ({ path, label, isActive = false }) => (
   <Link
@@ -30,6 +53,9 @@ const NavLink = ({ path, label, isActive = false }) => (
 );
 
 export default function Home() {
+  // Enable preloading for all navigation links
+  usePreloadPages();
+
   return (
     <main className="min-h-screen bg-gradient-to-b from-background to-background/80 relative overflow-hidden">
       {/* Grid background for the entire page */}
@@ -66,13 +92,18 @@ export default function Home() {
           <Terminal />
         </div>
 
+        {/* GitHub Contributions Section */}
+        <div className="mt-12">
+          <GithubContributions />
+        </div>
+
         {/* Footer */}
         <footer className="mt-8 text-center text-sm text-muted-foreground border-t border-border/20 pt-4 pb-2">
           <div className="terminal-line opacity-60">
             <span className="terminal-prompt">$</span>
-            <span className="ml-2">
-              echo &quot;© {new Date().getFullYear()} • {portfolioData.name} • Built with Next.js and
-              Tailwind CSS&quot;
+            <span className="ml-2" suppressHydrationWarning>
+              {`echo "© ${new Date().getFullYear()} • ${portfolioData.name} • Built with Next.js and
+              Tailwind CSS"`}
             </span>
           </div>
           <div className="mt-3 flex justify-center space-x-6">
