@@ -51,6 +51,21 @@ Type 'help' to see available commands.`
   const [commandHistory, setCommandHistory] = useState([]);
   const [historyIndex, setHistoryIndex] = useState(-1);
 
+ // Debug logging
+ useEffect(() => {
+   console.log('Terminal theme:', theme);
+   console.log('Input value:', input);
+   console.log('Theme-based color:', theme === 'dark' ? '#4ade80' : '#166534');
+ }, [theme, input]);
+
+ useEffect(() => {
+   console.log('Z-index values - Input: 10, Text span: 15');
+ }, []);
+
+  useEffect(() => {
+    console.log('Mounted state:', mounted);
+  }, [mounted]);
+
   useEffect(() => {
     setMounted(true);
   }, []);
@@ -456,6 +471,7 @@ Use the corresponding command to navigate to each section.`
                 autoComplete="off"
                 name="terminal-input"
                 suppressHydrationWarning
+                style={{ zIndex: 10, color: 'transparent' }}
               />
             )}
             {!mounted && (
@@ -463,7 +479,16 @@ Use the corresponding command to navigate to each section.`
                 {/* placeholder during SSR to avoid mismatches */}
               </span>
             )}
-            <span className="inline-block">
+            <span
+              className="inline-block"
+              style={{
+                color: theme === 'dark' ? '#4ade80' : '#166534',
+                fontFamily: 'inherit',
+                fontSize: 'inherit',
+                zIndex: 15,
+                position: 'relative'
+              }}
+            >
               {input}
               <span className="terminal-cursor inline-block w-2 h-4 -mb-1 bg-green-500/80"></span>
             </span>
@@ -475,3 +500,4 @@ Use the corresponding command to navigate to each section.`
 }
 
 export default Terminal;
+
