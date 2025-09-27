@@ -1,19 +1,20 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useTheme } from 'next-themes';
 import Image from 'next/image';
 import { ExternalLink, Github, Star, GitFork } from 'lucide-react';
 import portfolioData from '@/config/portfolio.json';
-// Placeholder images for projects that don't have their own
+import { SkeletonGrid } from '../ui/SkeletonCard';
+// Optimized base64 placeholder images to avoid 404s and loading delays
 const placeholderImages = [
-  '/images/projects/placeholder-1.jpg',
-  '/images/projects/placeholder-2.jpg',
-  '/images/projects/placeholder-3.jpg',
-  '/images/projects/placeholder-4.jpg',
+  'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAwIiBoZWlnaHQ9IjQwMCIgdmlld0JveD0iMCAwIDYwMCA0MDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI2MDAiIGhlaWdodD0iNDAwIiBmaWxsPSIjMTExODI3Ii8+CjxwYXRoIGQ9Ik0zMDAgMjAwTDM1MCAyNTBIMjUwTDMwMCAyMDBaIiBmaWxsPSIjMzc0MTUxIi8+Cjx0ZXh0IHg9IjMwMCIgeT0iMzAwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSIjNjM3Mzg0IiBmb250LXNpemU9IjE2IiBmb250LWZhbWlseT0ibW9ub3NwYWNlIj5Qcm9qZWN0IEltYWdlPC90ZXh0Pgo8L3N2Zz4K',
+  'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAwIiBoZWlnaHQ9IjQwMCIgdmlld0JveD0iMCAwIDYwMCA0MDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI2MDAiIGhlaWdodD0iNDAwIiBmaWxsPSIjMGYxNDE5Ii8+CjxjaXJjbGUgY3g9IjMwMCIgY3k9IjIwMCIgcj0iNTAiIGZpbGw9IiMyMjQ0MzEiLz4KPHR5cGVUIHg9IjMwMCIgeT0iMzAwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSIjNDJhMzY2IiBmb250LXNpemU9IjE2IiBmb250LWZhbWlseT0ibW9ub3NwYWNlIj5Qcm9qZWN0IEltYWdlPC90ZXh0Pgo8L3N2Zz4K',
+  'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAwIiBoZWlnaHQ9IjQwMCIgdmlld0JveD0iMCAwIDYwMCA0MDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI2MDAiIGhlaWdodD0iNDAwIiBmaWxsPSIjMDkwYTEzIi8+CjxyZWN0IHg9IjI1MCIgeT0iMTUwIiB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgZmlsbD0iIzI3NGE1NCIvPgo8dGV4dCB4PSIzMDAiIHk9IjMwMCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0iIzJkZGQ2OSIgZm9udC1zaXplPSIxNiIgZm9udC1mYW1pbHk9Im1vbm9zcGFjZSI+UHJvamVjdCBJbWFnZTwvdGV4dD4KPC9zdmc+Cg==',
+  'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAwIiBoZWlnaHQ9IjQwMCIgdmlld0JveD0iMCAwIDYwMCA0MDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI2MDAiIGhlaWdodD0iNDAwIiBmaWxsPSIjMTEyNTMzIi8+Cjxwb2x5Z29uIHBvaW50cz0iMzAwLDE1MCAzNTAsMjUwIDI1MCwyNTAiIGZpbGw9IiMzMzU0NjQiLz4KPHR5cGVUIHg9IjMwMCIgeT0iMzAwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSIjNzAz%29YzQiIGZvbnQtc2l6ZT0iMTYiIGZvbnQtZmFtaWx5PSJtb25vc3BhY2UiPlByb2plY3QgSW1hZ2U8L3RleHQ+Cjwvc3ZnPgo='
 ];
 
-const ProjectCard = ({ project, isDark }) => {
+const ProjectCard = ({ project, isDark, isPriority = false }) => {
   // Get a placeholder image based on project name hash
   const getPlaceholderImage = (name) => {
     const hash = name.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
@@ -28,14 +29,18 @@ const ProjectCard = ({ project, isDark }) => {
       isDark ? 'bg-gray-900 hover:bg-gray-800' : 'bg-white hover:bg-gray-50'
     } border ${isDark ? 'border-gray-800' : 'border-gray-200'} shadow-sm hover:shadow-md`}>
       {/* Project Image with Overlay */}
-      <div className="relative h-48 overflow-hidden">
+      <div className="relative h-48 overflow-hidden image-container">
         <div className="absolute inset-0 bg-gradient-to-b from-black/20 to-black/70 z-10"></div>
         <Image
           src={imageSrc}
           alt={project.name}
           width={600}
           height={400}
-          className="object-cover w-full h-full transition-transform duration-500 group-hover:scale-105"
+          priority={isPriority}
+          loading={isPriority ? 'eager' : 'eager'} // Changed to eager for all images
+          placeholder="blur"
+          blurDataURL="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAwIiBoZWlnaHQ9IjQwMCIgdmlld0JveD0iMCAwIDYwMCA0MDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI2MDAiIGhlaWdodD0iNDAwIiBmaWxsPSIjMTExODI3IiBvcGFjaXR5PSIwLjMiLz4KPGFuaW1hdGUgYXR0cmlidXRlTmFtZT0ib3BhY2l0eSIgdmFsdWVzPSIwLjM7MC42OzAuMyIgZHVyPSIxLjVzIiByZXBlYXRDb3VudD0iaW5kZWZpbml0ZSIvPgo8L3N2Zz4K"
+          className="object-cover w-full h-full transition-all duration-700 group-hover:scale-105 fast-image-load"
         />
         <div className="absolute bottom-0 left-0 right-0 p-4 z-20">
           <h3 className="text-lg font-bold text-white mb-1 group-hover:text-green-400 transition-colors">
@@ -118,11 +123,28 @@ const ProjectCard = ({ project, isDark }) => {
 const ProjectGrid = ({ searchQuery = '', activeFilter = 'all' }) => {
   const { theme } = useTheme();
   const isDark = theme === 'dark';
-  const [projects] = useState(portfolioData.projects);
-  const [filteredProjects, setFilteredProjects] = useState(portfolioData.projects);
+  const [projects, setProjects] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  // Filter projects based on search and filter criteria
+  // Load projects data
   useEffect(() => {
+    const loadProjects = async () => {
+      try {
+        setProjects(portfolioData.projects);
+        setLoading(false);
+      } catch (err) {
+        console.error('Error loading projects:', err);
+        setLoading(false);
+      }
+    };
+
+    loadProjects();
+  }, []);
+
+  // Memoized filtered projects to prevent unnecessary recalculations
+  const filteredProjects = useMemo(() => {
+    if (projects.length === 0) return [];
+
     let filtered = [...projects];
 
     // Apply search filter if query exists
@@ -146,8 +168,12 @@ const ProjectGrid = ({ searchQuery = '', activeFilter = 'all' }) => {
       });
     }
 
-    setFilteredProjects(filtered);
+    return filtered;
   }, [projects, searchQuery, activeFilter]);
+
+  if (loading) {
+    return <SkeletonGrid count={9} type="project" />;
+  }
 
   if (filteredProjects.length === 0) {
     return (
@@ -192,7 +218,12 @@ const ProjectGrid = ({ searchQuery = '', activeFilter = 'all' }) => {
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {filteredProjects.map((project, index) => (
-          <ProjectCard key={index} project={project} isDark={isDark} />
+          <ProjectCard
+            key={index}
+            project={project}
+            isDark={isDark}
+            isPriority={index < 6} // Priority load first 6 images
+          />
         ))}
       </div>
     </>

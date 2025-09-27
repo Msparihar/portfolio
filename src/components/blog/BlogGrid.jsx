@@ -1,22 +1,22 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useTheme } from 'next-themes';
 import Image from 'next/image';
 import { Calendar, Clock, Tag, ExternalLink } from 'lucide-react';
 import portfolioConfig from '@/config/portfolio.json';
 import Link from 'next/link';
-import { TerminalLoader } from '../ui/LoadingDots';
+import { SkeletonGrid } from '../ui/SkeletonCard';
 
-// Placeholder images for blog posts that don't have their own
+// Optimized base64 placeholder images to avoid 404s and loading delays
 const placeholderImages = [
-  '/images/blog/placeholder-1.jpg',
-  '/images/blog/placeholder-2.jpg',
-  '/images/blog/placeholder-3.jpg',
-  '/images/blog/placeholder-4.jpg',
+  'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAwIiBoZWlnaHQ9IjQwMCIgdmlld0JveD0iMCAwIDYwMCA0MDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI2MDAiIGhlaWdodD0iNDAwIiBmaWxsPSIjMTExODI3Ii8+CjxjaXJjbGUgY3g9IjE1MCIgY3k9IjEwMCIgcj0iMjAiIGZpbGw9IiMzNzQxNTEiLz4KPGNpcmNsZSBjeD0iNDUwIiBjeT0iMzAwIiByPSIzMCIgZmlsbD0iIzQ3NTU2OSIvPgo8dGV4dCB4PSIzMDAiIHk9IjMzMCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0iIzZiNzI4MCIgZm9udC1zaXplPSIxNiIgZm9udC1mYW1pbHk9Im1vbm9zcGFjZSI+QmxvZyBQb3N0PC90ZXh0Pgo8L3N2Zz4K',
+  'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAwIiBoZWlnaHQ9IjQwMCIgdmlld0JveD0iMCAwIDYwMCA0MDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI2MDAiIGhlaWdodD0iNDAwIiBmaWxsPSIjMGYxNDE5Ii8+CjxyZWN0IHg9IjIwMCIgeT0iMTAwIiB3aWR0aD0iMjAwIiBoZWlnaHQ9IjE1MCIgZmlsbD0iIzJkNGQzNyIvPgo8dGV4dCB4PSIzMDAiIHk9IjMzMCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0iIzQyYTM2NiIgZm9udC1zaXplPSIxNiIgZm9udC1mYW1pbHk9Im1vbm9zcGFjZSI+QmxvZyBQb3N0PC90ZXh0Pgo8L3N2Zz4K',
+  'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAwIiBoZWlnaHQ9IjQwMCIgdmlld0JveD0iMCAwIDYwMCA0MDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI2MDAiIGhlaWdodD0iNDAwIiBmaWxsPSIjMDkwYTEzIi8+CjxwYXRoIGQ9Ik0xMDAgMTAwTDUwMCAxMDBMNDAwIDMwMEwxMDAgMzAwWiIgZmlsbD0iIzJhNTA0OSIvPgo8dGV4dCB4PSIzMDAiIHk9IjM1MCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0iIzJkZGQ2OSIgZm9udC1zaXplPSIxNiIgZm9udC1mYW1pbHk9Im1vbm9zcGFjZSI+QmxvZyBQb3N0PC90ZXh0Pgo8L3N2Zz4K',
+  'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAwIiBoZWlnaHQ9IjQwMCIgdmlld0JveD0iMCAwIDYwMCA0MDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI2MDAiIGhlaWdodD0iNDAwIiBmaWxsPSIjMTEyNTMzIi8+CjxlbGxpcHNlIGN4PSIzMDAiIGN5PSIyMDAiIHJ4PSIxNTAiIHJ5PSIxMDAiIGZpbGw9IiMzNzRjNTciLz4KPHR5cGVUIHg9IjMwMCIgeT0iMzUwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSIjNzAzYzM0IiBmb250LXNpemU9IjE2IiBmb250LWZhbWlseT0ibW9ub3NwYWNlIj5CbG9nIFBvc3Q8L3RleHQ+Cjwvc3ZnPgo='
 ];
 
-const BlogCard = ({ post, isDark }) => {
+const BlogCard = ({ post, isDark, isPriority = false }) => {
   // Get a placeholder image based on post title hash
   const getPlaceholderImage = (title) => {
     const hash = title.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
@@ -41,14 +41,18 @@ const BlogCard = ({ post, isDark }) => {
       isDark ? 'bg-gray-900 hover:bg-gray-800' : 'bg-white hover:bg-gray-50'
     } border ${isDark ? 'border-gray-800' : 'border-gray-200'} shadow-sm hover:shadow-md`}>
       {/* Blog Post Image with Overlay */}
-      <div className="relative h-48 overflow-hidden">
+      <div className="relative h-48 overflow-hidden image-container">
         <div className="absolute inset-0 bg-gradient-to-b from-black/20 to-black/70 z-10"></div>
         <Image
           src={imageSrc}
           alt={post.title}
           width={600}
           height={400}
-          className="object-cover w-full h-full transition-transform duration-500 group-hover:scale-105"
+          priority={isPriority}
+          loading={isPriority ? 'eager' : 'eager'} // Changed to eager for all images
+          placeholder="blur"
+          blurDataURL="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAwIiBoZWlnaHQ9IjQwMCIgdmlld0JveD0iMCAwIDYwMCA0MDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI2MDAiIGhlaWdodD0iNDAwIiBmaWxsPSIjMTExODI3IiBvcGFjaXR5PSIwLjMiLz4KPGFuaW1hdGUgYXR0cmlidXRlTmFtZT0ib3BhY2l0eSIgdmFsdWVzPSIwLjM7MC42OzAuMyIgZHVyPSIxLjVzIiByZXBlYXRDb3VudD0iaW5kZWZpbml0ZSIvPgo8L3N2Zz4K"
+          className="object-cover w-full h-full transition-all duration-700 group-hover:scale-105 fast-image-load"
         />
         <div className="absolute bottom-0 left-0 right-0 p-4 z-20">
           <h3 className="text-lg font-bold text-white mb-1 group-hover:text-green-400 transition-colors">
@@ -110,12 +114,10 @@ const BlogGrid = ({ searchQuery = '', activeFilter = 'all' }) => {
   const isDark = theme === 'dark';
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [filteredPosts, setFilteredPosts] = useState([]);
 
   useEffect(() => {
     const fetchPosts = async () => {
       try {
-        await new Promise(resolve => setTimeout(resolve, 800));
         setPosts(portfolioConfig.blogs);
         setLoading(false);
       } catch (err) {
@@ -127,9 +129,9 @@ const BlogGrid = ({ searchQuery = '', activeFilter = 'all' }) => {
     fetchPosts();
   }, []);
 
-  // Filter posts based on search and filter criteria
-  useEffect(() => {
-    if (posts.length === 0) return;
+  // Memoized filtered posts to prevent unnecessary recalculations
+  const filteredPosts = useMemo(() => {
+    if (posts.length === 0) return [];
 
     let filtered = [...posts];
 
@@ -154,28 +156,11 @@ const BlogGrid = ({ searchQuery = '', activeFilter = 'all' }) => {
       });
     }
 
-    setFilteredPosts(filtered);
+    return filtered;
   }, [posts, searchQuery, activeFilter]);
 
   if (loading) {
-    return (
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {[...Array(3)].map((_, index) => (
-          <div
-            key={index}
-            className={`h-72 rounded-xl animate-pulse ${
-              isDark ? 'bg-gray-800' : 'bg-gray-100'
-            }`}
-          >
-            <div className={`h-48 w-full ${isDark ? 'bg-gray-700' : 'bg-gray-200'} rounded-t-xl`}></div>
-            <div className="p-4">
-              <div className={`h-4 w-3/4 ${isDark ? 'bg-gray-700' : 'bg-gray-200'} rounded mb-2`}></div>
-              <div className={`h-3 w-1/2 ${isDark ? 'bg-gray-700' : 'bg-gray-200'} rounded`}></div>
-            </div>
-          </div>
-        ))}
-      </div>
-    );
+    return <SkeletonGrid count={6} type="blog" />;
   }
 
   if (filteredPosts.length === 0) {
@@ -221,7 +206,12 @@ const BlogGrid = ({ searchQuery = '', activeFilter = 'all' }) => {
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {filteredPosts.map((post, index) => (
-          <BlogCard key={index} post={post} isDark={isDark} />
+          <BlogCard
+            key={index}
+            post={post}
+            isDark={isDark}
+            isPriority={index < 6} // Priority load first 6 images
+          />
         ))}
       </div>
     </>
