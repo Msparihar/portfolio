@@ -4,34 +4,53 @@ import React from 'react';
 import GitHubCalendar from 'react-github-calendar';
 import { useTheme } from 'next-themes';
 import portfolioData from '@/config/portfolio.json';
-import { getCachedContributions, setCachedContributions, fetchGitHubContributions } from '@/lib/githubCache';
+// No longer need client-side caching utilities
 
 const GithubContributions = () => {
   const { theme } = useTheme();
   const [contributions, setContributions] = React.useState(null);
   const [isLoading, setIsLoading] = React.useState(true);
   const [hasError, setHasError] = React.useState(false);
+  const [cacheStatus, setCacheStatus] = React.useState(null);
 
-  // Load contributions with caching
+  // Get GitHub username from config (must be declared before useEffect)
+  const githubUsername = portfolioData.githubUsername || 'Msparihar';
+
+  // Load contributions from server-side cached API
   React.useEffect(() => {
     const loadContributions = async () => {
       try {
         setIsLoading(true);
         setHasError(false);
 
-        // First, try to get cached data
-        const cachedData = getCachedContributions();
-        if (cachedData) {
-          setContributions(cachedData);
-          setIsLoading(false);
-          return;
+        // Fetch from our server-side cached API endpoint
+        const response = await fetch(`/api/github-contributions?username=${githubUsername}`);
+
+        if (!response.ok) {
+          throw new Error(`API error: ${response.status}`);
         }
 
-        // If no cache, fetch from API
-        const data = await fetchGitHubContributions(githubUsername);
-        setContributions(data);
-        setCachedContributions(data);
+        const result = await response.json();
+
+        if (result.error) {
+          throw new Error(result.message);
+        }
+
+        setContributions(result.data);
+        setCacheStatus({
+          cached: result.cached,
+          stale: result.stale,
+          timestamp: result.cachedAt || result.fetchedAt
+        });
         setIsLoading(false);
+
+        // Log cache status for debugging
+        if (result.cached) {
+          console.log('GitHub contributions loaded from server cache');
+        } else {
+          console.log('GitHub contributions fetched fresh from GitHub API');
+        }
+
       } catch (error) {
         console.error('Error loading contributions:', error);
         setHasError(true);
@@ -40,7 +59,7 @@ const GithubContributions = () => {
     };
 
     loadContributions();
-  }, []);
+  }, [githubUsername]);
 
   // Terminal-themed color schemes that match your portfolio
   const terminalTheme = {
@@ -59,8 +78,6 @@ const GithubContributions = () => {
       '#39d353'  // High contributions - brightest green (matches terminal green)
     ]
   };
-
-  const githubUsername = portfolioData.githubUsername || 'Msparihar';
 
   return (
     <div className="github-contributions-container terminal-container p-6 rounded-lg shadow-lg">
@@ -128,10 +145,21 @@ const GithubContributions = () => {
             <span className="text-muted-foreground">More</span>
           </div>
 
-          {/* Footer info */}
+          {/* Footer info with cache status */}
           <div className="mt-4 text-xs text-muted-foreground font-mono text-center">
             <span className="terminal-prompt mr-2">&gt;</span>
-            Last updated: {new Date().toLocaleDateString()}
+            {cacheStatus ? (
+              cacheStatus.cached ? (
+                <>
+                  Loaded from server cache (updated: {new Date(cacheStatus.timestamp).toLocaleDateString()})
+                  {cacheStatus.stale && <span className="text-yellow-500 ml-2">[using stale data]</span>}
+                </>
+              ) : (
+                `Fresh data fetched: ${new Date(cacheStatus.timestamp).toLocaleDateString()}`
+              )
+            ) : (
+              `Last updated: ${new Date().toLocaleDateString()}`
+            )}
           </div>
         </>
       )}
