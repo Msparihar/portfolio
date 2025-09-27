@@ -3,7 +3,7 @@
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 
-// Preload pages on hover
+// Aggressive preloading strategy
 export const usePreloadPages = () => {
   const router = useRouter();
 
@@ -13,7 +13,13 @@ export const usePreloadPages = () => {
       router.prefetch(href);
     };
 
-    // Add hover listeners to navigation links
+    // Immediately preload all main pages on homepage load
+    const mainPages = ['/projects', '/blog', '/contact'];
+    mainPages.forEach(page => {
+      preloadPage(page);
+    });
+
+    // Add hover listeners to navigation links for instant loading
     const links = document.querySelectorAll('a[href^="/"]');
 
     links.forEach(link => {
