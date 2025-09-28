@@ -28,6 +28,57 @@ const TypeWriter = ({ text, delay = 10, className = '' }) => {
   );
 };
 
+const MultiLineTypeWriter = ({ lines, delay = 15, lineDelay = 200, className = '' }) => {
+  const [currentLineIndex, setCurrentLineIndex] = useState(0);
+  const [displayedLines, setDisplayedLines] = useState([]);
+  const [currentLineText, setCurrentLineText] = useState('');
+  const [isComplete, setIsComplete] = useState(false);
+
+  useEffect(() => {
+    if (currentLineIndex < lines.length) {
+      // Add the current line to displayed lines when starting to type it
+      if (currentLineIndex > displayedLines.length - 1) {
+        setDisplayedLines(prev => [...prev, '']);
+      }
+
+      const currentLine = lines[currentLineIndex];
+      if (currentLineText.length < currentLine.length) {
+        const timer = setTimeout(() => {
+          setCurrentLineText(prev => prev + currentLine[currentLineText.length]);
+          setDisplayedLines(prev => {
+            const newLines = [...prev];
+            newLines[currentLineIndex] = currentLineText + currentLine[currentLineText.length];
+            return newLines;
+          });
+        }, delay);
+        return () => clearTimeout(timer);
+      } else {
+        // Current line is complete, move to next line after delay
+        const timer = setTimeout(() => {
+          setCurrentLineIndex(prev => prev + 1);
+          setCurrentLineText('');
+        }, lineDelay);
+        return () => clearTimeout(timer);
+      }
+    } else {
+      setIsComplete(true);
+    }
+  }, [currentLineIndex, currentLineText, lines, delay, lineDelay]);
+
+  return (
+    <div className={className}>
+      {displayedLines.map((line, index) => (
+        <div key={index}>
+          {line}
+          {index === currentLineIndex && !isComplete && (
+            <span className="terminal-cursor inline-block w-2 h-4 -mb-1 bg-green-500/80 ml-1"></span>
+          )}
+        </div>
+      ))}
+    </div>
+  );
+};
+
 const Terminal = () => {
   const router = useRouter();
   const { theme } = useTheme();
@@ -37,11 +88,14 @@ const Terminal = () => {
   const [history, setHistory] = useState([
     {
       command: 'whoami',
-      output: `Welcome! I'm ${portfolioData.name}
-${portfolioData.title}
-${portfolioData.bio}
-
-Type 'help' to see available commands.`
+      output: null, // Will be handled by multiLineOutput
+      multiLineOutput: [
+        `Welcome! I'm ${portfolioData.name}`,
+        portfolioData.title,
+        portfolioData.bio,
+        '',
+        "Type 'help' to see available commands."
+      ]
     }
   ]);
 
@@ -435,6 +489,20 @@ Use the corresponding command to navigate to each section.`
               <span className="text-green-500/80 mr-2">$</span>
               <TypeWriter text={entry.command} />
             </div>
+            {entry.multiLineOutput && (
+              <div className="command-output mt-2">
+                <div className="flex">
+                  <span className="text-green-500/80 mr-2">&gt;</span>
+                  <div className="flex-1">
+                    <MultiLineTypeWriter
+                      lines={entry.multiLineOutput}
+                      delay={12}
+                      lineDelay={150}
+                    />
+                  </div>
+                </div>
+              </div>
+            )}
             {entry.output && (
               <div className="command-output whitespace-pre-line mt-2">
                 <div className="flex">
@@ -490,7 +558,9 @@ Use the corresponding command to navigate to each section.`
               }}
             >
               {input}
-              <span className="terminal-cursor inline-block w-2 h-4 -mb-1 bg-green-500/80"></span>
+              <span className="inline-block w-2 h-4 -mb-1 bg-green-500/80" style={{
+                animation: 'terminal-blink 1s step-end infinite'
+              }}></span>
             </span>
           </div>
         </div>
