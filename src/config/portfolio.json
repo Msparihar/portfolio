@@ -72,6 +72,22 @@
   ],
   "projects": [
     {
+      "name": "ReddiChat",
+      "description": "An intelligent AI chatbot that combines advanced language models with real-time Reddit insights. Features Google OAuth authentication, persistent chat history, and smart tool selection for enriched conversations with community perspectives from Reddit discussions.",
+      "image": "/images/reddichat.png",
+      "techStack": [
+        "React",
+        "FastAPI",
+        "LangGraph",
+        "Google Gemini",
+        "Tailwind CSS",
+        "SQLAlchemy",
+        "Google Cloud Run"
+      ],
+      "github": "https://github.com/Msparihar/ReddiChat",
+      "live": "https://chat.manishsingh.tech"
+    },
+    {
       "name": "Novel Writing AI with LLaMA 3.1",
       "description": "Fine-tuned LLaMA 3.1 model specifically for novel writing. Created a custom dataset of epic novels and trained the model to generate high-quality narrative content. The model is publicly available on Hugging Face for the writing community.",
       "image": "/images/llama-3.1-novel.png",
@@ -102,12 +118,44 @@
       "live": "https://github.com/Msparihar/Video-Super-Resolution-using-GFPGAN"
     },
     {
+      "name": "Dumroo.ai Admin Chatbot",
+      "description": "AI-powered student data analytics platform with role-based access control. Features real-time WebSocket chat, OpenAI GPT-4o integration, and beautiful data visualization. Supports multiple user roles with different data access levels for educational institutions.",
+      "image": "/images/dumrooai-placeholder.png",
+      "techStack": [
+        "FastAPI",
+        "OpenAI GPT-4o",
+        "WebSocket",
+        "JWT Auth",
+        "Docker",
+        "Vanilla JavaScript",
+        "CSV Analytics"
+      ],
+      "github": "https://github.com/Msparihar/dumrooai",
+      "live": "https://github.com/Msparihar/dumrooai"
+    },
+    {
       "name": "Globetrotter",
-      "description": "A real-time country guessing game built with Next.js and FastAPI. Players compete to identify countries based on various clues in an interactive global challenge. Features live multiplayer functionality and a modern, engaging user interface.",
-      "image": "/images/globetrotter.png",
-      "techStack": ["Next.js", "FastAPI", "WebSocket", "PostgreSQL", "Redis"],
+      "description": "Real-time geography quiz game testing knowledge of world cities. Features score tracking, achievement system, instant feedback, and responsive design. Built with modern architecture using TanStack Query for data fetching and Redis caching for optimal performance.",
+      "image": "/images/globetrotter-new.png",
+      "techStack": ["Next.js", "FastAPI", "PostgreSQL", "Redis", "TanStack Query", "Tailwind CSS", "Shadcn UI"],
       "github": "https://github.com/Msparihar/globetrotter",
       "live": "https://github.com/Msparihar/globetrotter"
+    },
+    {
+      "name": "Loan Advisor Chatbot",
+      "description": "Intelligent financial advisory chatbot that matches borrowers with suitable lenders using machine learning. Features conversational UI, real-time scoring algorithm, and displays top 3 lender recommendations with explanations. Built with modern tech stack and containerized deployment.",
+      "image": "/images/loan-advisor-chatbot.png",
+      "techStack": [
+        "Next.js",
+        "TypeScript",
+        "FastAPI",
+        "Scikit-learn",
+        "Tailwind CSS",
+        "Shadcn UI",
+        "Docker"
+      ],
+      "github": "https://github.com/Msparihar/loan-advisor-chatbot",
+      "live": "https://github.com/Msparihar/loan-advisor-chatbot"
     },
     {
       "name": "Transcriber",
@@ -127,9 +175,9 @@
     },
     {
       "name": "Shortify",
-      "description": "A high-performance URL shortener built with Next.js 14 & FastAPI. Features Redis caching, real-time analytics, and a modern UI with shadcn/ui. Fully dockerized and production-ready.",
-      "image": "/images/shortify.png",
-      "techStack": ["Next.js", "FastAPI", "Redis", "Docker"],
+      "description": "Modern URL shortener with real-time analytics, Redis caching, and beautiful responsive UI. Built with Next.js 14 & FastAPI, featuring async operations, click tracking, and scalable architecture designed for high traffic.",
+      "image": "/images/shortify-demo.png",
+      "techStack": ["Next.js 14", "FastAPI", "Redis", "MongoDB", "Tailwind CSS", "Shadcn UI", "React Query"],
       "github": "https://github.com/Msparihar/shortify",
       "live": "https://github.com/Msparihar/shortify"
     },

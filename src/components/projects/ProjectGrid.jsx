@@ -3,9 +3,11 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useTheme } from 'next-themes';
 import Image from 'next/image';
-import { ExternalLink, Github, Star, GitFork } from 'lucide-react';
+import { ExternalLink, Github, Star, GitFork, Expand } from 'lucide-react';
 import portfolioData from '@/config/portfolio.json';
 import { SkeletonGrid } from '../ui/SkeletonCard';
+import ProjectModal from './ProjectModal';
+import ProjectModalContent from './ProjectModalContent';
 // Optimized base64 placeholder images to avoid 404s and loading delays
 const placeholderImages = [
   'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAwIiBoZWlnaHQ9IjQwMCIgdmlld0JveD0iMCAwIDYwMCA0MDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI2MDAiIGhlaWdodD0iNDAwIiBmaWxsPSIjMTExODI3Ii8+CjxwYXRoIGQ9Ik0zMDAgMjAwTDM1MCAyNTBIMjUwTDMwMCAyMDBaIiBmaWxsPSIjMzc0MTUxIi8+Cjx0ZXh0IHg9IjMwMCIgeT0iMzAwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSIjNjM3Mzg0IiBmb250LXNpemU9IjE2IiBmb250LWZhbWlseT0ibW9ub3NwYWNlIj5Qcm9qZWN0IEltYWdlPC90ZXh0Pgo8L3N2Zz4K',
@@ -14,7 +16,7 @@ const placeholderImages = [
   'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAwIiBoZWlnaHQ9IjQwMCIgdmlld0JveD0iMCAwIDYwMCA0MDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI2MDAiIGhlaWdodD0iNDAwIiBmaWxsPSIjMTEyNTMzIi8+Cjxwb2x5Z29uIHBvaW50cz0iMzAwLDE1MCAzNTAsMjUwIDI1MCwyNTAiIGZpbGw9IiMzMzU0NjQiLz4KPHR5cGVUIHg9IjMwMCIgeT0iMzAwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSIjNzAz%29YzQiIGZvbnQtc2l6ZT0iMTYiIGZvbnQtZmFtaWx5PSJtb25vc3BhY2UiPlByb2plY3QgSW1hZ2U8L3RleHQ+Cjwvc3ZnPgo='
 ];
 
-const ProjectCard = ({ project, isDark, isPriority = false }) => {
+const ProjectCard = ({ project, isDark, isPriority = false, onExpand }) => {
   // Get a placeholder image based on project name hash
   const getPlaceholderImage = (name) => {
     const hash = name.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
@@ -25,9 +27,10 @@ const ProjectCard = ({ project, isDark, isPriority = false }) => {
   const imageSrc = project.image || getPlaceholderImage(project.name);
 
   return (
-    <div className={`group relative overflow-hidden rounded-xl transition-all duration-300 ${
+    <div className={`group relative overflow-hidden rounded-xl transition-all duration-300 cursor-pointer ${
       isDark ? 'bg-gray-900 hover:bg-gray-800' : 'bg-white hover:bg-gray-50'
-    } border ${isDark ? 'border-gray-800' : 'border-gray-200'} shadow-sm hover:shadow-md`}>
+    } border ${isDark ? 'border-gray-800' : 'border-gray-200'} shadow-sm hover:shadow-md`}
+    onClick={() => onExpand(project)}>
       {/* Project Image with Overlay */}
       <div className="relative h-48 overflow-hidden image-container">
         <div className="absolute inset-0 bg-gradient-to-b from-black/20 to-black/70 z-10"></div>
@@ -43,9 +46,14 @@ const ProjectCard = ({ project, isDark, isPriority = false }) => {
           className="object-cover w-full h-full transition-all duration-700 group-hover:scale-105 fast-image-load"
         />
         <div className="absolute bottom-0 left-0 right-0 p-4 z-20">
-          <h3 className="text-lg font-bold text-white mb-1 group-hover:text-green-400 transition-colors">
-            {project.name}
-          </h3>
+          <div className="flex items-center justify-between">
+            <h3 className="text-lg font-bold text-white mb-1 group-hover:text-green-400 transition-colors">
+              {project.name}
+            </h3>
+            <div className="opacity-0 group-hover:opacity-100 transition-opacity">
+              <Expand size={20} className="text-white" />
+            </div>
+          </div>
         </div>
       </div>
 
@@ -76,13 +84,14 @@ const ProjectCard = ({ project, isDark, isPriority = false }) => {
           <div className="flex space-x-3">
             {project.github && (
               <a
-                href={`https://${project.github}`}
+                href={project.github}
                 target="_blank"
                 rel="noopener noreferrer"
                 className={`inline-flex items-center ${
                   isDark ? 'text-gray-400 hover:text-white' : 'text-gray-500 hover:text-gray-900'
                 }`}
                 aria-label="GitHub"
+                onClick={(e) => e.stopPropagation()}
               >
                 <Github size={16} />
               </a>
@@ -96,6 +105,7 @@ const ProjectCard = ({ project, isDark, isPriority = false }) => {
                   isDark ? 'text-gray-400 hover:text-white' : 'text-gray-500 hover:text-gray-900'
                 }`}
                 aria-label="Live site"
+                onClick={(e) => e.stopPropagation()}
               >
                 <ExternalLink size={16} />
               </a>
@@ -125,6 +135,8 @@ const ProjectGrid = ({ searchQuery = '', activeFilter = 'all' }) => {
   const isDark = theme === 'dark';
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [selectedProject, setSelectedProject] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   // Load projects data
   useEffect(() => {
@@ -170,6 +182,17 @@ const ProjectGrid = ({ searchQuery = '', activeFilter = 'all' }) => {
 
     return filtered;
   }, [projects, searchQuery, activeFilter]);
+
+  // Modal handlers
+  const handleProjectExpand = (project) => {
+    setSelectedProject(project);
+    setIsModalOpen(true);
+  };
+
+  const handleModalClose = () => {
+    setIsModalOpen(false);
+    setSelectedProject(null);
+  };
 
   if (loading) {
     return <SkeletonGrid count={9} type="project" />;
@@ -223,9 +246,17 @@ const ProjectGrid = ({ searchQuery = '', activeFilter = 'all' }) => {
             project={project}
             isDark={isDark}
             isPriority={index < 6} // Priority load first 6 images
+            onExpand={handleProjectExpand}
           />
         ))}
       </div>
+
+      {/* Project Modal */}
+      <ProjectModal isOpen={isModalOpen} onClose={handleModalClose}>
+        {selectedProject && (
+          <ProjectModalContent project={selectedProject} isDark={isDark} />
+        )}
+      </ProjectModal>
     </>
   );
 };
