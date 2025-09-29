@@ -2,12 +2,18 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## Package Manager
+
+This project uses **pnpm** as the package manager. Always use `pnpm` commands instead of `npm`.
+
 ## Development Commands
 
-- **Development server**: `npm run dev` (with Turbopack for faster builds)
-- **Build**: `npm run build`
-- **Start production**: `npm start`
-- **Lint**: `npm run lint`
+- **Development server**: `pnpm run dev` (with Turbopack for faster builds)
+- **Build**: `pnpm run build`
+- **Start production**: `pnpm start`
+- **Lint**: `pnpm run lint`
+- **Install dependencies**: `pnpm install`
+- **Add dependency**: `pnpm add <package-name>`
 
 ## Project Architecture
 
