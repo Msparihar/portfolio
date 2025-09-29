@@ -83,7 +83,7 @@ const ContactInteractive = () => {
             <div className="flex items-center">
               <span className="terminal-prompt text-green-500 mr-2">$</span>
               <span className="text-muted-foreground">Email:</span>
-              <span className="ml-2 text-foreground">manishparihar@example.com</span>
+              <span className="ml-2 text-foreground">manishparihar2020@gmail.com</span>
             </div>
 
             <div className="flex items-center">

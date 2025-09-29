@@ -11,9 +11,22 @@ import {
 } from '@fortawesome/free-brands-svg-icons';
 import GithubContributions from '@/components/GithubContributions';
 import { ClientWrapper } from '@/components/ClientWrapper';
+import { personSchema, websiteSchema, profilePageSchema } from './metadata';
 
 // ISR: Revalidate every 24 hours (86400 seconds)
 export const revalidate = 86400;
+
+// Metadata for home page
+export const metadata = {
+  title: 'Home',
+  description: `${portfolioData.name} - ${portfolioData.title}. ${portfolioData.bio}`,
+  openGraph: {
+    title: `${portfolioData.name} | ${portfolioData.title}`,
+    description: portfolioData.bio,
+    url: 'https://manishsingh.tech',
+    type: 'website'
+  }
+};
 
 // Import shared GitHub contributions function
 import { getGithubContributions } from '@/lib/githubContributions';
@@ -52,6 +65,22 @@ export default async function Home() {
 
   return (
     <ClientWrapper>
+      {/* JSON-LD Structured Data - Person Schema */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(personSchema) }}
+      />
+      {/* JSON-LD Structured Data - Website Schema */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteSchema) }}
+      />
+      {/* JSON-LD Structured Data - Profile Page Schema */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(profilePageSchema) }}
+      />
+
       <main className="min-h-screen bg-gradient-to-b from-background to-background/80 relative overflow-hidden">
         {/* Grid background for the entire page */}
         <div className="absolute inset-0 dark:bg-dot-white/[0.2] bg-dot-black/[0.2] -z-10" />

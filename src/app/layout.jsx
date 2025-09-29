@@ -1,23 +1,95 @@
-"use client";
-
-import { ThemeProvider } from "@/components/theme-provider";
-import { TerminalProvider } from "@/components/TerminalContext";
-import ImagePreloader from "@/components/ImagePreloader";
+import { Providers } from "./providers";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import "./globals.css";
-import { config } from '@fortawesome/fontawesome-svg-core';
 import '@fortawesome/fontawesome-svg-core/styles.css';
+import portfolioData from '@/config/portfolio.json';
 
-// Initialize Font Awesome
-config.autoAddCss = false;
+// Metadata configuration
+export const metadata = {
+  metadataBase: new URL('https://manishsingh.tech'),
+  title: {
+    default: `${portfolioData.name} | ${portfolioData.title}`,
+    template: `%s | ${portfolioData.name}`
+  },
+  description: portfolioData.bio,
+  keywords: [
+    'Full Stack Developer',
+    'AI Engineer',
+    'Machine Learning',
+    'Next.js',
+    'React',
+    'FastAPI',
+    'Python',
+    'JavaScript',
+    'TypeScript',
+    'Computer Vision',
+    'Natural Language Processing',
+    'LLM',
+    'Deep Learning',
+    'Portfolio',
+    portfolioData.name
+  ],
+  authors: [{ name: portfolioData.name, url: 'https://manishsingh.tech' }],
+  creator: portfolioData.name,
+  publisher: portfolioData.name,
+  openGraph: {
+    type: 'website',
+    locale: 'en_US',
+    url: 'https://manishsingh.tech',
+    siteName: `${portfolioData.name} Portfolio`,
+    title: `${portfolioData.name} | ${portfolioData.title}`,
+    description: portfolioData.bio,
+    images: [
+      {
+        url: '/images/og-image.png',
+        width: 1200,
+        height: 630,
+        alt: `${portfolioData.name} - ${portfolioData.title}`
+      }
+    ]
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: `${portfolioData.name} | ${portfolioData.title}`,
+    description: portfolioData.bio,
+    creator: portfolioData.contact.twitter,
+    images: ['/images/og-image.png']
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1
+    }
+  },
+  icons: {
+    icon: '/icons/terminal-favicon.svg',
+    shortcut: '/icons/terminal-favicon.svg',
+    apple: '/icons/terminal-favicon.svg'
+  },
+  manifest: '/manifest.json',
+  verification: {
+    google: 'your-google-site-verification-code'
+  }
+};
+
+export const viewport = {
+  themeColor: [
+    { media: '(prefers-color-scheme: dark)', color: '#000000' },
+    { media: '(prefers-color-scheme: light)', color: '#ffffff' }
+  ],
+  width: 'device-width',
+  initialScale: 1
+};
 
 export default function RootLayout({ children }) {
   return (
     <html lang="en" suppressHydrationWarning className="dark">
       <head>
-        <link rel="icon" href="/icons/terminal-favicon.svg" type="image/svg+xml" />
-        <title>Manish Singh Parihar | Full Stack & AI Engineer</title>
-
         {/* Resource hints for external domains */}
         <link rel="dns-prefetch" href="//github.com" />
         <link rel="dns-prefetch" href="//api.github.com" />
@@ -50,18 +122,7 @@ export default function RootLayout({ children }) {
         <link rel="preload" href="/images/blog-ollama.jpg" as="image" fetchPriority="high" />
       </head>
       <body>
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="dark"
-          enableSystem={false}
-          disableTransitionOnChange
-          storageKey="portfolio-theme"
-        >
-          <TerminalProvider>
-            <ImagePreloader />
-            {children}
-          </TerminalProvider>
-        </ThemeProvider>
+        <Providers>{children}</Providers>
         <SpeedInsights />
       </body>
     </html>

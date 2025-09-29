@@ -43,6 +43,7 @@ const ProjectCard = ({ project, isDark, isPriority = false, onExpand }) => {
           loading={isPriority ? 'eager' : 'eager'} // Changed to eager for all images
           placeholder="blur"
           blurDataURL="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAwIiBoZWlnaHQ9IjQwMCIgdmlld0JveD0iMCAwIDYwMCA0MDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI2MDAiIGhlaWdodD0iNDAwIiBmaWxsPSIjMTExODI3IiBvcGFjaXR5PSIwLjMiLz4KPGFuaW1hdGUgYXR0cmlidXRlTmFtZT0ib3BhY2l0eSIgdmFsdWVzPSIwLjM7MC42OzAuMyIgZHVyPSIxLjVzIiByZXBlYXRDb3VudD0iaW5kZWZpbml0ZSIvPgo8L3N2Zz4K"
+          unoptimized={imageSrc.endsWith('.gif')}
           className="object-cover w-full h-full transition-all duration-700 group-hover:scale-105 fast-image-load"
         />
         <div className="absolute bottom-0 left-0 right-0 p-4 z-20">
