@@ -28,6 +28,106 @@ const TypeWriter = ({ text, delay = 10, className = '' }) => {
   );
 };
 
+const HighlightedTypeWriter = ({ text, delay = 10, className = '' }) => {
+  const [displayText, setDisplayText] = useState('');
+  const [currentIndex, setCurrentIndex] = useState(0);
+
+  // Parse markup tags and create segments
+  const parseMarkup = (text) => {
+    const segments = [];
+    const regex = /\[(\w+)\](.*?)\[\/\1\]/g;
+    let lastIndex = 0;
+    let match;
+
+    while ((match = regex.exec(text)) !== null) {
+      // Add text before the tag
+      if (match.index > lastIndex) {
+        segments.push({
+          text: text.slice(lastIndex, match.index),
+          type: 'normal'
+        });
+      }
+
+      // Add the highlighted segment
+      segments.push({
+        text: match[2],
+        type: match[1] // highlight, accent, tech, etc.
+      });
+
+      lastIndex = regex.lastIndex;
+    }
+
+    // Add remaining text
+    if (lastIndex < text.length) {
+      segments.push({
+        text: text.slice(lastIndex),
+        type: 'normal'
+      });
+    }
+
+    return segments.length > 0 ? segments : [{ text, type: 'normal' }];
+  };
+
+  const segments = parseMarkup(text);
+  const totalLength = segments.reduce((sum, seg) => sum + seg.text.length, 0);
+
+  useEffect(() => {
+    if (currentIndex < totalLength) {
+      const timer = setTimeout(() => {
+        setCurrentIndex(prev => prev + 1);
+      }, delay);
+      return () => clearTimeout(timer);
+    }
+  }, [currentIndex, delay, totalLength]);
+
+  // Build display text with highlighting
+  const renderText = () => {
+    let charCount = 0;
+    const elements = [];
+
+    for (let i = 0; i < segments.length; i++) {
+      const segment = segments[i];
+      const segmentStart = charCount;
+      const segmentEnd = charCount + segment.text.length;
+      const visibleEnd = Math.min(currentIndex, segmentEnd);
+      const visibleText = segment.text.slice(0, Math.max(0, visibleEnd - segmentStart));
+
+      if (visibleText) {
+        const className = getHighlightClass(segment.type);
+        elements.push(
+          <span key={i} className={className}>
+            {visibleText}
+          </span>
+        );
+      }
+
+      charCount = segmentEnd;
+    }
+
+    return elements;
+  };
+
+  const getHighlightClass = (type) => {
+    switch (type) {
+      case 'highlight': return 'text-green-400 font-bold';
+      case 'accent': return 'text-cyan-400 font-semibold';
+      case 'tech': return 'text-yellow-400';
+      case 'link': return 'text-blue-400 underline';
+      case 'command': return 'text-purple-400';
+      default: return '';
+    }
+  };
+
+  return (
+    <span className={`${className} ${currentIndex < totalLength ? 'typing-animation' : ''}`}>
+      {renderText()}
+      {currentIndex < totalLength && (
+        <span className="terminal-cursor inline-block w-2 h-4 -mb-1 bg-green-500/80 ml-1"></span>
+      )}
+    </span>
+  );
+};
+
 const MultiLineTypeWriter = ({ lines, delay = 15, lineDelay = 200, className = '' }) => {
   const [currentLineIndex, setCurrentLineIndex] = useState(0);
   const [displayedLines, setDisplayedLines] = useState([]);
@@ -69,7 +169,7 @@ const MultiLineTypeWriter = ({ lines, delay = 15, lineDelay = 200, className = '
     <div className={className}>
       {displayedLines.map((line, index) => (
         <div key={index}>
-          {line}
+          <HighlightedTypeWriter text={line} delay={0} />
           {index === currentLineIndex && !isComplete && (
             <span className="terminal-cursor inline-block w-2 h-4 -mb-1 bg-green-500/80 ml-1"></span>
           )}
@@ -90,11 +190,11 @@ const Terminal = () => {
       command: 'whoami',
       output: null, // Will be handled by multiLineOutput
       multiLineOutput: [
-        `Welcome! I'm ${portfolioData.name}`,
-        portfolioData.title,
-        portfolioData.bio,
+        `Welcome! I'm [highlight]${portfolioData.name}[/highlight]`,
+        `[accent]${portfolioData.title}[/accent]`,
+        `A versatile engineer specializing in both [tech]Full Stack Development[/tech] and [tech]Artificial Intelligence[/tech]. Experienced in building modern web applications with [tech]Next.js[/tech] and [tech]FastAPI[/tech], as well as developing AI solutions including [tech]computer vision systems[/tech], [tech]language models[/tech], and [tech]intelligent document processing systems[/tech]. Passionate about creating innovative solutions that combine cutting-edge AI with robust web technologies.`,
         '',
-        "Type 'help' to see available commands."
+        "Type [command]'help'[/command] to see available commands."
       ]
     }
   ]);
@@ -148,19 +248,19 @@ const Terminal = () => {
     help: {
       description: 'Show available commands',
       execute: () => `Available commands:
-- whoami: About me
-- projects: View my projects
-- exp | experience: View my work experience
-- edu | education: View my education
-- contact: Get my contact information
-- blog: View my blog
-- github: View GitHub contributions
-- cd [directory]: Navigate to a page (e.g., cd projects, cd contact, cd blog)
-- clear: Clear the terminal
-- echo [text]: Display text
-- date: Show current date and time
-- ls | dir: List available sections
-- help: Show this help message`
+- [command]whoami[/command]: About me
+- [command]projects[/command]: View my projects
+- [command]exp[/command] | [command]experience[/command]: View my work experience
+- [command]edu[/command] | [command]education[/command]: View my education
+- [command]contact[/command]: Get my contact information
+- [command]blog[/command]: View my blog
+- [command]github[/command]: View GitHub contributions
+- [command]cd[/command] [accent][directory][/accent]: Navigate to a page (e.g., cd projects, cd contact, cd blog)
+- [command]clear[/command]: Clear the terminal
+- [command]echo[/command] [accent][text][/accent]: Display text
+- [command]date[/command]: Show current date and time
+- [command]ls[/command] | [command]dir[/command]: List available sections
+- [command]help[/command]: Show this help message`
     },
     clear: {
       description: 'Clear the terminal',
@@ -177,7 +277,7 @@ const Terminal = () => {
           setInputEnabled(false);
 
           // Faster navigation with immediate redirect and visual feedback
-          const output = `Navigating to projects page...`;
+          const output = `[accent]Navigating to[/accent] [highlight]projects[/highlight] [accent]page...[/accent]`;
           setTimeout(() => {
             router.push('/projects');
           }, 400); // Reduced from 1500ms to 400ms
@@ -195,7 +295,7 @@ const Terminal = () => {
           setInputEnabled(false);
 
           // Faster navigation with immediate redirect and visual feedback
-          const output = `Navigating to contact page...`;
+          const output = `[accent]Navigating to[/accent] [highlight]contact[/highlight] [accent]page...[/accent]`;
           setTimeout(() => {
             router.push('/contact');
           }, 400);
@@ -212,7 +312,7 @@ const Terminal = () => {
           setIsNavigating(true);
           setInputEnabled(false);
 
-          const output = `Navigating to blog page...`;
+          const output = `[accent]Navigating to[/accent] [highlight]blog[/highlight] [accent]page...[/accent]`;
           setTimeout(() => {
             router.push('/blog');
           }, 400);
@@ -236,9 +336,9 @@ const Terminal = () => {
     },
     whoami: {
       description: 'Display user information',
-      execute: () => `${portfolioData.name}
-${portfolioData.title}
-${portfolioData.bio}`
+      execute: () => `[highlight]${portfolioData.name}[/highlight]
+[accent]${portfolioData.title}[/accent]
+A versatile engineer specializing in both [tech]Full Stack Development[/tech] and [tech]Artificial Intelligence[/tech]. Experienced in building modern web applications with [tech]Next.js[/tech] and [tech]FastAPI[/tech], as well as developing AI solutions including [tech]computer vision systems[/tech], [tech]language models[/tech], and [tech]intelligent document processing systems[/tech]. Passionate about creating innovative solutions that combine cutting-edge AI with robust web technologies.`
     },
     date: {
       description: 'Display current date and time',
@@ -508,7 +608,7 @@ Use the corresponding command to navigate to each section.`
                 <div className="flex">
                   <span className="text-green-500/80 mr-2">&gt;</span>
                   <div className="flex-1">
-                    <TypeWriter text={entry.output} delay={7} />
+                    <HighlightedTypeWriter text={entry.output} delay={7} />
                     {entry.loading && (
                       <div className="mt-4">
                         <TerminalLoader color={theme === 'light' ? 'darkGreen' : 'green'} />
