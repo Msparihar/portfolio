@@ -5,11 +5,13 @@
   "type": "module",
   "scripts": {
     "dev": "next dev --turbopack",
+    "prebuild": "node scripts/generate-fallback-data.js",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
     "sync-projects": "node scripts/sync-github-projects.js",
-    "sync-projects:dry": "node scripts/sync-github-projects.js --dry-run --verbose"
+    "sync-projects:dry": "node scripts/sync-github-projects.js --dry-run --verbose",
+    "generate-fallback": "node scripts/generate-fallback-data.js"
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^6.7.2",

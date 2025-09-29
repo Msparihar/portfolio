@@ -15,23 +15,14 @@ import { ClientWrapper } from '@/components/ClientWrapper';
 // ISR: Revalidate every 24 hours (86400 seconds)
 export const revalidate = 86400;
 
-// Fetch GitHub contributions data server-side
-async function getGithubContributions() {
+// Import shared GitHub contributions function
+import { getGithubContributions } from '@/lib/githubContributions';
+
+// Fetch GitHub contributions data server-side (no HTTP call, direct function call)
+async function fetchGithubContributions() {
   try {
     const githubUsername = portfolioData.githubUsername || 'Msparihar';
-    const baseUrl = process.env.VERCEL_URL
-      ? `https://${process.env.VERCEL_URL}`
-      : 'http://localhost:3000';
-
-    const response = await fetch(`${baseUrl}/api/github-contributions?username=${githubUsername}`, {
-      next: { revalidate: 86400 } // Cache for 24 hours
-    });
-
-    if (!response.ok) {
-      throw new Error(`GitHub API error: ${response.status}`);
-    }
-
-    const result = await response.json();
+    const result = await getGithubContributions(githubUsername);
     return result;
   } catch (error) {
     console.error('Error fetching GitHub contributions:', error);
@@ -57,7 +48,7 @@ const NavLink = ({ path, label, isActive = false }) => (
 
 export default async function Home() {
   // Fetch GitHub contributions data server-side for ISR
-  const githubData = await getGithubContributions();
+  const githubData = await fetchGithubContributions();
 
   return (
     <ClientWrapper>
