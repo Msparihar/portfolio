@@ -3,6 +3,27 @@ import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import ContactInteractive from "@/components/contact/ContactInteractive";
 import { CompactTerminal } from "@/components/CompactTerminal";
+import portfolioData from '@/config/portfolio.json';
+
+// Metadata for contact page
+export const metadata = {
+  title: 'Contact',
+  description: `Get in touch with ${portfolioData.name}. Available for collaboration on AI/ML projects, full-stack development, and consulting opportunities. Email: ${portfolioData.contact.email}`,
+  openGraph: {
+    title: `Contact | ${portfolioData.name}`,
+    description: `Get in touch with ${portfolioData.name} for AI, machine learning, and full-stack development opportunities`,
+    url: 'https://manishsingh.tech/contact',
+    type: 'website'
+  },
+  keywords: [
+    'Contact',
+    'Hire AI Engineer',
+    'Full Stack Developer Contact',
+    'Machine Learning Consultant',
+    'AI Collaboration',
+    'Software Development Services'
+  ]
+};
 
 // Static generation - no client-side state needed
 const ContactPage = () => {

@@ -74,7 +74,7 @@
     {
       "name": "ReddiChat",
       "description": "An intelligent AI chatbot that combines advanced language models with real-time Reddit insights. Features Google OAuth authentication, persistent chat history, and smart tool selection for enriched conversations with community perspectives from Reddit discussions.",
-      "image": "/images/reddichat.png",
+      "image": "/images/reddichat-hero.png",
       "techStack": [
         "React",
         "FastAPI",

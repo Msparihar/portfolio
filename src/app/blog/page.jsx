@@ -3,6 +3,30 @@ import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import BlogInteractive from "@/components/blog/BlogInteractive";
 import { CompactTerminal } from "@/components/CompactTerminal";
+import portfolioData from '@/config/portfolio.json';
+
+// Metadata for blog page
+export const metadata = {
+  title: 'Blog',
+  description: `Read technical articles and tutorials by ${portfolioData.name} on AI, machine learning, LLMs, RAG systems, computer vision, and full-stack development. Learn about fine-tuning models, evaluating AI systems, and building intelligent applications.`,
+  openGraph: {
+    title: `Blog | ${portfolioData.name}`,
+    description: `Technical blog covering AI, machine learning, LLMs, and full-stack development by ${portfolioData.name}`,
+    url: 'https://manishsingh.tech/blog',
+    type: 'website'
+  },
+  keywords: [
+    'AI Blog',
+    'Machine Learning Blog',
+    'LLM Tutorials',
+    'RAG Systems',
+    'Computer Vision Tutorials',
+    'Fine-tuning LLMs',
+    'Technical Blog',
+    'AI Engineering',
+    'Deep Learning'
+  ]
+};
 
 // Static generation - no client-side state needed
 const BlogPage = () => {

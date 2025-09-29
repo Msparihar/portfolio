@@ -196,6 +196,7 @@ const ProjectModalContent = ({ project, isDark }) => {
           fill
           className={`transition-all duration-300 ${getObjectFit()}`}
           priority
+          unoptimized={project.image?.endsWith('.gif')}
           onLoad={handleImageLoad}
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
@@ -220,6 +221,19 @@ const ProjectModalContent = ({ project, isDark }) => {
             </div>
           </div>
         </div>
+        {/* Live Demo Button Overlay */}
+        {project.live && (
+          <a
+            href={project.live}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="absolute bottom-6 right-6 z-30 inline-flex items-center gap-2 px-4 py-2 rounded-lg font-medium text-white bg-green-600 hover:bg-green-700 transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <ExternalLink size={18} />
+            <span className="hidden sm:inline">Live Demo</span>
+          </a>
+        )}
       </motion.div>
 
       {/* Content */}
