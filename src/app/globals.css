@@ -56,10 +56,13 @@
   body {
     @apply bg-background text-foreground font-mono;
     font-family: var(--font-ibm-plex-mono), var(--font-fira-code), monospace;
-    /* Optimize font rendering */
+    /* Optimize font rendering and prevent layout shifts */
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
+    font-synthesis: none;
+    /* Prevent font-related layout shifts during loading */
+    visibility: visible;
   }
 
   /* Optimize image rendering */
@@ -69,9 +72,10 @@
     aspect-ratio: attr(width) / attr(height);
   }
 
-  /* Critical CSS for terminal */
+  /* Critical CSS for terminal - Enhanced containment */
   .terminal-container {
     contain: layout style paint;
+    content-visibility: auto;
   }
 
   /* Optimize all interactive elements */
@@ -83,15 +87,38 @@
   [class*="grid"] {
     contain: layout style;
   }
+
+  /* Input field stabilization to prevent shifts */
+  input {
+    contain: layout style;
+  }
+
+  /* TypeWriter component containment */
+  .typing-animation,
+  [class*="TypeWriter"] {
+    contain: layout;
+  }
 }
 
 @layer components {
   .terminal-container {
-    @apply p-4 md:p-6 rounded-lg text-green-500 shadow-lg;
-    background-color: rgba(0, 0, 0, 0.95);
-    box-shadow: 0 0 30px rgba(0, 255, 0, 0.05);
+    @apply p-4 md:p-6 rounded-lg shadow-lg;
     /* Optimize repaints */
     will-change: auto;
+  }
+
+  /* Dark mode terminal styling */
+  .dark .terminal-container {
+    @apply text-green-500;
+    background-color: rgba(0, 0, 0, 0.95);
+    box-shadow: 0 0 30px rgba(0, 255, 0, 0.05);
+  }
+
+  /* Light mode terminal styling */
+  .terminal-container:not(.dark *) {
+    @apply text-green-800;
+    background-color: rgba(255, 255, 255, 0.95);
+    box-shadow: 0 0 30px rgba(0, 100, 0, 0.08);
   }
 
   .terminal-nav {
@@ -110,7 +137,12 @@
   }
 
   .command-prompt {
-    @apply text-green-500/80;
+    @apply text-green-500/80 dark:text-green-500/80;
+  }
+
+  /* Light mode command prompt */
+  :not(.dark) .command-prompt {
+    @apply text-green-700/90;
   }
 
   .terminal-link {
@@ -163,10 +195,16 @@
     @apply flex-grow h-[1px] bg-border/30;
   }
 
-  /* GitHub contributions specific optimizations */
+  /* GitHub contributions specific optimizations - Enhanced containment */
   .github-contributions-container {
-    contain: layout style;
+    contain: layout style paint;
     content-visibility: auto;
+  }
+
+  /* GitHub calendar grid stabilization */
+  .github-calendar {
+    contain: layout size;
+    /* Prevent any layout shifts from the calendar grid */
   }
 
   /* Optimize grid backgrounds */
