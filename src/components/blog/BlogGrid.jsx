@@ -48,11 +48,12 @@ const BlogCard = ({ post, isDark, isPriority = false }) => {
           alt={post.title}
           width={600}
           height={400}
+          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
           priority={isPriority}
-          loading={isPriority ? 'eager' : 'eager'} // Changed to eager for all images
+          loading={isPriority ? undefined : 'lazy'}
           placeholder="blur"
-          blurDataURL="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAwIiBoZWlnaHQ9IjQwMCIgdmlld0JveD0iMCAwIDYwMCA0MDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI2MDAiIGhlaWdodD0iNDAwIiBmaWxsPSIjMTExODI3IiBvcGFjaXR5PSIwLjMiLz4KPGFuaW1hdGUgYXR0cmlidXRlTmFtZT0ib3BhY2l0eSIgdmFsdWVzPSIwLjM7MC42OzAuMyIgZHVyPSIxLjVzIiByZXBlYXRDb3VudD0iaW5kZWZpbml0ZSIvPgo8L3N2Zz4K"
-          className="object-cover w-full h-full transition-all duration-700 group-hover:scale-105 fast-image-load"
+          blurDataURL="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAwIiBoZWlnaHQ9IjQwMCIgdmlld0JveD0iMCAwIDYwMCA0MDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI2MDAiIGhlaWdodD0iNDAwIiBmaWxsPSIjMTExODI3IiBvcGFjaXR5PSIwLjMiLz4KPC9zdmc+Cg=="
+          className="object-cover w-full h-full transition-all duration-700 group-hover:scale-105"
         />
         <div className="absolute bottom-0 left-0 right-0 p-4 z-20">
           <h3 className="text-lg font-bold text-white mb-1 group-hover:text-green-400 transition-colors">
@@ -210,7 +211,7 @@ const BlogGrid = ({ searchQuery = '', activeFilter = 'all' }) => {
             key={index}
             post={post}
             isDark={isDark}
-            isPriority={index < 6} // Priority load first 6 images
+            isPriority={index < 3} // Priority load first 3 images
           />
         ))}
       </div>

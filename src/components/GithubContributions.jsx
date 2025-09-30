@@ -8,7 +8,7 @@ const GithubContributions = ({ githubData }) => {
   // Handle error state (only if no fallback data)
   if (githubData?.error && !githubData?.fallback) {
     return (
-      <div className="github-contributions-container terminal-container p-6 rounded-lg shadow-lg">
+      <div className="github-contributions-container terminal-container p-6 rounded-lg shadow-lg min-h-[400px]">
         <h2 className="text-2xl font-bold mb-6 text-center terminal-title">
           <span className="terminal-prompt">$</span> My GitHub Contributions
         </h2>

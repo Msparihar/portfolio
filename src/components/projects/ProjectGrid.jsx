@@ -3,11 +3,14 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useTheme } from 'next-themes';
 import Image from 'next/image';
+import dynamic from 'next/dynamic';
 import { ExternalLink, Github, Star, GitFork, Expand } from 'lucide-react';
 import portfolioData from '@/config/portfolio.json';
 import { SkeletonGrid } from '../ui/SkeletonCard';
-import ProjectModal from './ProjectModal';
-import ProjectModalContent from './ProjectModalContent';
+
+// Lazy load modal components since they're only used on interaction
+const ProjectModal = dynamic(() => import('./ProjectModal'), { ssr: false });
+const ProjectModalContent = dynamic(() => import('./ProjectModalContent'), { ssr: false });
 // Optimized base64 placeholder images to avoid 404s and loading delays
 const placeholderImages = [
   'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAwIiBoZWlnaHQ9IjQwMCIgdmlld0JveD0iMCAwIDYwMCA0MDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI2MDAiIGhlaWdodD0iNDAwIiBmaWxsPSIjMTExODI3Ii8+CjxwYXRoIGQ9Ik0zMDAgMjAwTDM1MCAyNTBIMjUwTDMwMCAyMDBaIiBmaWxsPSIjMzc0MTUxIi8+Cjx0ZXh0IHg9IjMwMCIgeT0iMzAwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSIjNjM3Mzg0IiBmb250LXNpemU9IjE2IiBmb250LWZhbWlseT0ibW9ub3NwYWNlIj5Qcm9qZWN0IEltYWdlPC90ZXh0Pgo8L3N2Zz4K',
@@ -39,12 +42,13 @@ const ProjectCard = ({ project, isDark, isPriority = false, onExpand }) => {
           alt={project.name}
           width={600}
           height={400}
+          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
           priority={isPriority}
-          loading={isPriority ? 'eager' : 'eager'} // Changed to eager for all images
+          loading={isPriority ? undefined : 'lazy'}
           placeholder="blur"
-          blurDataURL="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAwIiBoZWlnaHQ9IjQwMCIgdmlld0JveD0iMCAwIDYwMCA0MDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI2MDAiIGhlaWdodD0iNDAwIiBmaWxsPSIjMTExODI3IiBvcGFjaXR5PSIwLjMiLz4KPGFuaW1hdGUgYXR0cmlidXRlTmFtZT0ib3BhY2l0eSIgdmFsdWVzPSIwLjM7MC42OzAuMyIgZHVyPSIxLjVzIiByZXBlYXRDb3VudD0iaW5kZWZpbml0ZSIvPgo8L3N2Zz4K"
+          blurDataURL="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAwIiBoZWlnaHQ9IjQwMCIgdmlld0JveD0iMCAwIDYwMCA0MDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI2MDAiIGhlaWdodD0iNDAwIiBmaWxsPSIjMTExODI3IiBvcGFjaXR5PSIwLjMiLz4KPC9zdmc+Cg=="
           unoptimized={imageSrc.endsWith('.gif')}
-          className="object-cover w-full h-full transition-all duration-700 group-hover:scale-105 fast-image-load"
+          className="object-cover w-full h-full transition-all duration-700 group-hover:scale-105"
         />
         <div className="absolute bottom-0 left-0 right-0 p-4 z-20">
           <div className="flex items-center justify-between">
@@ -246,7 +250,7 @@ const ProjectGrid = ({ searchQuery = '', activeFilter = 'all' }) => {
             key={index}
             project={project}
             isDark={isDark}
-            isPriority={index < 6} // Priority load first 6 images
+            isPriority={index < 3} // Priority load first 3 images
             onExpand={handleProjectExpand}
           />
         ))}
