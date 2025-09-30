@@ -12,5 +12,15 @@
   },
   "observability": {
     "enabled": true
-  }
+  },
+  "routes": [
+    {
+      "pattern": "manishsingh.tech",
+      "custom_domain": true
+    },
+    {
+      "pattern": "www.manishsingh.tech",
+      "custom_domain": true
+    }
+  ]
 }
