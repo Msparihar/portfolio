@@ -74,60 +74,61 @@ const nextConfig = {
     removeConsole: process.env.NODE_ENV === "production",
   },
 
-  // Enable webpack optimizations
-  webpack: (config, { isServer }) => {
-    // Optimize bundle size
-    config.optimization = {
-      ...config.optimization,
-      moduleIds: "deterministic",
-      runtimeChunk: "single",
-      splitChunks: {
-        chunks: "all",
-        cacheGroups: {
-          default: false,
-          vendors: false,
-          framework: {
-            name: "framework",
-            chunks: "all",
-            test: /(?<!node_modules.*)[\\/]node_modules[\\/](react|react-dom|scheduler|prop-types|use-sync-external-store)[\\/]/,
-            priority: 40,
-            enforce: true,
-          },
-          lib: {
-            test(module) {
-              return (
-                module.size() > 160000 &&
-                /node_modules[/\\]/.test(module.identifier())
-              );
-            },
-            name(module) {
-              const hash = crypto.createHash("sha1");
-              hash.update(module.identifier());
-              return hash.digest("hex").substring(0, 8);
-            },
-            priority: 30,
-            minChunks: 1,
-            reuseExistingChunk: true,
-          },
-          commons: {
-            name: "commons",
-            minChunks: 2,
-            priority: 20,
-          },
-          shared: {
-            name(module, chunks) {
-              return chunks.map((chunk) => chunk.name).join("~");
-            },
-            priority: 10,
-            minChunks: 2,
-            reuseExistingChunk: true,
-          },
-        },
-      },
-    };
+  // TEMPORARILY DISABLED: Custom webpack config may conflict with OpenNext bundling
+  // Re-enable after confirming Cloudflare deployment works
+  // webpack: (config, { isServer }) => {
+  //   // Optimize bundle size
+  //   config.optimization = {
+  //     ...config.optimization,
+  //     moduleIds: "deterministic",
+  //     runtimeChunk: "single",
+  //     splitChunks: {
+  //       chunks: "all",
+  //       cacheGroups: {
+  //         default: false,
+  //         vendors: false,
+  //         framework: {
+  //           name: "framework",
+  //           chunks: "all",
+  //           test: /(?<!node_modules.*)[\\/]node_modules[\\/](react|react-dom|scheduler|prop-types|use-sync-external-store)[\\/]/,
+  //           priority: 40,
+  //           enforce: true,
+  //         },
+  //         lib: {
+  //           test(module) {
+  //             return (
+  //               module.size() > 160000 &&
+  //               /node_modules[/\\]/.test(module.identifier())
+  //             );
+  //           },
+  //           name(module) {
+  //             const hash = crypto.createHash("sha1");
+  //             hash.update(module.identifier());
+  //             return hash.digest("hex").substring(0, 8);
+  //           },
+  //           priority: 30,
+  //           minChunks: 1,
+  //           reuseExistingChunk: true,
+  //         },
+  //         commons: {
+  //           name: "commons",
+  //           minChunks: 2,
+  //           priority: 20,
+  //         },
+  //         shared: {
+  //           name(module, chunks) {
+  //             return chunks.map((chunk) => chunk.name).join("~");
+  //           },
+  //           priority: 10,
+  //           minChunks: 2,
+  //           reuseExistingChunk: true,
+  //         },
+  //       },
+  //     },
+  //   };
 
-    return config;
-  },
+  //   return config;
+  // },
 };
 
 export default nextConfig;
