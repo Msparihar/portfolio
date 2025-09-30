@@ -1,31 +1,21 @@
+"use client";
+
 import React from "react";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
-import ContactInteractive from "@/components/contact/ContactInteractive";
-import { CompactTerminal } from "@/components/CompactTerminal";
+import dynamic from 'next/dynamic';
 import portfolioData from '@/config/portfolio.json';
 
-// Metadata for contact page
-export const metadata = {
-  title: 'Contact',
-  description: `Get in touch with ${portfolioData.name}. Available for collaboration on AI/ML projects, full-stack development, and consulting opportunities. Email: ${portfolioData.contact.email}`,
-  openGraph: {
-    title: `Contact | ${portfolioData.name}`,
-    description: `Get in touch with ${portfolioData.name} for AI, machine learning, and full-stack development opportunities`,
-    url: 'https://manishsingh.tech/contact',
-    type: 'website'
-  },
-  keywords: [
-    'Contact',
-    'Hire AI Engineer',
-    'Full Stack Developer Contact',
-    'Machine Learning Consultant',
-    'AI Collaboration',
-    'Software Development Services'
-  ]
-};
+// Dynamic imports for better performance
+const ContactInteractive = dynamic(() => import("@/components/contact/ContactInteractive"), {
+  ssr: false,
+  loading: () => <div className="text-center py-8 text-muted-foreground">Loading contact form...</div>
+});
+const CompactTerminal = dynamic(() => import("@/components/CompactTerminal").then(mod => ({ default: mod.CompactTerminal })), {
+  ssr: false
+});
 
-// Static generation - no client-side state needed
+// Note: Metadata moved to layout for client component compatibility
 const ContactPage = () => {
   return (
     <div className="min-h-screen bg-gradient-to-b from-background to-background/80 relative overflow-hidden">
