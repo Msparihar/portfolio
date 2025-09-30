@@ -404,7 +404,7 @@ export const Terminal = () => {
           ))}
 
           {/* Terminal input - positioned right after the last output */}
-          <form onSubmit={handleSubmit} className="flex items-center">
+          <form onSubmit={handleSubmit} className="flex items-center" style={{ minHeight: '24px' }}>
             <span className="terminal-prompt text-green-500 mr-2">$</span>
             <input
               ref={inputRef}
@@ -417,7 +417,8 @@ export const Terminal = () => {
               style={{
                 color: theme === 'dark' ? 'hsl(0, 0%, 98%)' : 'hsl(0, 0%, 3.9%)',
                 position: 'relative',
-                zIndex: 15
+                zIndex: 15,
+                minHeight: '20px'
               }}
               placeholder={inputEnabled ? "Type a command..." : "Processing..."}
               autoComplete="off"

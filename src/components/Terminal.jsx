@@ -62,11 +62,11 @@ const HighlightedTypeWriter = ({ text, delay = 3, className = '' }) => {
 
   const getHighlightClass = (type) => {
     switch (type) {
-      case 'highlight': return 'text-green-400 font-bold';
-      case 'accent': return 'text-cyan-400 font-semibold';
-      case 'tech': return 'text-yellow-400';
-      case 'link': return 'text-blue-400 underline';
-      case 'command': return 'text-purple-400';
+      case 'highlight': return 'text-green-600 dark:text-green-400 font-bold';
+      case 'accent': return 'text-cyan-700 dark:text-cyan-400 font-semibold';
+      case 'tech': return 'text-yellow-700 dark:text-yellow-400';
+      case 'link': return 'text-blue-600 dark:text-blue-400 underline';
+      case 'command': return 'text-purple-600 dark:text-purple-400';
       default: return '';
     }
   };
@@ -443,42 +443,50 @@ Use the corresponding command to navigate to each section.`
   return (
     <div className="relative border border-border/30 rounded-lg overflow-hidden">
       {/* Terminal header */}
-      <div className="bg-black/90 dark:bg-terminal-black border-b border-border/20 px-4 py-2 flex items-center">
+      <div className="bg-white/95 dark:bg-black/90 border-b border-border/20 px-4 py-2 flex items-center">
         <div className="flex space-x-2">
           <div className="w-3 h-3 rounded-full bg-red-500/80"></div>
           <div className="w-3 h-3 rounded-full bg-yellow-500/80"></div>
           <div className="w-3 h-3 rounded-full bg-green-500/80"></div>
         </div>
-        <div className="flex items-center justify-center text-xs text-green-500/80 dark:text-white/80 flex-1">
+        <div className="flex items-center justify-center text-xs text-green-800 dark:text-green-500/80 flex-1">
           <TerminalLogo size={18} className="mr-2" />
           {portfolioData.name} @ portfolio
         </div>
       </div>
 
       {/* Grid background */}
-      <div className="absolute inset-0 top-9 bg-grid-small-white/[0.1] bg-black/95 dark:bg-terminal-black" />
+      <div className="absolute inset-0 top-9 bg-grid-small-black/[0.1] dark:bg-grid-small-white/[0.1] bg-white/95 dark:bg-black/95" />
 
       {/* Radial gradient for fading effect */}
-      <div className="absolute inset-0 top-9 bg-gradient-to-t from-black/20 via-black/5 to-transparent" />
+      <div className="absolute inset-0 top-9 bg-gradient-to-t from-white/20 via-white/5 to-transparent dark:from-black/20 dark:via-black/5 dark:to-transparent" />
 
       {/* Scanline effect - disabled on mobile */}
       <div
         className="hidden md:block absolute inset-0 top-9 bg-scanline pointer-events-none opacity-10"
         style={{
-          backgroundImage: `repeating-linear-gradient(
-            0deg,
-            rgba(0, 150, 0, 0.05),
-            rgba(0, 150, 0, 0.05) 1px,
-            transparent 1px,
-            transparent 2px
-          )`,
+          backgroundImage: theme === 'dark'
+            ? `repeating-linear-gradient(
+                0deg,
+                rgba(0, 150, 0, 0.05),
+                rgba(0, 150, 0, 0.05) 1px,
+                transparent 1px,
+                transparent 2px
+              )`
+            : `repeating-linear-gradient(
+                0deg,
+                rgba(0, 100, 0, 0.03),
+                rgba(0, 100, 0, 0.03) 1px,
+                transparent 1px,
+                transparent 2px
+              )`,
           backgroundSize: '100% 4px',
           animation: 'scanline 10s linear infinite'
         }}
       />
 
       {/* CRT flicker effect - disabled on mobile */}
-      <div className="hidden md:block absolute inset-0 top-9 pointer-events-none bg-white/5 opacity-0 animate-[terminal-flicker_5s_ease-in-out_infinite]"></div>
+      <div className="hidden md:block absolute inset-0 top-9 pointer-events-none bg-black/5 dark:bg-white/5 opacity-0 animate-[terminal-flicker_5s_ease-in-out_infinite]"></div>
 
       {/* Main terminal content */}
       <div
@@ -490,13 +498,13 @@ Use the corresponding command to navigate to each section.`
         {history.map((entry, index) => (
           <div key={index} className="mb-4">
             <div className="flex">
-              <span className="text-green-500/80 mr-2">$</span>
+              <span className="text-green-700/90 dark:text-green-500/80 mr-2">$</span>
               <TypeWriter text={entry.command} />
             </div>
             {entry.multiLineOutput && (
               <div className="command-output mt-2">
                 <div className="flex">
-                  <span className="text-green-500/80 mr-2">&gt;</span>
+                  <span className="text-green-700/90 dark:text-green-500/80 mr-2">&gt;</span>
                   <div className="flex-1">
                     <MultiLineTypeWriter lines={entry.multiLineOutput} />
                   </div>
@@ -506,7 +514,7 @@ Use the corresponding command to navigate to each section.`
             {entry.output && (
               <div className="command-output whitespace-pre-line mt-2">
                 <div className="flex">
-                  <span className="text-green-500/80 mr-2">&gt;</span>
+                  <span className="text-green-700/90 dark:text-green-500/80 mr-2">&gt;</span>
                   <div className="flex-1">
                     <HighlightedTypeWriter text={entry.output} />
                     {entry.loading && (
@@ -522,9 +530,9 @@ Use the corresponding command to navigate to each section.`
         ))}
 
         {/* Terminal Input - positioned right after the last output */}
-        <div className="flex items-center">
-          <span className="text-green-500/80 mr-2">$</span>
-          <div className="flex-1 relative">
+        <div className="flex items-center" style={{ minHeight: '24px' }}>
+          <span className="text-green-700/90 dark:text-green-500/80 mr-2">$</span>
+          <div className="flex-1 relative" style={{ minHeight: '20px' }}>
             {mounted && (
               <input
                 ref={inputRef}
@@ -539,12 +547,13 @@ Use the corresponding command to navigate to each section.`
                 autoComplete="off"
                 name="terminal-input"
                 suppressHydrationWarning
-                style={{ zIndex: 10, color: 'transparent' }}
+                style={{ zIndex: 10, color: 'transparent', height: '20px' }}
               />
             )}
             {!mounted && (
-              <span className="inline-block" suppressHydrationWarning>
-                {/* placeholder during SSR to avoid mismatches */}
+              <span className="inline-block" suppressHydrationWarning style={{ height: '20px', visibility: 'hidden' }}>
+                {/* placeholder during SSR to avoid mismatches - reserve space */}
+                &nbsp;
               </span>
             )}
             <span
@@ -554,11 +563,12 @@ Use the corresponding command to navigate to each section.`
                 fontFamily: 'inherit',
                 fontSize: 'inherit',
                 zIndex: 15,
-                position: 'relative'
+                position: 'relative',
+                minHeight: '20px'
               }}
             >
               {input}
-              <span className="inline-block w-2 h-4 -mb-1 bg-green-500/80" style={{
+              <span className="inline-block w-2 h-4 -mb-1 bg-green-700/90 dark:bg-green-500/80" style={{
                 animation: 'terminal-blink 1s step-end infinite'
               }}></span>
             </span>

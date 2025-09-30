@@ -1,0 +1,21 @@
+{
+  "name": "Manish Singh - Full Stack & AI Engineer",
+  "short_name": "Manish Singh",
+  "description": "Full Stack Developer and AI Engineer specializing in Machine Learning, Computer Vision, and modern web technologies",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#000000",
+  "theme_color": "#000000",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/icons/terminal-favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ],
+  "categories": ["portfolio", "developer", "technology"],
+  "lang": "en",
+  "dir": "ltr"
+}

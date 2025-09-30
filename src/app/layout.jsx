@@ -1,5 +1,4 @@
 import { Providers } from "./providers";
-import { SpeedInsights } from "@vercel/speed-insights/next";
 import { IBM_Plex_Mono, Fira_Code } from 'next/font/google';
 import "./globals.css";
 import { config } from '@fortawesome/fontawesome-svg-core';
@@ -9,21 +8,23 @@ import portfolioData from '@/config/portfolio.json';
 // Prevent FontAwesome from adding its CSS since we import it manually
 config.autoAddCss = false;
 
-// Optimize font loading with next/font
+// Optimize font loading with next/font - Use 'block' to prevent FOUT and layout shifts
 const ibmPlexMono = IBM_Plex_Mono({
   weight: ['400', '600'], // Reduced from 4 to 2 weights
   subsets: ['latin'],
   variable: '--font-ibm-plex-mono',
-  display: 'swap',
+  display: 'block', // Changed from 'swap' to 'block' to prevent FOUT
   preload: true,
+  adjustFontFallback: true, // Automatically adjust fallback font metrics
 });
 
 const firaCode = Fira_Code({
   weight: ['400', '500'], // Reduced from 5 to 2 weights
   subsets: ['latin'],
   variable: '--font-fira-code',
-  display: 'optional', // Use optional for secondary font
+  display: 'block', // Changed from 'optional' to 'block' for consistency
   preload: false,
+  adjustFontFallback: true, // Automatically adjust fallback font metrics
 });
 
 // Metadata configuration
@@ -119,7 +120,6 @@ export default function RootLayout({ children }) {
       </head>
       <body>
         <Providers>{children}</Providers>
-        <SpeedInsights />
       </body>
     </html>
   );

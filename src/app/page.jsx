@@ -123,7 +123,7 @@ export default async function Home() {
           </div>
 
           {/* GitHub Contributions Section */}
-          <div className="mt-12 min-h-[450px]">
+          <div className="mt-12 min-h-[520px]">
             <GithubContributions githubData={githubData} />
           </div>
 

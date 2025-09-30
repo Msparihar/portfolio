@@ -18,13 +18,13 @@ const GithubContributionsClient = ({ githubData, githubUsername }) => {
   const contributions = githubData?.data?.contributions || [];
 
   return (
-    <div className="github-contributions-container terminal-container p-6 rounded-lg shadow-lg min-h-[400px]">
-      <h2 className="text-2xl font-bold mb-6 text-center terminal-title">
+    <div className="github-contributions-container terminal-container p-6 rounded-lg shadow-lg min-h-[480px]">
+      <h2 className="text-2xl font-bold mb-6 text-center terminal-title" style={{ height: '32px' }}>
         <span className="terminal-prompt">$</span> My GitHub Contributions
       </h2>
 
-      {/* Custom GitHub Calendar Grid */}
-      <div className="flex justify-center min-h-[280px]">
+      {/* Custom GitHub Calendar Grid - Fixed dimensions to prevent layout shift */}
+      <div className="flex justify-center" style={{ minHeight: '320px', height: '320px' }}>
         <GithubCalendarGrid
           contributions={contributions}
           theme={theme}

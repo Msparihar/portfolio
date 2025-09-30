@@ -1,6 +1,4 @@
 /** @type {import('next').NextConfig} */
-import crypto from "crypto";
-
 const nextConfig = {
   // Enable experimental features for better performance
   experimental: {

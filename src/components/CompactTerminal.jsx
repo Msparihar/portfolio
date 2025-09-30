@@ -23,7 +23,7 @@ export const CompactTerminal = () => {
       <div className="fixed bottom-4 right-4 z-50">
         <button
           onClick={() => setIsOpen(true)}
-          className="bg-green-500 hover:bg-green-600 text-white p-3 rounded-full shadow-lg transition-colors"
+          className="bg-green-600 hover:bg-green-700 dark:bg-green-500 dark:hover:bg-green-600 text-white p-3 rounded-full shadow-lg transition-colors"
           title="Open Terminal"
         >
           <TerminalIcon className="w-5 h-5" />
@@ -70,7 +70,7 @@ export const CompactTerminal = () => {
             {history.slice(-8).map((entry, index) => (
               <div key={index} className="terminal-line">
                 <div className="flex items-start">
-                  <span className="terminal-prompt text-green-500 mr-2 flex-shrink-0">$</span>
+                  <span className="terminal-prompt text-green-700 dark:text-green-500 mr-2 flex-shrink-0">$</span>
                   <span className="text-foreground font-mono">{entry.command}</span>
                 </div>
                 {entry.output && (
@@ -83,7 +83,7 @@ export const CompactTerminal = () => {
 
             {/* Terminal Input - positioned right after the last output */}
             <form onSubmit={handleSubmit} className="flex items-center py-2">
-              <span className="terminal-prompt text-green-500 mr-2 text-sm">$</span>
+              <span className="terminal-prompt text-green-700 dark:text-green-500 mr-2 text-sm">$</span>
               <input
                 ref={inputRef}
                 type="text"
