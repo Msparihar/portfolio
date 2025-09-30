@@ -1,7 +1,6 @@
 "use client";
 
 import React from 'react';
-import { motion } from 'framer-motion';
 import Image from 'next/image';
 import {
   ExternalLink,
@@ -36,26 +35,6 @@ const ProjectModalContent = ({ project, isDark }) => {
     }
   }, []);
 
-  // Animation variants for staggered content
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.1,
-        delayChildren: 0.1
-      }
-    }
-  };
-
-  const itemVariants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: { duration: 0.3 }
-    }
-  };
 
   // Image load handler for dynamic sizing
   const handleImageLoad = (e) => {
@@ -175,15 +154,9 @@ const ProjectModalContent = ({ project, isDark }) => {
   const projectFeatures = getProjectFeatures(project);
 
   return (
-    <motion.div
-      variants={containerVariants}
-      initial="hidden"
-      animate="visible"
-      className="w-full"
-    >
+    <div className="w-full">
       {/* Hero Image */}
-      <motion.div
-        variants={itemVariants}
+      <div
         className="relative w-full overflow-hidden"
         style={{
           height: imageLoaded ? `${getImageHeight()}px` : '320px',
@@ -194,6 +167,7 @@ const ProjectModalContent = ({ project, isDark }) => {
           src={project.image || '/images/project-placeholder.png'}
           alt={project.name}
           fill
+          sizes="(max-width: 768px) 100vw, (max-width: 1024px) 768px, 896px"
           className={`transition-all duration-300 ${getObjectFit()}`}
           priority
           unoptimized={project.image?.endsWith('.gif')}
@@ -234,23 +208,23 @@ const ProjectModalContent = ({ project, isDark }) => {
             <span className="hidden sm:inline">Live Demo</span>
           </a>
         )}
-      </motion.div>
+      </div>
 
       {/* Content */}
       <div className="p-6 md:p-8">
         {/* Description */}
-        <motion.div variants={itemVariants} className="mb-8">
+        <div className="mb-8">
           <h2 className={`text-xl font-semibold mb-3 ${isDark ? 'text-white' : 'text-gray-900'}`}>
             About this project
           </h2>
           <p className={`text-base leading-relaxed ${isDark ? 'text-gray-300' : 'text-gray-600'}`}>
             {project.description}
           </p>
-        </motion.div>
+        </div>
 
         {/* Features */}
         {projectFeatures.length > 0 && (
-          <motion.div variants={itemVariants} className="mb-8">
+          <div className="mb-8">
             <h3 className={`text-lg font-semibold mb-3 ${isDark ? 'text-white' : 'text-gray-900'}`}>
               Key Features
             </h3>
@@ -264,11 +238,11 @@ const ProjectModalContent = ({ project, isDark }) => {
                 </div>
               ))}
             </div>
-          </motion.div>
+          </div>
         )}
 
         {/* Tech Stack */}
-        <motion.div variants={itemVariants} className="mb-8">
+        <div className="mb-8">
           <h3 className={`text-lg font-semibold mb-4 ${isDark ? 'text-white' : 'text-gray-900'}`}>
             Technology Stack
           </h3>
@@ -295,10 +269,10 @@ const ProjectModalContent = ({ project, isDark }) => {
               </div>
             ))}
           </div>
-        </motion.div>
+        </div>
 
         {/* Action Buttons */}
-        <motion.div variants={itemVariants} className="flex flex-wrap gap-4">
+        <div className="flex flex-wrap gap-4">
           {project.github && (
             <div className="flex items-center gap-2">
               <a
@@ -360,9 +334,9 @@ const ProjectModalContent = ({ project, isDark }) => {
               </button>
             </div>
           )}
-        </motion.div>
+        </div>
       </div>
-    </motion.div>
+    </div>
   );
 };
 

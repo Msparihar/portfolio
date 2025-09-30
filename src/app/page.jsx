@@ -9,7 +9,13 @@ import {
   faTwitter,
   faHashnode
 } from '@fortawesome/free-brands-svg-icons';
-import GithubContributions from '@/components/GithubContributions';
+import dynamic from 'next/dynamic';
+
+// Lazy load GitHub contributions to reduce initial bundle size
+const GithubContributions = dynamic(() => import('@/components/GithubContributions'), {
+  ssr: true, // Keep SSR for ISR data
+  loading: () => <div className="py-8 text-center text-muted-foreground">Loading GitHub contributions...</div>
+});
 import { ClientWrapper } from '@/components/ClientWrapper';
 import { personSchema, websiteSchema, profilePageSchema } from './metadata';
 
@@ -117,7 +123,7 @@ export default async function Home() {
           </div>
 
           {/* GitHub Contributions Section */}
-          <div className="mt-12">
+          <div className="mt-12 min-h-[450px]">
             <GithubContributions githubData={githubData} />
           </div>
 

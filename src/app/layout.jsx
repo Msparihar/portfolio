@@ -11,17 +11,19 @@ config.autoAddCss = false;
 
 // Optimize font loading with next/font
 const ibmPlexMono = IBM_Plex_Mono({
-  weight: ['300', '400', '500', '600'],
+  weight: ['400', '600'], // Reduced from 4 to 2 weights
   subsets: ['latin'],
   variable: '--font-ibm-plex-mono',
   display: 'swap',
+  preload: true,
 });
 
 const firaCode = Fira_Code({
-  weight: ['300', '400', '500', '600', '700'],
+  weight: ['400', '500'], // Reduced from 5 to 2 weights
   subsets: ['latin'],
   variable: '--font-fira-code',
-  display: 'swap',
+  display: 'optional', // Use optional for secondary font
+  preload: false,
 });
 
 // Metadata configuration
@@ -110,31 +112,10 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en" suppressHydrationWarning className={`dark ${ibmPlexMono.variable} ${firaCode.variable}`}>
       <head>
-        {/* Resource hints for external domains */}
-        <link rel="dns-prefetch" href="//github.com" />
-        <link rel="dns-prefetch" href="//api.github.com" />
-        <link rel="dns-prefetch" href="//avatars.githubusercontent.com" />
-        <link rel="dns-prefetch" href="//raw.githubusercontent.com" />
+        {/* Resource hints only for external domains used on initial load */}
         <link rel="dns-prefetch" href="//blog.futuresmart.ai" />
         <link rel="dns-prefetch" href="//images.unsplash.com" />
         <link rel="dns-prefetch" href="//res.cloudinary.com" />
-
-        {/* Preconnect to critical external domains */}
-        <link rel="preconnect" href="https://github.com" crossOrigin="" />
-        <link rel="preconnect" href="https://api.github.com" crossOrigin="" />
-
-        {/* Preload only above-fold critical optimized images */}
-        <link rel="preload" href="/images/optimized/llama-3.1-novel.webp" as="image" type="image/webp" fetchPriority="high" />
-        <link rel="preload" href="/images/optimized/fire-optimized.gif" as="image" fetchPriority="high" />
-
-        {/* Preload critical fonts */}
-        <link
-          rel="preload"
-          href="/_next/static/media/ibm-plex-mono-latin-400-normal.woff2"
-          as="font"
-          type="font/woff2"
-          crossOrigin="anonymous"
-        />
       </head>
       <body>
         <Providers>{children}</Providers>

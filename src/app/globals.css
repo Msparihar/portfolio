@@ -65,11 +65,23 @@
   /* Optimize image rendering */
   img {
     content-visibility: auto;
+    /* Reduce layout shifts */
+    aspect-ratio: attr(width) / attr(height);
   }
 
   /* Critical CSS for terminal */
   .terminal-container {
     contain: layout style paint;
+  }
+
+  /* Optimize all interactive elements */
+  a, button {
+    contain: layout style;
+  }
+
+  /* Optimize grid layouts */
+  [class*="grid"] {
+    contain: layout style;
   }
 }
 
