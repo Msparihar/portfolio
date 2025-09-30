@@ -1,8 +1,28 @@
 import { Providers } from "./providers";
 import { SpeedInsights } from "@vercel/speed-insights/next";
+import { IBM_Plex_Mono, Fira_Code } from 'next/font/google';
 import "./globals.css";
+import { config } from '@fortawesome/fontawesome-svg-core';
 import '@fortawesome/fontawesome-svg-core/styles.css';
 import portfolioData from '@/config/portfolio.json';
+
+// Prevent FontAwesome from adding its CSS since we import it manually
+config.autoAddCss = false;
+
+// Optimize font loading with next/font
+const ibmPlexMono = IBM_Plex_Mono({
+  weight: ['300', '400', '500', '600'],
+  subsets: ['latin'],
+  variable: '--font-ibm-plex-mono',
+  display: 'swap',
+});
+
+const firaCode = Fira_Code({
+  weight: ['300', '400', '500', '600', '700'],
+  subsets: ['latin'],
+  variable: '--font-fira-code',
+  display: 'swap',
+});
 
 // Metadata configuration
 export const metadata = {
@@ -88,7 +108,7 @@ export const viewport = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en" suppressHydrationWarning className="dark">
+    <html lang="en" suppressHydrationWarning className={`dark ${ibmPlexMono.variable} ${firaCode.variable}`}>
       <head>
         {/* Resource hints for external domains */}
         <link rel="dns-prefetch" href="//github.com" />
@@ -102,24 +122,19 @@ export default function RootLayout({ children }) {
         {/* Preconnect to critical external domains */}
         <link rel="preconnect" href="https://github.com" crossOrigin="" />
         <link rel="preconnect" href="https://api.github.com" crossOrigin="" />
-        <link rel="preconnect" href="https://blog.futuresmart.ai" crossOrigin="" />
 
-        {/* Prefetch critical fonts */}
-        <link rel="preload" href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;500;600;700&display=swap" as="style" />
-        <link rel="preload" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500;600&display=swap" as="style" />
+        {/* Preload only above-fold critical optimized images */}
+        <link rel="preload" href="/images/optimized/llama-3.1-novel.webp" as="image" type="image/webp" fetchPriority="high" />
+        <link rel="preload" href="/images/optimized/fire-optimized.gif" as="image" fetchPriority="high" />
 
-        {/* Preload critical project images */}
-        <link rel="preload" href="/images/llama-3.1-novel.png" as="image" fetchPriority="high" />
-        <link rel="preload" href="/images/fire.gif" as="image" fetchPriority="high" />
-        <link rel="preload" href="/images/video-super-resolution.png" as="image" fetchPriority="high" />
-        <link rel="preload" href="/images/globetrotter.png" as="image" fetchPriority="high" />
-        <link rel="preload" href="/images/youtube-transcriber.jpg" as="image" fetchPriority="high" />
-        <link rel="preload" href="/images/medical-chatbot.png" as="image" fetchPriority="high" />
-
-        {/* Preload critical blog images */}
-        <link rel="preload" href="/images/blog-finetune-llama.jpg" as="image" fetchPriority="high" />
-        <link rel="preload" href="/images/blog-rag-evaluation.jpg" as="image" fetchPriority="high" />
-        <link rel="preload" href="/images/blog-ollama.jpg" as="image" fetchPriority="high" />
+        {/* Preload critical fonts */}
+        <link
+          rel="preload"
+          href="/_next/static/media/ibm-plex-mono-latin-400-normal.woff2"
+          as="font"
+          type="font/woff2"
+          crossOrigin="anonymous"
+        />
       </head>
       <body>
         <Providers>{children}</Providers>

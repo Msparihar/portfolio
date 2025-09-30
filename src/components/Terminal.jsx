@@ -7,7 +7,7 @@ import { LoadingDotsCommand, TerminalLoader } from '@/components/ui/LoadingDots'
 import { useTheme } from 'next-themes';
 import TerminalLogo from './TerminalLogo';
 
-const TypeWriter = ({ text, delay = 10, className = '' }) => {
+const TypeWriter = ({ text, delay = 5, className = '' }) => {
   const [displayText, setDisplayText] = useState('');
   const [currentIndex, setCurrentIndex] = useState(0);
 
@@ -22,17 +22,14 @@ const TypeWriter = ({ text, delay = 10, className = '' }) => {
   }, [currentIndex, delay, text]);
 
   return (
-    <span className={`${className} ${currentIndex < text.length ? 'typing-animation' : ''}`}>
+    <span className={className}>
       {displayText}
     </span>
   );
 };
 
-const HighlightedTypeWriter = ({ text, delay = 10, className = '' }) => {
-  const [displayText, setDisplayText] = useState('');
-  const [currentIndex, setCurrentIndex] = useState(0);
-
-  // Parse markup tags and create segments
+const HighlightedTypeWriter = ({ text, delay = 3, className = '' }) => {
+  // Parse markup tags and render immediately (no animation)
   const parseMarkup = (text) => {
     const segments = [];
     const regex = /\[(\w+)\](.*?)\[\/\1\]/g;
@@ -40,24 +37,19 @@ const HighlightedTypeWriter = ({ text, delay = 10, className = '' }) => {
     let match;
 
     while ((match = regex.exec(text)) !== null) {
-      // Add text before the tag
       if (match.index > lastIndex) {
         segments.push({
           text: text.slice(lastIndex, match.index),
           type: 'normal'
         });
       }
-
-      // Add the highlighted segment
       segments.push({
         text: match[2],
-        type: match[1] // highlight, accent, tech, etc.
+        type: match[1]
       });
-
       lastIndex = regex.lastIndex;
     }
 
-    // Add remaining text
     if (lastIndex < text.length) {
       segments.push({
         text: text.slice(lastIndex),
@@ -66,45 +58,6 @@ const HighlightedTypeWriter = ({ text, delay = 10, className = '' }) => {
     }
 
     return segments.length > 0 ? segments : [{ text, type: 'normal' }];
-  };
-
-  const segments = parseMarkup(text);
-  const totalLength = segments.reduce((sum, seg) => sum + seg.text.length, 0);
-
-  useEffect(() => {
-    if (currentIndex < totalLength) {
-      const timer = setTimeout(() => {
-        setCurrentIndex(prev => prev + 1);
-      }, delay);
-      return () => clearTimeout(timer);
-    }
-  }, [currentIndex, delay, totalLength]);
-
-  // Build display text with highlighting
-  const renderText = () => {
-    let charCount = 0;
-    const elements = [];
-
-    for (let i = 0; i < segments.length; i++) {
-      const segment = segments[i];
-      const segmentStart = charCount;
-      const segmentEnd = charCount + segment.text.length;
-      const visibleEnd = Math.min(currentIndex, segmentEnd);
-      const visibleText = segment.text.slice(0, Math.max(0, visibleEnd - segmentStart));
-
-      if (visibleText) {
-        const className = getHighlightClass(segment.type);
-        elements.push(
-          <span key={i} className={className}>
-            {visibleText}
-          </span>
-        );
-      }
-
-      charCount = segmentEnd;
-    }
-
-    return elements;
   };
 
   const getHighlightClass = (type) => {
@@ -118,61 +71,26 @@ const HighlightedTypeWriter = ({ text, delay = 10, className = '' }) => {
     }
   };
 
+  const segments = parseMarkup(text);
+
   return (
-    <span className={`${className} ${currentIndex < totalLength ? 'typing-animation' : ''}`}>
-      {renderText()}
-      {currentIndex < totalLength && (
-        <span className="terminal-cursor inline-block w-2 h-4 -mb-1 bg-green-500/80 ml-1"></span>
-      )}
+    <span className={className}>
+      {segments.map((segment, i) => (
+        <span key={i} className={getHighlightClass(segment.type)}>
+          {segment.text}
+        </span>
+      ))}
     </span>
   );
 };
 
-const MultiLineTypeWriter = ({ lines, delay = 15, lineDelay = 200, className = '' }) => {
-  const [currentLineIndex, setCurrentLineIndex] = useState(0);
-  const [displayedLines, setDisplayedLines] = useState([]);
-  const [currentLineText, setCurrentLineText] = useState('');
-  const [isComplete, setIsComplete] = useState(false);
-
-  useEffect(() => {
-    if (currentLineIndex < lines.length) {
-      // Add the current line to displayed lines when starting to type it
-      if (currentLineIndex > displayedLines.length - 1) {
-        setDisplayedLines(prev => [...prev, '']);
-      }
-
-      const currentLine = lines[currentLineIndex];
-      if (currentLineText.length < currentLine.length) {
-        const timer = setTimeout(() => {
-          setCurrentLineText(prev => prev + currentLine[currentLineText.length]);
-          setDisplayedLines(prev => {
-            const newLines = [...prev];
-            newLines[currentLineIndex] = currentLineText + currentLine[currentLineText.length];
-            return newLines;
-          });
-        }, delay);
-        return () => clearTimeout(timer);
-      } else {
-        // Current line is complete, move to next line after delay
-        const timer = setTimeout(() => {
-          setCurrentLineIndex(prev => prev + 1);
-          setCurrentLineText('');
-        }, lineDelay);
-        return () => clearTimeout(timer);
-      }
-    } else {
-      setIsComplete(true);
-    }
-  }, [currentLineIndex, currentLineText, lines, delay, lineDelay]);
-
+const MultiLineTypeWriter = ({ lines, className = '' }) => {
+  // Render all lines immediately without animation
   return (
     <div className={className}>
-      {displayedLines.map((line, index) => (
+      {lines.map((line, index) => (
         <div key={index}>
-          <HighlightedTypeWriter text={line} delay={0} />
-          {index === currentLineIndex && !isComplete && (
-            <span className="terminal-cursor inline-block w-2 h-4 -mb-1 bg-green-500/80 ml-1"></span>
-          )}
+          <HighlightedTypeWriter text={line} />
         </div>
       ))}
     </div>
@@ -205,20 +123,6 @@ const Terminal = () => {
   const [commandHistory, setCommandHistory] = useState([]);
   const [historyIndex, setHistoryIndex] = useState(-1);
 
- // Debug logging
- useEffect(() => {
-   console.log('Terminal theme:', theme);
-   console.log('Input value:', input);
-   console.log('Theme-based color:', theme === 'dark' ? '#4ade80' : '#166534');
- }, [theme, input]);
-
- useEffect(() => {
-   console.log('Z-index values - Input: 10, Text span: 15');
- }, []);
-
-  useEffect(() => {
-    console.log('Mounted state:', mounted);
-  }, [mounted]);
 
   useEffect(() => {
     setMounted(true);
@@ -557,9 +461,9 @@ Use the corresponding command to navigate to each section.`
       {/* Radial gradient for fading effect */}
       <div className="absolute inset-0 top-9 bg-gradient-to-t from-black/20 via-black/5 to-transparent" />
 
-      {/* Scanline effect */}
+      {/* Scanline effect - disabled on mobile */}
       <div
-        className="absolute inset-0 top-9 bg-scanline pointer-events-none opacity-10"
+        className="hidden md:block absolute inset-0 top-9 bg-scanline pointer-events-none opacity-10"
         style={{
           backgroundImage: `repeating-linear-gradient(
             0deg,
@@ -573,8 +477,8 @@ Use the corresponding command to navigate to each section.`
         }}
       />
 
-      {/* CRT flicker effect */}
-      <div className="absolute inset-0 top-9 pointer-events-none bg-white/5 opacity-0 animate-[terminal-flicker_5s_ease-in-out_infinite]"></div>
+      {/* CRT flicker effect - disabled on mobile */}
+      <div className="hidden md:block absolute inset-0 top-9 pointer-events-none bg-white/5 opacity-0 animate-[terminal-flicker_5s_ease-in-out_infinite]"></div>
 
       {/* Main terminal content */}
       <div
@@ -594,11 +498,7 @@ Use the corresponding command to navigate to each section.`
                 <div className="flex">
                   <span className="text-green-500/80 mr-2">&gt;</span>
                   <div className="flex-1">
-                    <MultiLineTypeWriter
-                      lines={entry.multiLineOutput}
-                      delay={12}
-                      lineDelay={150}
-                    />
+                    <MultiLineTypeWriter lines={entry.multiLineOutput} />
                   </div>
                 </div>
               </div>
@@ -608,7 +508,7 @@ Use the corresponding command to navigate to each section.`
                 <div className="flex">
                   <span className="text-green-500/80 mr-2">&gt;</span>
                   <div className="flex-1">
-                    <HighlightedTypeWriter text={entry.output} delay={7} />
+                    <HighlightedTypeWriter text={entry.output} />
                     {entry.loading && (
                       <div className="mt-4">
                         <TerminalLoader color={theme === 'light' ? 'darkGreen' : 'green'} />

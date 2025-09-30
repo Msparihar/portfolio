@@ -1,34 +1,21 @@
+"use client";
+
 import React from "react";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
-import ProjectsInteractive from "@/components/projects/ProjectsInteractive";
-import { CompactTerminal } from "@/components/CompactTerminal";
+import dynamic from 'next/dynamic';
 import portfolioData from '@/config/portfolio.json';
 
-// Metadata for projects page
-export const metadata = {
-  title: 'Projects',
-  description: `Explore ${portfolioData.name}'s portfolio of projects including AI/ML applications, full-stack web applications, and open-source contributions. Technologies: Next.js, React, FastAPI, PyTorch, LangChain, and more.`,
-  openGraph: {
-    title: `Projects | ${portfolioData.name}`,
-    description: `Portfolio of AI, machine learning, and full-stack development projects by ${portfolioData.name}`,
-    url: 'https://manishsingh.tech/projects',
-    type: 'website'
-  },
-  keywords: [
-    'AI Projects',
-    'Machine Learning Projects',
-    'Full Stack Projects',
-    'Next.js Projects',
-    'React Projects',
-    'FastAPI Projects',
-    'Computer Vision',
-    'NLP Projects',
-    'LLM Applications'
-  ]
-};
+// Dynamic imports for better performance
+const ProjectsInteractive = dynamic(() => import("@/components/projects/ProjectsInteractive"), {
+  ssr: false,
+  loading: () => <div className="text-center py-8 text-muted-foreground">Loading projects...</div>
+});
+const CompactTerminal = dynamic(() => import("@/components/CompactTerminal").then(mod => ({ default: mod.CompactTerminal })), {
+  ssr: false
+});
 
-// Static generation - no client-side state needed
+// Note: Metadata moved to layout for client component compatibility
 const ProjectsPage = () => {
   return (
     <div className="min-h-screen bg-gradient-to-b from-background to-background/80 relative overflow-hidden">

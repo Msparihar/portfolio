@@ -61,12 +61,6 @@ Type 'help' to see available commands.`
   const [inputEnabled, setInputEnabled] = useState(true);
   const [isNavigating, setIsNavigating] = useState(false);
 
- // Debug logging
-  useEffect(() => {
-    console.log('TerminalContext theme:', theme);
-    console.log('Input value:', input);
-    console.log('Theme-based color:', theme === 'dark' ? 'hsl(0, 0%, 98%)' : 'hsl(0, 0%, 3.9%)');
-  }, [theme, input]);
 
   useEffect(() => {
     setMounted(true);

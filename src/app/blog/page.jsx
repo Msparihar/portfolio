@@ -1,34 +1,21 @@
+"use client";
+
 import React from "react";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
-import BlogInteractive from "@/components/blog/BlogInteractive";
-import { CompactTerminal } from "@/components/CompactTerminal";
+import dynamic from 'next/dynamic';
 import portfolioData from '@/config/portfolio.json';
 
-// Metadata for blog page
-export const metadata = {
-  title: 'Blog',
-  description: `Read technical articles and tutorials by ${portfolioData.name} on AI, machine learning, LLMs, RAG systems, computer vision, and full-stack development. Learn about fine-tuning models, evaluating AI systems, and building intelligent applications.`,
-  openGraph: {
-    title: `Blog | ${portfolioData.name}`,
-    description: `Technical blog covering AI, machine learning, LLMs, and full-stack development by ${portfolioData.name}`,
-    url: 'https://manishsingh.tech/blog',
-    type: 'website'
-  },
-  keywords: [
-    'AI Blog',
-    'Machine Learning Blog',
-    'LLM Tutorials',
-    'RAG Systems',
-    'Computer Vision Tutorials',
-    'Fine-tuning LLMs',
-    'Technical Blog',
-    'AI Engineering',
-    'Deep Learning'
-  ]
-};
+// Dynamic imports for better performance
+const BlogInteractive = dynamic(() => import("@/components/blog/BlogInteractive"), {
+  ssr: false,
+  loading: () => <div className="text-center py-8 text-muted-foreground">Loading blog posts...</div>
+});
+const CompactTerminal = dynamic(() => import("@/components/CompactTerminal").then(mod => ({ default: mod.CompactTerminal })), {
+  ssr: false
+});
 
-// Static generation - no client-side state needed
+// Note: Metadata moved to layout for client component compatibility
 const BlogPage = () => {
   return (
     <div className="min-h-screen bg-gradient-to-b from-background to-background/80 relative overflow-hidden">
