@@ -9,7 +9,9 @@
       "Bash(pnpm run:*)",
       "WebSearch",
       "Bash(cat:*)",
-      "Bash(pnpm add:*)"
+      "Bash(pnpm add:*)",
+      "WebFetch(domain:posthog.com)",
+      "Bash(pnpm remove:*)"
     ],
     "deny": [],
     "ask": []

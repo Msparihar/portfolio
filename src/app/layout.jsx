@@ -1,12 +1,7 @@
 import { Providers } from "./providers";
 import { IBM_Plex_Mono, Fira_Code } from 'next/font/google';
 import "./globals.css";
-import { config } from '@fortawesome/fontawesome-svg-core';
-import '@fortawesome/fontawesome-svg-core/styles.css';
 import portfolioData from '@/config/portfolio.json';
-
-// Prevent FontAwesome from adding its CSS since we import it manually
-config.autoAddCss = false;
 
 // Optimize font loading with next/font - Use 'block' to prevent FOUT and layout shifts
 const ibmPlexMono = IBM_Plex_Mono({

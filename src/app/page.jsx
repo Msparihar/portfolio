@@ -2,13 +2,7 @@ import { Terminal } from "@/components/TerminalContext";
 import { ThemeToggle } from "@/components/theme-toggle";
 import Link from "next/link";
 import portfolioData from '@/config/portfolio.json';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {
-  faGithub,
-  faLinkedinIn,
-  faTwitter,
-  faHashnode
-} from '@fortawesome/free-brands-svg-icons';
+import { Github, Linkedin, Twitter, Hash } from 'lucide-react';
 import dynamic from 'next/dynamic';
 
 // Lazy load GitHub contributions to reduce initial bundle size
@@ -143,7 +137,7 @@ export default async function Home() {
               target="_blank"
               rel="noopener noreferrer"
             >
-              <FontAwesomeIcon icon={faGithub} className="w-5 h-5" />
+              <Github className="w-5 h-5" />
               <span>GitHub</span>
             </a>
             <a
@@ -152,7 +146,7 @@ export default async function Home() {
               target="_blank"
               rel="noopener noreferrer"
             >
-              <FontAwesomeIcon icon={faLinkedinIn} className="w-5 h-5" />
+              <Linkedin className="w-5 h-5" />
               <span>LinkedIn</span>
             </a>
             {portfolioData.contact.twitter && (
@@ -162,7 +156,7 @@ export default async function Home() {
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                <FontAwesomeIcon icon={faTwitter} className="w-5 h-5" />
+                <Twitter className="w-5 h-5" />
                 <span>Twitter</span>
               </a>
             )}
@@ -172,7 +166,7 @@ export default async function Home() {
               target="_blank"
               rel="noopener noreferrer"
             >
-              <FontAwesomeIcon icon={faHashnode} className="w-5 h-5" />
+              <Hash className="w-5 h-5" />
               <span>Hashnode</span>
             </a>
           </div>

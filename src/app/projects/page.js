@@ -1,21 +1,22 @@
-"use client";
-
 import React from "react";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
-import dynamic from 'next/dynamic';
 import portfolioData from '@/config/portfolio.json';
+import CompactTerminal from '@/components/CompactTerminalWrapper';
+import ProjectsInteractive from '@/components/projects/ProjectsInteractive';
 
-// Dynamic imports for better performance
-const ProjectsInteractive = dynamic(() => import("@/components/projects/ProjectsInteractive"), {
-  ssr: false,
-  loading: () => <div className="text-center py-8 text-muted-foreground">Loading projects...</div>
-});
-const CompactTerminal = dynamic(() => import("@/components/CompactTerminal").then(mod => ({ default: mod.CompactTerminal })), {
-  ssr: false
-});
+// Metadata for SEO
+export const metadata = {
+  title: 'Projects',
+  description: `Explore ${portfolioData.name}'s portfolio of AI, Machine Learning, and Full Stack development projects.`,
+  openGraph: {
+    title: `Projects | ${portfolioData.name}`,
+    description: `Explore ${portfolioData.name}'s portfolio of AI, Machine Learning, and Full Stack development projects.`,
+    url: 'https://manishsingh.tech/projects',
+    type: 'website'
+  }
+};
 
-// Note: Metadata moved to layout for client component compatibility
 const ProjectsPage = () => {
   return (
     <div className="min-h-screen bg-gradient-to-b from-background to-background/80 relative overflow-hidden">

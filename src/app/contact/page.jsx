@@ -1,21 +1,22 @@
-"use client";
-
 import React from "react";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
-import dynamic from 'next/dynamic';
 import portfolioData from '@/config/portfolio.json';
+import CompactTerminal from '@/components/CompactTerminalWrapper';
+import ContactInteractive from '@/components/contact/ContactInteractive';
 
-// Dynamic imports for better performance
-const ContactInteractive = dynamic(() => import("@/components/contact/ContactInteractive"), {
-  ssr: false,
-  loading: () => <div className="text-center py-8 text-muted-foreground">Loading contact form...</div>
-});
-const CompactTerminal = dynamic(() => import("@/components/CompactTerminal").then(mod => ({ default: mod.CompactTerminal })), {
-  ssr: false
-});
+// Metadata for SEO
+export const metadata = {
+  title: 'Contact',
+  description: `Get in touch with ${portfolioData.name}. Available for freelance projects, collaborations, and opportunities.`,
+  openGraph: {
+    title: `Contact | ${portfolioData.name}`,
+    description: `Get in touch with ${portfolioData.name}. Available for freelance projects, collaborations, and opportunities.`,
+    url: 'https://manishsingh.tech/contact',
+    type: 'website'
+  }
+};
 
-// Note: Metadata moved to layout for client component compatibility
 const ContactPage = () => {
   return (
     <div className="min-h-screen bg-gradient-to-b from-background to-background/80 relative overflow-hidden">

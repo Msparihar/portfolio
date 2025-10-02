@@ -1,7 +1,7 @@
 "use client";
 
 import React from 'react';
-import { FaGithub, FaExternalLinkAlt, FaStar, FaCodeBranch } from 'react-icons/fa';
+import { Github, ExternalLink, Star, GitFork } from 'lucide-react';
 
 const ProjectCard = ({ project }) => {
   const {
@@ -31,11 +31,11 @@ const ProjectCard = ({ project }) => {
           </h3>
           <div className="flex items-center gap-3 text-muted-foreground">
             <div className="flex items-center gap-1">
-              <FaStar className="text-yellow-500" />
+              <Star className="text-yellow-500 w-4 h-4" />
               <span className="text-sm">{stats.stars}</span>
             </div>
             <div className="flex items-center gap-1">
-              <FaCodeBranch className="text-blue-500" />
+              <GitFork className="text-blue-500 w-4 h-4" />
               <span className="text-sm">{stats.forks}</span>
             </div>
           </div>
@@ -68,7 +68,7 @@ const ProjectCard = ({ project }) => {
             rel="noopener noreferrer"
             className="text-muted-foreground hover:text-green-500 transition-colors flex items-center gap-2"
           >
-            <FaGithub />
+            <Github className="w-4 h-4" />
             <span className="text-sm">View Source</span>
           </a>
           {live && (
@@ -78,7 +78,7 @@ const ProjectCard = ({ project }) => {
               rel="noopener noreferrer"
               className="text-muted-foreground hover:text-green-500 transition-colors flex items-center gap-2"
             >
-              <FaExternalLinkAlt />
+              <ExternalLink className="w-4 h-4" />
               <span className="text-sm">Live Demo</span>
             </a>
           )}
