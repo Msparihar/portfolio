@@ -1,11 +1,14 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  // Required for OpenNext/Cloudflare deployment
+  // Only enable standalone for CF builds to avoid Windows symlink issues
+  output: process.env.CF_BUILD === "true" ? "standalone" : undefined,
+
   // Enable experimental features for better performance
   experimental: {
     optimizePackageImports: [
-      "@fortawesome/react-fontawesome",
-      "@fortawesome/free-brands-svg-icons",
-      "react-icons",
+      "lucide-react",
+      "framer-motion",
     ],
     turbo: {
       rules: {
@@ -72,61 +75,58 @@ const nextConfig = {
     removeConsole: process.env.NODE_ENV === "production",
   },
 
-  // TEMPORARILY DISABLED: Custom webpack config may conflict with OpenNext bundling
-  // Re-enable after confirming Cloudflare deployment works
-  // webpack: (config, { isServer }) => {
-  //   // Optimize bundle size
-  //   config.optimization = {
-  //     ...config.optimization,
-  //     moduleIds: "deterministic",
-  //     runtimeChunk: "single",
-  //     splitChunks: {
-  //       chunks: "all",
-  //       cacheGroups: {
-  //         default: false,
-  //         vendors: false,
-  //         framework: {
-  //           name: "framework",
-  //           chunks: "all",
-  //           test: /(?<!node_modules.*)[\\/]node_modules[\\/](react|react-dom|scheduler|prop-types|use-sync-external-store)[\\/]/,
-  //           priority: 40,
-  //           enforce: true,
-  //         },
-  //         lib: {
-  //           test(module) {
-  //             return (
-  //               module.size() > 160000 &&
-  //               /node_modules[/\\]/.test(module.identifier())
-  //             );
-  //           },
-  //           name(module) {
-  //             const hash = crypto.createHash("sha1");
-  //             hash.update(module.identifier());
-  //             return hash.digest("hex").substring(0, 8);
-  //           },
-  //           priority: 30,
-  //           minChunks: 1,
-  //           reuseExistingChunk: true,
-  //         },
-  //         commons: {
-  //           name: "commons",
-  //           minChunks: 2,
-  //           priority: 20,
-  //         },
-  //         shared: {
-  //           name(module, chunks) {
-  //             return chunks.map((chunk) => chunk.name).join("~");
-  //           },
-  //           priority: 10,
-  //           minChunks: 2,
-  //           reuseExistingChunk: true,
-  //         },
-  //       },
-  //     },
-  //   };
+  // Webpack optimizations for bundle size
+  webpack: (config, { isServer }) => {
+    // Optimize bundle size
+    config.optimization = {
+      ...config.optimization,
+      moduleIds: "deterministic",
+      splitChunks: {
+        chunks: "all",
+        cacheGroups: {
+          default: false,
+          vendors: false,
+          // React framework bundle
+          framework: {
+            name: "framework",
+            chunks: "all",
+            test: /(?<!node_modules.*)[\\/]node_modules[\\/](react|react-dom|scheduler|prop-types|use-sync-external-store)[\\/]/,
+            priority: 40,
+            enforce: true,
+          },
+          // Large libraries (>160KB)
+          lib: {
+            test(module) {
+              return (
+                module.size() > 160000 &&
+                /node_modules[/\\]/.test(module.identifier())
+              );
+            },
+            name(module) {
+              const packageName = module.identifier().match(
+                /[\\/]node_modules[\\/](.*?)([\\/]|$)/
+              )?.[1];
+              return `lib-${packageName?.replace("@", "")}`;
+            },
+            priority: 30,
+            minChunks: 1,
+            reuseExistingChunk: true,
+          },
+          // Common shared modules
+          commons: {
+            name: "commons",
+            minChunks: 2,
+            priority: 20,
+          },
+        },
+      },
+    };
 
-  //   return config;
-  // },
+    return config;
+  },
 };
 
 export default nextConfig;
+
+import { initOpenNextCloudflareForDev } from "@opennextjs/cloudflare";
+initOpenNextCloudflareForDev();

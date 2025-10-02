@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import BlogGrid from "@/components/blog/BlogGrid";
+import BlogModal from "@/components/blog/BlogModal";
 import { X, Search, Filter } from "lucide-react";
 import portfolioConfig from "@/config/portfolio.json";
 import { extractUniqueTags } from "@/lib/utils";
@@ -9,6 +10,8 @@ import { extractUniqueTags } from "@/lib/utils";
 const BlogInteractive = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [activeFilter, setActiveFilter] = useState("all");
+  const [selectedBlog, setSelectedBlog] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const filterOptions = [
     { id: "all", label: "All Posts" },
@@ -21,6 +24,18 @@ const BlogInteractive = () => {
   // Handle search clear
   const handleClearSearch = () => {
     setSearchQuery("");
+  };
+
+  // Handle blog card click
+  const handleBlogClick = (blog) => {
+    setSelectedBlog(blog);
+    setIsModalOpen(true);
+  };
+
+  // Handle modal close
+  const handleModalClose = () => {
+    setIsModalOpen(false);
+    setSelectedBlog(null);
   };
 
   // Filter blogs based on search and active filter
@@ -101,6 +116,14 @@ const BlogInteractive = () => {
       <BlogGrid
         searchQuery={searchQuery}
         activeFilter={activeFilter}
+        onCardClick={handleBlogClick}
+      />
+
+      {/* Blog Modal */}
+      <BlogModal
+        isOpen={isModalOpen}
+        onClose={handleModalClose}
+        blog={selectedBlog}
       />
     </div>
   );

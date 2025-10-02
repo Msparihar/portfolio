@@ -8,8 +8,16 @@
   ],
   "assets": {
     "directory": ".open-next/assets",
-    "binding": "ASSETS"
+    "binding": "ASSETS",
+    "html_handling": "auto-trailing-slash",
+    "not_found_handling": "single-page-application"
   },
+  "services": [
+    {
+      "binding": "WORKER_SELF_REFERENCE",
+      "service": "portfolio",
+    }
+  ],
   "observability": {
     "enabled": true
   },
@@ -22,5 +30,11 @@
       "pattern": "www.manishsingh.tech",
       "custom_domain": true
     }
-  ]
+  ],
+  "limits": {
+    "cpu_ms": 1000
+  },
+  "browser": {
+    "binding": "BROWSER"
+  },
 }

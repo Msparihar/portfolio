@@ -1,9 +1,6 @@
 import { defineCloudflareConfig } from "@opennextjs/cloudflare";
+import r2IncrementalCache from "@opennextjs/cloudflare/overrides/incremental-cache/r2-incremental-cache";
 
 export default defineCloudflareConfig({
-  // Basic configuration for Cloudflare Workers deployment
-  // Can be extended later with:
-  // - R2 incremental cache for ISR: incrementalCache: r2IncrementalCache
-  // - Custom image optimization
-  // - Middleware configurations
+  incrementalCache: r2IncrementalCache,
 });

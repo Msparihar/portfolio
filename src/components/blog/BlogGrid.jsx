@@ -16,7 +16,7 @@ const placeholderImages = [
   'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAwIiBoZWlnaHQ9IjQwMCIgdmlld0JveD0iMCAwIDYwMCA0MDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI2MDAiIGhlaWdodD0iNDAwIiBmaWxsPSIjMTEyNTMzIi8+CjxlbGxpcHNlIGN4PSIzMDAiIGN5PSIyMDAiIHJ4PSIxNTAiIHJ5PSIxMDAiIGZpbGw9IiMzNzRjNTciLz4KPHR5cGVUIHg9IjMwMCIgeT0iMzUwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSIjNzAzYzM0IiBmb250LXNpemU9IjE2IiBmb250LWZhbWlseT0ibW9ub3NwYWNlIj5CbG9nIFBvc3Q8L3RleHQ+Cjwvc3ZnPgo='
 ];
 
-const BlogCard = ({ post, isDark, isPriority = false }) => {
+const BlogCard = ({ post, isDark, isPriority = false, onCardClick }) => {
   // Get a placeholder image based on post title hash
   const getPlaceholderImage = (title) => {
     const hash = title.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
@@ -37,9 +37,12 @@ const BlogCard = ({ post, isDark, isPriority = false }) => {
   };
 
   return (
-    <div className={`group relative overflow-hidden rounded-xl transition-all duration-300 ${
-      isDark ? 'bg-gray-900 hover:bg-gray-800' : 'bg-white hover:bg-gray-50'
-    } border ${isDark ? 'border-gray-800' : 'border-gray-200'} shadow-sm hover:shadow-md`}>
+    <div 
+      className={`group relative overflow-hidden rounded-xl transition-all duration-300 cursor-pointer ${
+        isDark ? 'bg-gray-900 hover:bg-gray-800' : 'bg-white hover:bg-gray-50'
+      } border ${isDark ? 'border-gray-800' : 'border-gray-200'} shadow-sm hover:shadow-md`}
+      onClick={() => onCardClick(post)}
+    >
       {/* Blog Post Image with Overlay */}
       <div className="relative h-48 overflow-hidden image-container">
         <div className="absolute inset-0 bg-gradient-to-b from-black/20 to-black/70 z-10"></div>
@@ -91,18 +94,30 @@ const BlogCard = ({ post, isDark, isPriority = false }) => {
           ))}
         </div>
 
-        {/* Read More Link */}
+        {/* Action Buttons */}
         <div className="flex items-center justify-between mt-auto pt-3 border-t border-gray-200 dark:border-gray-800">
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              onCardClick(post);
+            }}
+            className={`inline-flex items-center ${
+              isDark ? 'text-green-400 hover:text-green-300' : 'text-green-600 hover:text-green-700'
+            } transition-colors`}
+          >
+            View Details
+            <ExternalLink size={14} className="ml-1" />
+          </button>
           <Link
             href={post.url}
             target="_blank"
             rel="noopener noreferrer"
-            className={`inline-flex items-center ${
-              isDark ? 'text-green-400 hover:text-green-300' : 'text-green-600 hover:text-green-700'
-            }`}
+            onClick={(e) => e.stopPropagation()}
+            className={`text-sm ${
+              isDark ? 'text-gray-400 hover:text-gray-300' : 'text-gray-600 hover:text-gray-700'
+            } transition-colors`}
           >
-            Read Article
-            <ExternalLink size={14} className="ml-1" />
+            Read Article →
           </Link>
         </div>
       </div>
@@ -110,7 +125,7 @@ const BlogCard = ({ post, isDark, isPriority = false }) => {
   );
 };
 
-const BlogGrid = ({ searchQuery = '', activeFilter = 'all' }) => {
+const BlogGrid = ({ searchQuery = '', activeFilter = 'all', onCardClick }) => {
   const { theme } = useTheme();
   const isDark = theme === 'dark';
   const [posts, setPosts] = useState([]);
@@ -212,6 +227,7 @@ const BlogGrid = ({ searchQuery = '', activeFilter = 'all' }) => {
             post={post}
             isDark={isDark}
             isPriority={index < 3} // Priority load first 3 images
+            onCardClick={onCardClick}
           />
         ))}
       </div>
