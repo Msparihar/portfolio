@@ -56,7 +56,7 @@ async function fetchGithubContributions() {
 const NavLink = ({ path, label, isActive = false }) => (
   <Link
     href={`/${path === 'home' ? '' : path}`}
-    className={`group text-left transition-colors px-2 sm:px-3 py-1 sm:py-1.5 rounded-md text-sm
+    className={`group text-left transition-colors px-3 sm:px-4 py-2 sm:py-2.5 rounded-md text-sm sm:text-base
     ${isActive
       ? 'bg-green-500/20 text-green-500 hover:bg-green-500/30'
       : 'hover:bg-black/20 dark:hover:bg-white/5 hover:text-green-500'
@@ -101,24 +101,25 @@ export default async function Home() {
         <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8 py-3 sm:py-4 md:py-8">
           {/* Header with Navigation */}
           <div className="mb-6 sm:mb-8 border-[0.5px] border-border/30 rounded-lg terminal-nav relative overflow-hidden backdrop-blur-sm">
-            <div className="p-2 sm:p-3 flex flex-col gap-2 sm:gap-3">
-              {/* Terminal identifier - Now visible on mobile */}
-              <div className="flex items-center justify-between">
-                <div className="flex items-center text-xs sm:text-sm text-green-500/90">
-                  <span className="terminal-prompt mr-2">~</span>
-                  <span className="font-medium truncate">{portfolioData.name.toLowerCase()}</span>
-                </div>
-                {/* Theme toggle moved to top right on mobile */}
-                <ThemeToggle />
+            <div className="p-3 sm:p-4 md:p-5 grid [grid-template-columns:1fr_auto] md:grid-cols-3 gap-3 sm:gap-4 md:items-center">
+              {/* Terminal identifier - Left */}
+              <div className="col-start-1 row-start-1 flex items-center text-sm sm:text-base text-green-500/90">
+                <span className="terminal-prompt mr-2">~</span>
+                <span className="font-medium truncate">{portfolioData.name.toLowerCase()}</span>
               </div>
 
-              {/* Navigation - Better wrapping on mobile */}
-              <nav className="flex flex-wrap items-center gap-1 sm:gap-2">
+              {/* Navigation - Center on desktop, full width row 2 on mobile */}
+              <nav className="col-span-2 row-start-2 md:col-span-1 md:col-start-2 md:row-start-1 flex flex-nowrap items-center gap-1.5 sm:gap-3 md:justify-self-center">
                 <NavLink path="home" isActive={true} />
                 <NavLink path="projects" />
                 <NavLink path="contact" />
                 <NavLink path="blog" label="blog" />
               </nav>
+
+              {/* Theme toggle - Right on same row as name (mobile), Right on desktop */}
+              <div className="col-start-2 row-start-1 md:col-start-3 justify-self-end">
+                <ThemeToggle />
+              </div>
             </div>
           </div>
 

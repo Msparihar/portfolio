@@ -1,0 +1,13 @@
+{
+  "buildCommand": "pnpm run build",
+  "installCommand": "pnpm install",
+  "framework": "nextjs",
+  "regions": ["iad1"],
+  "functions": {
+    "app/**/*": {
+      "maxDuration": 10,
+      "memory": 1024
+    }
+  },
+  "crons": []
+}

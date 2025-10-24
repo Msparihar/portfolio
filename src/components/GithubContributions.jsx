@@ -26,28 +26,12 @@ const GithubContributions = ({ githubData }) => {
     );
   }
 
-  // Show indicator if using fallback or stale data
-  const showDataStatus = githubData?.fallback || githubData?.stale;
-  const statusMessage = githubData?.fallback
-    ? 'Showing cached snapshot'
-    : githubData?.stale
-    ? 'Showing recent data'
-    : null;
-
   // Pass data to client component for theme-aware rendering
   return (
-    <div>
-      {showDataStatus && (
-        <div className="mb-2 text-xs text-muted-foreground font-mono text-center opacity-70">
-          <span className="terminal-prompt mr-2">ℹ</span>
-          {statusMessage}
-        </div>
-      )}
-      <GithubContributionsClient
-        githubData={githubData}
-        githubUsername={githubUsername}
-      />
-    </div>
+    <GithubContributionsClient
+      githubData={githubData}
+      githubUsername={githubUsername}
+    />
   );
 };
 
