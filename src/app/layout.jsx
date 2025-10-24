@@ -3,23 +3,23 @@ import { IBM_Plex_Mono, Fira_Code } from 'next/font/google';
 import "./globals.css";
 import portfolioData from '@/config/portfolio.json';
 
-// Optimize font loading with next/font - Use 'block' to prevent FOUT and layout shifts
+// Optimize font loading with next/font - Use 'swap' for better performance
 const ibmPlexMono = IBM_Plex_Mono({
   weight: ['400', '600'], // Reduced from 4 to 2 weights
   subsets: ['latin'],
   variable: '--font-ibm-plex-mono',
-  display: 'block', // Changed from 'swap' to 'block' to prevent FOUT
+  display: 'swap', // Show fallback immediately, swap when loaded
   preload: true,
-  adjustFontFallback: true, // Automatically adjust fallback font metrics
+  adjustFontFallback: true, // Automatically adjust fallback font metrics to minimize layout shift
 });
 
 const firaCode = Fira_Code({
   weight: ['400', '500'], // Reduced from 5 to 2 weights
   subsets: ['latin'],
   variable: '--font-fira-code',
-  display: 'block', // Changed from 'optional' to 'block' for consistency
+  display: 'swap', // Show fallback immediately, swap when loaded
   preload: false,
-  adjustFontFallback: true, // Automatically adjust fallback font metrics
+  adjustFontFallback: true, // Automatically adjust fallback font metrics to minimize layout shift
 });
 
 // Metadata configuration
