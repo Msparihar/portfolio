@@ -1,8 +1,5 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // Required for OpenNext/Cloudflare deployment
-  // Only enable standalone for CF builds to avoid Windows symlink issues
-  output: process.env.CF_BUILD === "true" ? "standalone" : undefined,
 
   // Enable experimental features for better performance
   experimental: {
@@ -127,6 +124,3 @@ const nextConfig = {
 };
 
 export default nextConfig;
-
-import { initOpenNextCloudflareForDev } from "@opennextjs/cloudflare";
-initOpenNextCloudflareForDev();
