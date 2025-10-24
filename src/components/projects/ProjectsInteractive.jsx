@@ -1,14 +1,20 @@
 "use client";
 
 import React, { useState } from "react";
-import { X, Search, Filter } from "lucide-react";
+import { X, Search, Filter, Grid3x3, LayoutGrid, ArrowRightLeft } from "lucide-react";
+import dynamic from "next/dynamic";
 import ProjectGrid from "@/components/projects/ProjectGrid";
 import portfolioConfig from "@/config/portfolio.json";
 import { extractUniqueTags } from "@/lib/utils";
 
+// Lazy load alternative layouts
+const ProjectBentoGrid = dynamic(() => import("@/components/projects/ProjectBentoGrid"), { ssr: false });
+const HorizontalScrollProjects = dynamic(() => import("@/components/projects/HorizontalScrollProjects"), { ssr: false });
+
 const ProjectsInteractive = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [activeFilter, setActiveFilter] = useState("all");
+  const [layoutMode, setLayoutMode] = useState("grid"); // 'grid', 'bento', 'horizontal'
 
   const filterOptions = [
     { id: "all", label: "All Projects" },
@@ -50,7 +56,7 @@ const ProjectsInteractive = () => {
 
   return (
     <div>
-      {/* Search and Filter Controls */}
+      {/* Search, Filter, and Layout Controls */}
       <div className="flex flex-col sm:flex-row gap-4 mb-6">
         {/* Search Input */}
         <div className="relative flex-1">
@@ -87,6 +93,43 @@ const ProjectsInteractive = () => {
             ))}
           </select>
         </div>
+
+        {/* Layout Mode Toggle */}
+        <div className="flex gap-2 bg-background/50 border border-border/30 rounded-md p-1">
+          <button
+            onClick={() => setLayoutMode("grid")}
+            className={`p-2 rounded transition-colors ${
+              layoutMode === "grid"
+                ? "bg-green-500/20 text-green-500"
+                : "text-muted-foreground hover:text-foreground"
+            }`}
+            title="Grid Layout"
+          >
+            <Grid3x3 className="w-4 h-4" />
+          </button>
+          <button
+            onClick={() => setLayoutMode("bento")}
+            className={`p-2 rounded transition-colors ${
+              layoutMode === "bento"
+                ? "bg-green-500/20 text-green-500"
+                : "text-muted-foreground hover:text-foreground"
+            }`}
+            title="Bento Layout"
+          >
+            <LayoutGrid className="w-4 h-4" />
+          </button>
+          <button
+            onClick={() => setLayoutMode("horizontal")}
+            className={`p-2 rounded transition-colors ${
+              layoutMode === "horizontal"
+                ? "bg-green-500/20 text-green-500"
+                : "text-muted-foreground hover:text-foreground"
+            }`}
+            title="Horizontal Scroll"
+          >
+            <ArrowRightLeft className="w-4 h-4" />
+          </button>
+        </div>
       </div>
 
       {/* Results Count */}
@@ -99,11 +142,26 @@ const ProjectsInteractive = () => {
         </span>
       </div>
 
-      {/* Projects Grid */}
-      <ProjectGrid
-        searchQuery={searchQuery}
-        activeFilter={activeFilter}
-      />
+      {/* Projects Display - Switch based on layout mode */}
+      {layoutMode === "grid" && (
+        <ProjectGrid
+          searchQuery={searchQuery}
+          activeFilter={activeFilter}
+        />
+      )}
+
+      {layoutMode === "bento" && (
+        <ProjectBentoGrid
+          searchQuery={searchQuery}
+          activeFilter={activeFilter}
+        />
+      )}
+
+      {layoutMode === "horizontal" && (
+        <div className="-mx-4 sm:-mx-6 lg:-mx-8">
+          <HorizontalScrollProjects onCardClick={() => {}} />
+        </div>
+      )}
     </div>
   );
 };

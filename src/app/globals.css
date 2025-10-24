@@ -51,7 +51,7 @@
 
 @layer base {
   * {
-    @apply border-border;
+    border-color: hsl(var(--border));
   }
   body {
     @apply bg-background text-foreground font-mono;
@@ -68,8 +68,6 @@
   /* Optimize image rendering */
   img {
     content-visibility: auto;
-    /* Reduce layout shifts */
-    aspect-ratio: attr(width) / attr(height);
   }
 
   /* Critical CSS for terminal - Enhanced containment */
@@ -79,7 +77,8 @@
   }
 
   /* Optimize all interactive elements */
-  a, button {
+  a,
+  button {
     contain: layout style;
   }
 
@@ -122,8 +121,9 @@
   }
 
   .terminal-nav {
-    @apply backdrop-blur-sm border-border/30;
+    @apply backdrop-blur-sm;
     background: transparent;
+    border-color: hsl(var(--border) / 0.3);
     contain: layout style;
   }
 
@@ -191,7 +191,7 @@
   }
 
   .terminal-title::after {
-    content: '';
+    content: "";
     @apply flex-grow h-[1px] bg-border/30;
   }
 
@@ -217,8 +217,37 @@
 
   /* Optimize radial gradients */
   .bg-gradient-radial {
-    background-image: radial-gradient(circle at center, var(--tw-gradient-stops));
+    background-image: radial-gradient(
+      circle at center,
+      var(--tw-gradient-stops)
+    );
     will-change: auto;
+  }
+
+  /* Animated gradient for hero text */
+  @keyframes gradient {
+    0%,
+    100% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
+  }
+
+  .animate-gradient {
+    background-size: 200% 200%;
+    animation: gradient 3s ease infinite;
+  }
+
+  /* Pulse animation with delay */
+  .delay-1000 {
+    animation-delay: 1s;
+  }
+
+  /* Smooth hover scale */
+  .hover\:scale-105:hover {
+    transform: scale(1.05);
   }
 }
 
@@ -250,4 +279,29 @@
   );
   background-size: 200% 100%;
   animation: skeleton-loading 1.5s ease-in-out infinite;
+}
+
+/* Infinite scroll animation */
+@keyframes scroll {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(calc(-50% - 0.5rem));
+  }
+}
+
+.animate-scroll {
+  animation: scroll var(--animation-duration, 40s)
+    var(--animation-direction, forwards) linear infinite;
+}
+
+/* Shimmer animation for buttons */
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
 }

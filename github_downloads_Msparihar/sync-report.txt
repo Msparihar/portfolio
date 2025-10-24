@@ -1,0 +1,35 @@
+
+GitHub Projects Sync Report
+2025-09-28T21:08:07.259Z
+==================================================
+
+Repositories:
+  - Total public repositories: 25
+  - Processed (updated): 0
+  - Skipped (unchanged): 25
+
+Downloads:
+  - Asset files downloaded: 0
+  - README files downloaded: 0
+
+Mode: LIVE
+Directory: D:\Projects\portfolio\github_downloads_Msparihar
+
+Warnings/Errors:
+  [WARN] Found 16 repositories to clean up: ANN, assignment_manish, django-expenses-website, fastapi-docker, forofuse, graphrag, invoice-parser, know-your-ppt, langgraph-deployment, pokemon-mcp-ui, RAG-Chatbot, Resume-Screening, Students-Performance-Analysis, test-mcp-js, Text-Classification, todo
+  [WARN] Removed directory: D:\Projects\portfolio\github_downloads_Msparihar\ANN
+  [WARN] Removed directory: D:\Projects\portfolio\github_downloads_Msparihar\assignment_manish
+  [WARN] Removed directory: D:\Projects\portfolio\github_downloads_Msparihar\django-expenses-website
+  [WARN] Removed directory: D:\Projects\portfolio\github_downloads_Msparihar\fastapi-docker
+  [WARN] Removed directory: D:\Projects\portfolio\github_downloads_Msparihar\forofuse
+  [WARN] Removed directory: D:\Projects\portfolio\github_downloads_Msparihar\graphrag
+  [WARN] Removed directory: D:\Projects\portfolio\github_downloads_Msparihar\invoice-parser
+  [WARN] Removed directory: D:\Projects\portfolio\github_downloads_Msparihar\know-your-ppt
+  [WARN] Removed directory: D:\Projects\portfolio\github_downloads_Msparihar\langgraph-deployment
+  [WARN] Removed directory: D:\Projects\portfolio\github_downloads_Msparihar\pokemon-mcp-ui
+  [WARN] Removed directory: D:\Projects\portfolio\github_downloads_Msparihar\RAG-Chatbot
+  [WARN] Removed directory: D:\Projects\portfolio\github_downloads_Msparihar\Resume-Screening
+  [WARN] Removed directory: D:\Projects\portfolio\github_downloads_Msparihar\Students-Performance-Analysis
+  [WARN] Removed directory: D:\Projects\portfolio\github_downloads_Msparihar\test-mcp-js
+  [WARN] Removed directory: D:\Projects\portfolio\github_downloads_Msparihar\Text-Classification
+  [WARN] Removed directory: D:\Projects\portfolio\github_downloads_Msparihar\todo

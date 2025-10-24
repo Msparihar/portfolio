@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
-const EnhancedTerminal = ({ onNavigate }) => {
+const EnhancedTerminal = () => {
   const [input, setInput] = useState('');
   const [history, setHistory] = useState([]);
   const [commandHistory, setCommandHistory] = useState([]);
@@ -77,9 +77,9 @@ const EnhancedTerminal = ({ onNavigate }) => {
         
         const section = args[0].toLowerCase();
         const validSections = ['projects', 'blog', 'contact', 'about', 'skills'];
-        
+
         if (validSections.includes(section)) {
-          onNavigate?.(section);
+          window.location.href = `/${section}`;
           return [`Navigating to ${section}...`];
         } else {
           return [`Section '${section}' not found. Available: ${validSections.join(', ')}`];

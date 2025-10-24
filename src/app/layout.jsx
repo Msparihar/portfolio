@@ -2,6 +2,7 @@ import { Providers } from "./providers";
 import { IBM_Plex_Mono, Fira_Code } from 'next/font/google';
 import "./globals.css";
 import portfolioData from '@/config/portfolio.json';
+import { SmoothScroll } from '@/components/effects/SmoothScroll';
 
 // Optimize font loading with next/font - Use 'block' to prevent FOUT and layout shifts
 const ibmPlexMono = IBM_Plex_Mono({
@@ -114,7 +115,11 @@ export default function RootLayout({ children }) {
         <link rel="dns-prefetch" href="//res.cloudinary.com" />
       </head>
       <body>
-        <Providers>{children}</Providers>
+        <Providers>
+          <SmoothScroll>
+            {children}
+          </SmoothScroll>
+        </Providers>
       </body>
     </html>
   );
