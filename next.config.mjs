@@ -1,8 +1,5 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // Output standalone mode for optimized Vercel deployments
-  output: 'standalone',
-
   // Enable experimental features for better performance
   experimental: {
     optimizePackageImports: [
