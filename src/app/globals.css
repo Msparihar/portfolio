@@ -105,6 +105,8 @@
     @apply p-3 sm:p-4 md:p-6 rounded-lg shadow-lg;
     /* Optimize repaints */
     will-change: auto;
+    /* Hide browser's default text cursor */
+    caret-color: transparent;
     /* Better text wrapping on mobile */
     word-wrap: break-word;
     overflow-wrap: break-word;

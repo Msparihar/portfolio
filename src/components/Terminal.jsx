@@ -611,7 +611,7 @@ Use the corresponding command to navigate to each section.`
               }}
             >
               {input}
-              <span className="inline-block w-2 h-4 -mb-1 bg-green-700/90 dark:bg-green-500/80" style={{
+              <span className="inline-block w-2 h-[1.2em] bg-green-700/90 dark:bg-green-500/80" style={{
                 animation: 'terminal-blink 1s step-end infinite'
               }}></span>
             </span>

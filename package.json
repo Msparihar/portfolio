@@ -15,11 +15,8 @@
   },
   "dependencies": {
     "@radix-ui/react-slot": "^1.1.2",
-    "@shadcn/ui": "^0.0.4",
-    "@vercel/speed-insights": "^1.2.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
-    "dotenv": "^16.6.1",
     "framer-motion": "12.23.22",
     "lucide-react": "^0.469.0",
     "mini-svg-data-uri": "^1.4.4",
