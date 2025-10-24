@@ -96,10 +96,10 @@ const ContactInteractive = () => {
   };
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 lg:gap-8">
       {/* Left Column - Contact Info */}
-      <div className="space-y-6">
-        <div className="border-[0.5px] border-border/30 rounded-lg terminal-container p-6">
+      <div className="space-y-4 sm:space-y-6">
+        <div className="border-[0.5px] border-border/30 rounded-lg terminal-container p-4 sm:p-6">
           <h2 className="text-xl font-bold mb-4 text-green-500">
             <span className="terminal-prompt">$</span>
             <span className="ml-2">whoami</span>
@@ -132,24 +132,24 @@ const ContactInteractive = () => {
           </div>
         </div>
 
-        <div className="border-[0.5px] border-border/30 rounded-lg terminal-container p-6">
-          <h3 className="text-lg font-bold mb-4 text-green-500">
+        <div className="border-[0.5px] border-border/30 rounded-lg terminal-container p-4 sm:p-6">
+          <h3 className="text-base sm:text-lg font-bold mb-3 sm:mb-4 text-green-500">
             <span className="terminal-prompt">$</span>
             <span className="ml-2">echo "Let's connect!"</span>
           </h3>
 
-          <div className="text-sm text-muted-foreground">
+          <div className="text-xs sm:text-sm text-muted-foreground">
             <TypeWriter
               text="I'm always interested in hearing about new opportunities, interesting projects, or just having a chat about technology. Feel free to reach out!"
               delay={10}
-              className="leading-relaxed"
+              className="leading-relaxed break-words"
             />
           </div>
         </div>
       </div>
 
       {/* Right Column - Contact Form */}
-      <div className="border-[0.5px] border-border/30 rounded-lg terminal-container p-6">
+      <div className="border-[0.5px] border-border/30 rounded-lg terminal-container p-4 sm:p-6">
         <h2 className="text-xl font-bold mb-4 text-green-500">
           <span className="terminal-prompt">$</span>
           <span className="ml-2">send_message.sh</span>
@@ -234,7 +234,7 @@ const ContactInteractive = () => {
             <button
               type="submit"
               disabled={isSubmitting}
-              className="w-full flex items-center justify-center px-4 py-2 bg-green-500 hover:bg-green-600 disabled:bg-green-500/50 text-white font-medium rounded-md transition-colors"
+              className="w-full flex items-center justify-center px-4 py-3 sm:py-2 bg-green-500 hover:bg-green-600 disabled:bg-green-500/50 text-white font-medium rounded-md transition-colors text-base sm:text-sm min-h-[48px] sm:min-h-[44px]"
             >
               {isSubmitting ? (
                 <>

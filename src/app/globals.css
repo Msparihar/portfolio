@@ -102,9 +102,12 @@
 
 @layer components {
   .terminal-container {
-    @apply p-4 md:p-6 rounded-lg shadow-lg;
+    @apply p-3 sm:p-4 md:p-6 rounded-lg shadow-lg;
     /* Optimize repaints */
     will-change: auto;
+    /* Better text wrapping on mobile */
+    word-wrap: break-word;
+    overflow-wrap: break-word;
   }
 
   /* Dark mode terminal styling */
@@ -130,6 +133,8 @@
   .terminal-nav button {
     @apply text-sm transition-all duration-200 ease-in-out;
     min-width: fit-content;
+    /* Better touch targets on mobile */
+    min-height: 44px;
   }
 
   .terminal-nav button:hover {
@@ -250,4 +255,52 @@
   );
   background-size: 200% 100%;
   animation: skeleton-loading 1.5s ease-in-out infinite;
+}
+
+/* Mobile-specific optimizations */
+@media (max-width: 640px) {
+  /* Ensure text wraps properly on mobile */
+  .terminal-line {
+    word-break: break-word;
+    overflow-wrap: anywhere;
+  }
+
+  /* GitHub calendar mobile responsiveness */
+  .github-calendar {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Better spacing for mobile cards */
+  .project-card,
+  .blog-card {
+    @apply mb-4;
+  }
+
+  /* Stack social links vertically on very small screens */
+  @media (max-width: 400px) {
+    .footer-social-links {
+      @apply flex-col space-x-0 space-y-3;
+    }
+  }
+
+  /* Better touch targets for all interactive elements */
+  a, button {
+    min-height: 44px;
+    min-width: 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* Prevent horizontal overflow */
+  body {
+    overflow-x: hidden;
+  }
+
+  /* Better input sizing on mobile */
+  input, textarea, select {
+    @apply text-base; /* Prevents zoom on iOS */
+    min-height: 44px;
+  }
 }
