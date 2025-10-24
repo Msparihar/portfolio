@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 
 const GithubCalendarGrid = ({ contributions, theme = 'dark', className = '' }) => {
   // Terminal-themed color schemes that match your portfolio
@@ -70,20 +70,26 @@ const GithubCalendarGrid = ({ contributions, theme = 'dark', className = '' }) =
     return weeks;
   };
 
-  // Calculate total contributions for the last 365 days only
-  const today = new Date();
-  const oneYearAgo = new Date();
-  oneYearAgo.setDate(today.getDate() - 365);
+  // Memoize date calculations to avoid recomputing on every render
+  const { today, oneYearAgo } = useMemo(() => {
+    const today = new Date();
+    const oneYearAgo = new Date();
+    oneYearAgo.setDate(today.getDate() - 365);
+    return { today, oneYearAgo };
+  }, []); // Only compute once since it's based on current date
 
-  const totalContributions = contributions
-    .filter(contrib => {
-      const contribDate = new Date(contrib.date);
-      return contribDate >= oneYearAgo && contribDate <= today;
-    })
-    .reduce((sum, contrib) => sum + contrib.count, 0);
+  // Memoize total contributions calculation
+  const totalContributions = useMemo(() => {
+    return contributions
+      .filter(contrib => {
+        const contribDate = new Date(contrib.date);
+        return contribDate >= oneYearAgo && contribDate <= today;
+      })
+      .reduce((sum, contrib) => sum + contrib.count, 0);
+  }, [contributions, oneYearAgo, today]);
 
-  // Group contributions into weeks
-  const weeks = groupByWeeks(contributions);
+  // Memoize weeks grouping - only recompute when contributions change
+  const weeks = useMemo(() => groupByWeeks(contributions), [contributions]);
 
   // Month labels (simplified - show every 3 months)
   const getMonthLabels = () => {

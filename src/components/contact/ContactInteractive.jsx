@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useTheme } from "next-themes";
 import { Send, CheckCircle } from "lucide-react";
 import { ThemeToggle } from "@/components/theme-toggle";
@@ -9,16 +9,48 @@ import { ThemeToggle } from "@/components/theme-toggle";
 const TypeWriter = ({ text, delay = 10, className = '' }) => {
   const [displayText, setDisplayText] = useState('');
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [started, setStarted] = useState(false);
+  const rafRef = useRef(null);
+  const lastFrameTime = useRef(0);
 
   useEffect(() => {
-    if (currentIndex < text.length) {
-      const timer = setTimeout(() => {
+    // Defer animation start until after initial paint
+    const startTimer = requestIdleCallback ?
+      requestIdleCallback(() => setStarted(true)) :
+      setTimeout(() => setStarted(true), 0);
+
+    return () => {
+      if (requestIdleCallback) {
+        cancelIdleCallback(startTimer);
+      } else {
+        clearTimeout(startTimer);
+      }
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!started || currentIndex >= text.length) return;
+
+    const animate = (currentTime) => {
+      if (currentTime - lastFrameTime.current >= delay) {
         setDisplayText(prev => prev + text[currentIndex]);
         setCurrentIndex(prev => prev + 1);
-      }, delay);
-      return () => clearTimeout(timer);
-    }
-  }, [currentIndex, delay, text]);
+        lastFrameTime.current = currentTime;
+      }
+
+      if (currentIndex + 1 < text.length) {
+        rafRef.current = requestAnimationFrame(animate);
+      }
+    };
+
+    rafRef.current = requestAnimationFrame(animate);
+
+    return () => {
+      if (rafRef.current) {
+        cancelAnimationFrame(rafRef.current);
+      }
+    };
+  }, [currentIndex, delay, text, started]);
 
   return (
     <span className={`${className} ${currentIndex < text.length ? 'typing-animation' : ''}`}>
@@ -109,7 +141,7 @@ const ContactInteractive = () => {
           <div className="text-sm text-muted-foreground">
             <TypeWriter
               text="I'm always interested in hearing about new opportunities, interesting projects, or just having a chat about technology. Feel free to reach out!"
-              delay={30}
+              delay={10}
               className="leading-relaxed"
             />
           </div>

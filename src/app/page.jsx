@@ -1,9 +1,18 @@
-import { Terminal } from "@/components/TerminalContext";
 import { ThemeToggle } from "@/components/theme-toggle";
 import Link from "next/link";
 import portfolioData from '@/config/portfolio.json';
 import { Github, Linkedin, Twitter, Hash } from 'lucide-react';
 import dynamic from 'next/dynamic';
+
+// Lazy load Terminal component to reduce initial bundle size
+const Terminal = dynamic(() => import('@/components/TerminalContext').then(mod => ({ default: mod.Terminal })), {
+  ssr: true,
+  loading: () => (
+    <div className="terminal-container relative overflow-hidden min-h-[200px] flex items-center justify-center">
+      <div className="text-center text-muted-foreground">Loading terminal...</div>
+    </div>
+  )
+});
 
 // Lazy load GitHub contributions to reduce initial bundle size
 const GithubContributions = dynamic(() => import('@/components/GithubContributions'), {
@@ -28,14 +37,15 @@ export const metadata = {
   }
 };
 
-// Import shared GitHub contributions function
-import { getGithubContributions } from '@/lib/githubContributions';
+// Import fast fallback-first GitHub function for instant page loads
+import { getGithubContributionsFast } from '@/lib/githubContributions';
 
-// Fetch GitHub contributions data server-side (no HTTP call, direct function call)
+// Fetch GitHub contributions data server-side with fallback-first strategy
+// This returns cached/fallback data instantly without waiting for API
 async function fetchGithubContributions() {
   try {
     const githubUsername = portfolioData.githubUsername || 'Msparihar';
-    const result = await getGithubContributions(githubUsername);
+    const result = await getGithubContributionsFast(githubUsername);
     return result;
   } catch (error) {
     console.error('Error fetching GitHub contributions:', error);

@@ -1,4 +1,5 @@
-import fs from 'fs';
+import fs from 'fs/promises';
+import fsSync from 'fs';
 import path from 'path';
 
 // In-memory cache for server-side caching
@@ -12,67 +13,75 @@ const CACHE_FILE = path.join(CACHE_DIR, 'github-contributions.json');
 // Static fallback file
 const FALLBACK_FILE = path.join(process.cwd(), 'public/fallback-github-data.json');
 
-// Ensure cache directory exists
-if (!fs.existsSync(CACHE_DIR)) {
+// Track if cache directory has been initialized
+let cacheDirInitialized = false;
+let cacheLoaded = false;
+
+// Ensure cache directory exists (async)
+const ensureCacheDir = async () => {
+  if (cacheDirInitialized) return;
+
   try {
-    fs.mkdirSync(CACHE_DIR, { recursive: true });
+    await fs.mkdir(CACHE_DIR, { recursive: true });
+    cacheDirInitialized = true;
   } catch (err) {
     console.warn('Could not create cache directory:', err);
   }
-}
+};
 
-// Load cache from file on startup
-const loadFileCache = () => {
+// Load cache from file lazily (async)
+const loadFileCache = async () => {
+  if (cacheLoaded) return;
+
   try {
-    if (fs.existsSync(CACHE_FILE)) {
-      const fileContent = fs.readFileSync(CACHE_FILE, 'utf8');
-      const fileCache = JSON.parse(fileContent);
+    const fileContent = await fs.readFile(CACHE_FILE, 'utf8');
+    const fileCache = JSON.parse(fileContent);
 
-      // Load valid cache entries into memory
-      Object.entries(fileCache).forEach(([username, cached]) => {
-        if (Date.now() - cached.timestamp < CACHE_DURATION) {
-          cache.set(username, cached);
-        }
-      });
-    }
+    // Load valid cache entries into memory
+    Object.entries(fileCache).forEach(([username, cached]) => {
+      if (Date.now() - cached.timestamp < CACHE_DURATION) {
+        cache.set(username, cached);
+      }
+    });
+
+    cacheLoaded = true;
   } catch (err) {
-    console.warn('Could not load file cache:', err);
+    // File doesn't exist or couldn't be read - that's ok
+    cacheLoaded = true;
   }
 };
 
-// Save cache to file
-const saveFileCache = () => {
+// Save cache to file (async)
+const saveFileCache = async () => {
   try {
+    await ensureCacheDir();
+
     const fileCacheData = {};
     cache.forEach((value, key) => {
       fileCacheData[key] = value;
     });
-    fs.writeFileSync(CACHE_FILE, JSON.stringify(fileCacheData, null, 2));
+
+    await fs.writeFile(CACHE_FILE, JSON.stringify(fileCacheData, null, 2));
   } catch (err) {
     console.warn('Could not save file cache:', err);
   }
 };
 
-// Load static fallback data
-const loadFallbackData = (username) => {
+// Load static fallback data (async)
+const loadFallbackData = async (username) => {
   try {
-    if (fs.existsSync(FALLBACK_FILE)) {
-      const fallbackContent = fs.readFileSync(FALLBACK_FILE, 'utf8');
-      const fallbackData = JSON.parse(fallbackContent);
+    const fallbackContent = await fs.readFile(FALLBACK_FILE, 'utf8');
+    const fallbackData = JSON.parse(fallbackContent);
 
-      // Check if fallback has data for this username
-      if (fallbackData[username]) {
-        return fallbackData[username];
-      }
+    // Check if fallback has data for this username
+    if (fallbackData[username]) {
+      return fallbackData[username];
     }
   } catch (err) {
     console.warn('Could not load fallback data:', err);
   }
   return null;
 };
-
-// Initialize cache from file
-loadFileCache();
 
 /**
  * Fetch GitHub contributions with three-tier fallback:
@@ -82,6 +91,9 @@ loadFileCache();
  */
 export async function getGithubContributions(username = 'Msparihar') {
   try {
+    // Load file cache lazily on first request
+    await loadFileCache();
+
     // Tier 1: Check if we have valid cached data
     const cached = cache.get(username);
     if (cached && (Date.now() - cached.timestamp < CACHE_DURATION)) {
@@ -118,7 +130,7 @@ export async function getGithubContributions(username = 'Msparihar') {
     };
 
     cache.set(username, cacheEntry);
-    saveFileCache(); // Persist to file
+    saveFileCache(); // Persist to file (async, but don't await)
 
     return {
       data,
@@ -141,7 +153,7 @@ export async function getGithubContributions(username = 'Msparihar') {
     }
 
     // Tier 3: Return static fallback data
-    const fallbackData = loadFallbackData(username);
+    const fallbackData = await loadFallbackData(username);
     if (fallbackData) {
       return {
         data: fallbackData,
@@ -151,6 +163,49 @@ export async function getGithubContributions(username = 'Msparihar') {
     }
 
     // No data available at all
+    return {
+      error: true,
+      message: error.message
+    };
+  }
+}
+
+/**
+ * Get GitHub contributions with fallback-first strategy for instant page loads
+ * Returns fallback data immediately without waiting for API
+ */
+export async function getGithubContributionsFast(username = 'Msparihar') {
+  try {
+    // Load file cache lazily on first request
+    await loadFileCache();
+
+    // Check in-memory cache first
+    const cached = cache.get(username);
+    if (cached && (Date.now() - cached.timestamp < CACHE_DURATION)) {
+      return {
+        data: cached.data,
+        cached: true,
+        cachedAt: new Date(cached.timestamp).toISOString()
+      };
+    }
+
+    // Return fallback data immediately without API call
+    const fallbackData = await loadFallbackData(username);
+    if (fallbackData) {
+      return {
+        data: fallbackData,
+        fallback: true,
+        message: 'Using static fallback data'
+      };
+    }
+
+    // No cached or fallback data available
+    return {
+      error: true,
+      message: 'No cached data available'
+    };
+  } catch (error) {
+    console.error('Error loading GitHub contributions:', error);
     return {
       error: true,
       message: error.message
@@ -171,7 +226,7 @@ export async function saveFallbackData(username = 'Msparihar') {
         generatedAt: new Date().toISOString()
       };
 
-      fs.writeFileSync(FALLBACK_FILE, JSON.stringify(fallbackData, null, 2));
+      await fs.writeFile(FALLBACK_FILE, JSON.stringify(fallbackData, null, 2));
       console.log('✅ Fallback data saved successfully');
       return true;
     }

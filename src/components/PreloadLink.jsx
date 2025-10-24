@@ -3,7 +3,7 @@
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 
-// Aggressive preloading strategy
+// Smart aggressive preloading strategy - prefetch after idle for instant navigation
 export const usePreloadPages = () => {
   const router = useRouter();
 
@@ -13,28 +13,53 @@ export const usePreloadPages = () => {
       router.prefetch(href);
     };
 
-    // Immediately preload all main pages on homepage load
-    const mainPages = ['/projects', '/blog', '/contact'];
-    mainPages.forEach(page => {
-      preloadPage(page);
-    });
+    // Main routes to prefetch (most commonly navigated pages)
+    const mainRoutes = ['/projects', '/blog', '/contact'];
 
-    // Add hover listeners to navigation links for instant loading
+    // Prefetch main routes when browser is idle (won't block initial render)
+    const prefetchMainRoutes = () => {
+      mainRoutes.forEach(route => {
+        preloadPage(route);
+      });
+    };
+
+    // Use requestIdleCallback to defer prefetching until browser is idle
+    // This ensures initial page load is not impacted
+    const idleHandle = typeof requestIdleCallback !== 'undefined'
+      ? requestIdleCallback(prefetchMainRoutes, { timeout: 3000 })
+      : setTimeout(prefetchMainRoutes, 2000);
+
+    // Add hover and focus listeners as backup for early interactions
+    // (before idle prefetch completes)
     const links = document.querySelectorAll('a[href^="/"]');
+
+    const handleInteraction = (event) => {
+      const href = event.currentTarget.getAttribute('href');
+      if (href && href !== '/' && !href.startsWith('#')) {
+        preloadPage(href);
+      }
+    };
 
     links.forEach(link => {
       const href = link.getAttribute('href');
       if (href && href !== '/' && !href.startsWith('#')) {
-        link.addEventListener('mouseenter', () => preloadPage(href), { once: true });
+        link.addEventListener('mouseenter', handleInteraction, { once: true });
+        link.addEventListener('focus', handleInteraction, { once: true });
       }
     });
 
     return () => {
+      // Cleanup idle callback
+      if (typeof requestIdleCallback !== 'undefined') {
+        cancelIdleCallback(idleHandle);
+      } else {
+        clearTimeout(idleHandle);
+      }
+
+      // Cleanup event listeners
       links.forEach(link => {
-        const href = link.getAttribute('href');
-        if (href && href !== '/' && !href.startsWith('#')) {
-          link.removeEventListener('mouseenter', () => preloadPage(href));
-        }
+        link.removeEventListener('mouseenter', handleInteraction);
+        link.removeEventListener('focus', handleInteraction);
       });
     };
   }, [router]);
