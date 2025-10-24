@@ -1,6 +1,14 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useEffect, useRef } from 'react';
 
 const GithubCalendarGrid = ({ contributions, theme = 'dark', className = '' }) => {
+  const scrollContainerRef = useRef(null);
+
+  // Scroll to the right (most recent contributions) on mount
+  useEffect(() => {
+    if (scrollContainerRef.current) {
+      scrollContainerRef.current.scrollLeft = scrollContainerRef.current.scrollWidth;
+    }
+  }, [contributions]);
   // Terminal-themed color schemes that match your portfolio
   const colorSchemes = {
     light: [
@@ -102,34 +110,34 @@ const GithubCalendarGrid = ({ contributions, theme = 'dark', className = '' }) =
 
   return (
     <div className={`github-calendar ${className}`}>
-      {/* Calendar Grid */}
-      <div className="flex flex-col items-center">
+      {/* Calendar Grid - Scrollable on mobile */}
+      <div ref={scrollContainerRef} className="flex flex-col items-start sm:items-center overflow-x-auto pb-2">
         {/* Month labels */}
-        <div className="flex mb-2 text-xs text-muted-foreground font-mono">
+        <div className="flex mb-2 text-[10px] sm:text-sm text-muted-foreground font-mono min-w-max">
           {monthLabels.map((month, index) => (
-            <div key={month} className="w-12 text-center" style={{ marginLeft: index > 0 ? '36px' : '0' }}>
+            <div key={month} className="w-8 sm:w-12 text-center" style={{ marginLeft: index > 0 ? '24px' : '0' }}>
               {month}
             </div>
           ))}
         </div>
 
         {/* Day labels and calendar grid */}
-        <div className="flex">
+        <div className="flex min-w-max">
           {/* Day labels */}
-          <div className="flex flex-col text-xs text-muted-foreground font-mono mr-2">
-            <div className="h-3"></div> {/* Spacer for month labels */}
-            <div className="h-3">Mon</div>
-            <div className="h-3"></div>
-            <div className="h-3">Wed</div>
-            <div className="h-3"></div>
-            <div className="h-3">Fri</div>
-            <div className="h-3"></div>
+          <div className="flex flex-col text-[9px] sm:text-xs text-muted-foreground font-mono mr-1 sm:mr-2">
+            <div className="h-2 sm:h-3"></div> {/* Spacer for month labels */}
+            <div className="h-2 sm:h-3">Mon</div>
+            <div className="h-2 sm:h-3"></div>
+            <div className="h-2 sm:h-3">Wed</div>
+            <div className="h-2 sm:h-3"></div>
+            <div className="h-2 sm:h-3">Fri</div>
+            <div className="h-2 sm:h-3"></div>
           </div>
 
           {/* Calendar grid */}
-          <div className="flex gap-1">
+          <div className="flex gap-[2px] sm:gap-1">
             {weeks.map((week, weekIndex) => (
-              <div key={weekIndex} className="flex flex-col gap-1">
+              <div key={weekIndex} className="flex flex-col gap-[2px] sm:gap-1">
                 {/* Create 7 slots, but only fill with actual dates */}
                 {[0, 1, 2, 3, 4, 5, 6].map((dayOfWeek) => {
                   const contrib = week.find(c => new Date(c.date).getDay() === dayOfWeek);
@@ -139,7 +147,7 @@ const GithubCalendarGrid = ({ contributions, theme = 'dark', className = '' }) =
                     return (
                       <div
                         key={`${weekIndex}-${dayOfWeek}`}
-                        className="w-3 h-3"
+                        className="w-2 h-2 sm:w-3 sm:h-3"
                       />
                     );
                   }
@@ -151,7 +159,7 @@ const GithubCalendarGrid = ({ contributions, theme = 'dark', className = '' }) =
                   return (
                     <div
                       key={`${weekIndex}-${dayOfWeek}`}
-                      className="w-3 h-3 rounded-sm border border-border/20"
+                      className="w-2 h-2 sm:w-3 sm:h-3 rounded-sm border border-border/20"
                       style={{
                         backgroundColor: colors[level] || colors[0]
                       }}
@@ -165,13 +173,13 @@ const GithubCalendarGrid = ({ contributions, theme = 'dark', className = '' }) =
         </div>
 
         {/* Legend */}
-        <div className="mt-4 flex items-center justify-center space-x-4 text-xs font-mono">
+        <div className="mt-3 sm:mt-4 flex items-center justify-center space-x-2 sm:space-x-4 text-[10px] sm:text-xs font-mono">
           <span className="text-muted-foreground">Less</span>
-          <div className="flex space-x-1">
+          <div className="flex space-x-0.5 sm:space-x-1">
             {colors.map((color, index) => (
               <div
                 key={index}
-                className="w-3 h-3 rounded-sm border border-border/20"
+                className="w-2 h-2 sm:w-3 sm:h-3 rounded-sm border border-border/20"
                 style={{ backgroundColor: color }}
                 title={`Level ${index}`}
               />
@@ -179,15 +187,15 @@ const GithubCalendarGrid = ({ contributions, theme = 'dark', className = '' }) =
           </div>
           <span className="text-muted-foreground">More</span>
         </div>
+      </div>
 
-        {/* Statistics */}
-        <div className="mt-4 text-center text-sm text-muted-foreground font-mono">
-          <span className="terminal-prompt mr-2">&gt;</span>
-          <span>
-            <span className="text-green-500 font-bold">{totalContributions}</span>
-            <span> contributions in the last year</span>
-          </span>
-        </div>
+      {/* Statistics - Outside scrollable container to stay centered */}
+      <div className="mt-3 sm:mt-4 text-center text-xs sm:text-sm text-muted-foreground font-mono px-2">
+        <span className="terminal-prompt mr-2">&gt;</span>
+        <span className="break-words">
+          <span className="text-green-500 font-bold">{totalContributions}</span>
+          <span> contributions in the last year</span>
+        </span>
       </div>
     </div>
   );

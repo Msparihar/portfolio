@@ -56,7 +56,7 @@ async function fetchGithubContributions() {
 const NavLink = ({ path, label, isActive = false }) => (
   <Link
     href={`/${path === 'home' ? '' : path}`}
-    className={`group text-left transition-colors px-3 py-1.5 rounded-md
+    className={`group text-left transition-colors px-2 sm:px-3 py-1 sm:py-1.5 rounded-md text-sm
     ${isActive
       ? 'bg-green-500/20 text-green-500 hover:bg-green-500/30'
       : 'hover:bg-black/20 dark:hover:bg-white/5 hover:text-green-500'
@@ -98,26 +98,27 @@ export default async function Home() {
         {/* Radial gradient */}
         <div className="absolute inset-0 bg-gradient-radial from-background via-background/80 to-transparent -z-10" />
 
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 md:py-8">
+        <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8 py-3 sm:py-4 md:py-8">
           {/* Header with Navigation */}
-          <div className="mb-8 border-[0.5px] border-border/30 rounded-lg terminal-nav relative overflow-hidden backdrop-blur-sm">
-            <div className="p-3 flex flex-col md:flex-row md:items-center justify-between gap-3">
-              {/* Terminal identifier */}
-              <div className="flex items-center text-sm text-green-500/90 hidden md:flex">
-                <span className="terminal-prompt mr-2">~</span>
-                <span className="mr-4 font-medium">{portfolioData.name.toLowerCase()}</span>
+          <div className="mb-6 sm:mb-8 border-[0.5px] border-border/30 rounded-lg terminal-nav relative overflow-hidden backdrop-blur-sm">
+            <div className="p-2 sm:p-3 flex flex-col gap-2 sm:gap-3">
+              {/* Terminal identifier - Now visible on mobile */}
+              <div className="flex items-center justify-between">
+                <div className="flex items-center text-xs sm:text-sm text-green-500/90">
+                  <span className="terminal-prompt mr-2">~</span>
+                  <span className="font-medium truncate">{portfolioData.name.toLowerCase()}</span>
+                </div>
+                {/* Theme toggle moved to top right on mobile */}
+                <ThemeToggle />
               </div>
 
-              {/* Navigation */}
-              <nav className="flex flex-wrap items-center gap-2">
+              {/* Navigation - Better wrapping on mobile */}
+              <nav className="flex flex-wrap items-center gap-1 sm:gap-2">
                 <NavLink path="home" isActive={true} />
                 <NavLink path="projects" />
                 <NavLink path="contact" />
                 <NavLink path="blog" label="blog" />
               </nav>
-
-              {/* Theme toggle */}
-              <ThemeToggle />
             </div>
           </div>
 
@@ -132,52 +133,51 @@ export default async function Home() {
           </div>
 
         {/* Footer */}
-        <footer className="mt-8 text-center text-sm text-muted-foreground border-t border-border/20 pt-4 pb-2">
-          <div className="terminal-line opacity-60">
+        <footer className="mt-6 sm:mt-8 text-center text-xs sm:text-sm text-muted-foreground border-t border-border/20 pt-4 pb-2">
+          <div className="terminal-line opacity-60 px-2">
             <span className="terminal-prompt">$</span>
-            <span className="ml-2" suppressHydrationWarning>
-              {`echo "© ${new Date().getFullYear()} • ${portfolioData.name} • Built with Next.js and
-              Tailwind CSS"`}
+            <span className="ml-2 break-words" suppressHydrationWarning>
+              {`echo "© ${new Date().getFullYear()} • ${portfolioData.name} • Built with Next.js and Tailwind CSS"`}
             </span>
           </div>
-          <div className="mt-3 flex justify-center space-x-6">
+          <div className="mt-3 flex flex-wrap justify-center gap-3 sm:gap-6 px-3">
             <a
               href={`https://${portfolioData.contact.github}`}
-              className="text-muted-foreground hover:text-[#333] dark:hover:text-white transition-colors flex items-center gap-2"
+              className="text-muted-foreground hover:text-[#333] dark:hover:text-white transition-colors flex items-center gap-1 sm:gap-2"
               target="_blank"
               rel="noopener noreferrer"
             >
-              <Github className="w-5 h-5" />
-              <span>GitHub</span>
+              <Github className="w-3.5 h-3.5 sm:w-5 sm:h-5" />
+              <span className="text-xs sm:text-sm">GitHub</span>
             </a>
             <a
               href={`https://${portfolioData.contact.linkedin}`}
-              className="text-muted-foreground hover:text-[#0077B5] transition-colors flex items-center gap-2"
+              className="text-muted-foreground hover:text-[#0077B5] transition-colors flex items-center gap-1 sm:gap-2"
               target="_blank"
               rel="noopener noreferrer"
             >
-              <Linkedin className="w-5 h-5" />
-              <span>LinkedIn</span>
+              <Linkedin className="w-3.5 h-3.5 sm:w-5 sm:h-5" />
+              <span className="text-xs sm:text-sm">LinkedIn</span>
             </a>
             {portfolioData.contact.twitter && (
               <a
                 href={`https://twitter.com/${portfolioData.contact.twitter.replace('@', '')}`}
-                className="text-muted-foreground hover:text-[#1DA1F2] transition-colors flex items-center gap-2"
+                className="text-muted-foreground hover:text-[#1DA1F2] transition-colors flex items-center gap-1 sm:gap-2"
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                <Twitter className="w-5 h-5" />
-                <span>Twitter</span>
+                <Twitter className="w-3.5 h-3.5 sm:w-5 sm:h-5" />
+                <span className="text-xs sm:text-sm">Twitter</span>
               </a>
             )}
             <a
               href="https://hashnode.com/@manishsparihar"
-              className="text-muted-foreground hover:text-[#2962FF] transition-colors flex items-center gap-2"
+              className="text-muted-foreground hover:text-[#2962FF] transition-colors flex items-center gap-1 sm:gap-2"
               target="_blank"
               rel="noopener noreferrer"
             >
-              <Hash className="w-5 h-5" />
-              <span>Hashnode</span>
+              <Hash className="w-3.5 h-3.5 sm:w-5 sm:h-5" />
+              <span className="text-xs sm:text-sm">Hashnode</span>
             </a>
           </div>
         </footer>

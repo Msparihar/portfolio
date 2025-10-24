@@ -11,7 +11,10 @@
       "Bash(cat:*)",
       "Bash(pnpm add:*)",
       "WebFetch(domain:posthog.com)",
-      "Bash(pnpm remove:*)"
+      "Bash(pnpm remove:*)",
+      "mcp__playwright__browser_navigate",
+      "mcp__playwright__browser_take_screenshot",
+      "mcp__playwright__browser_evaluate"
     ],
     "deny": [],
     "ask": []

@@ -45,3 +45,6 @@ github_downloads_Msparihar
 
 .open-next/
 dist/
+
+.playwright-mcp/
+.claude/

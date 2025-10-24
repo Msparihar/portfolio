@@ -30,19 +30,19 @@ const ProjectCard = ({ project, isDark, isPriority = false, onExpand }) => {
   const imageSrc = project.image || getPlaceholderImage(project.name);
 
   return (
-    <div className={`group relative overflow-hidden rounded-xl transition-all duration-300 cursor-pointer ${
+    <div className={`project-card group relative overflow-hidden rounded-xl transition-all duration-300 cursor-pointer ${
       isDark ? 'bg-gray-900 hover:bg-gray-800' : 'bg-white hover:bg-gray-50'
     } border ${isDark ? 'border-gray-800' : 'border-gray-200'} shadow-sm hover:shadow-md`}
     onClick={() => onExpand(project)}>
       {/* Project Image with Overlay */}
-      <div className="relative h-48 overflow-hidden image-container">
+      <div className="relative h-40 sm:h-48 overflow-hidden image-container">
         <div className="absolute inset-0 bg-gradient-to-b from-black/20 to-black/70 z-10"></div>
         <Image
           src={imageSrc}
           alt={project.name}
           width={600}
           height={400}
-          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
           priority={isPriority}
           loading={isPriority ? undefined : 'lazy'}
           placeholder="blur"
@@ -50,30 +50,30 @@ const ProjectCard = ({ project, isDark, isPriority = false, onExpand }) => {
           unoptimized={imageSrc.endsWith('.gif')}
           className="object-cover w-full h-full transition-all duration-700 group-hover:scale-105"
         />
-        <div className="absolute bottom-0 left-0 right-0 p-4 z-20">
+        <div className="absolute bottom-0 left-0 right-0 p-3 sm:p-4 z-20">
           <div className="flex items-center justify-between">
-            <h3 className="text-lg font-bold text-white mb-1 group-hover:text-green-400 transition-colors">
+            <h3 className="text-base sm:text-lg font-bold text-white mb-1 group-hover:text-green-400 transition-colors truncate pr-2">
               {project.name}
             </h3>
-            <div className="opacity-0 group-hover:opacity-100 transition-opacity">
-              <Expand size={20} className="text-white" />
+            <div className="opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0">
+              <Expand size={18} className="text-white sm:w-5 sm:h-5" />
             </div>
           </div>
         </div>
       </div>
 
       {/* Project Body */}
-      <div className="p-4">
-        <p className={`text-sm ${isDark ? 'text-gray-300' : 'text-gray-600'} mb-4 line-clamp-3`}>
+      <div className="p-3 sm:p-4">
+        <p className={`text-xs sm:text-sm ${isDark ? 'text-gray-300' : 'text-gray-600'} mb-3 sm:mb-4 line-clamp-2 sm:line-clamp-3`}>
           {project.description}
         </p>
 
         {/* Tech Stack */}
-        <div className="flex flex-wrap gap-2 mb-4">
-          {project.techStack.map((tech, i) => (
+        <div className="flex flex-wrap gap-1.5 sm:gap-2 mb-3 sm:mb-4">
+          {project.techStack.slice(0, 5).map((tech, i) => (
             <span
               key={i}
-              className={`text-xs px-2 py-1 rounded-full ${
+              className={`text-xs px-2 py-0.5 sm:py-1 rounded-full ${
                 isDark
                   ? 'bg-gray-800 text-gray-300'
                   : 'bg-gray-100 text-gray-700'
@@ -82,6 +82,13 @@ const ProjectCard = ({ project, isDark, isPriority = false, onExpand }) => {
               {tech}
             </span>
           ))}
+          {project.techStack.length > 5 && (
+            <span className={`text-xs px-2 py-0.5 sm:py-1 rounded-full ${
+              isDark ? 'bg-gray-800 text-gray-400' : 'bg-gray-100 text-gray-600'
+            }`}>
+              +{project.techStack.length - 5}
+            </span>
+          )}
         </div>
 
         {/* Project Links & Stats */}

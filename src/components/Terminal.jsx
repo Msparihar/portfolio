@@ -7,7 +7,7 @@ import { LoadingDotsCommand, TerminalLoader } from '@/components/ui/LoadingDots'
 import { useTheme } from 'next-themes';
 import TerminalLogo from './TerminalLogo';
 
-const TypeWriter = ({ text, delay = 10, className = '' }) => {
+const TypeWriter = ({ text, delay = 10, className = '', onUpdate }) => {
   const [displayText, setDisplayText] = useState('');
   const [currentIndex, setCurrentIndex] = useState(0);
   const [started, setStarted] = useState(false);
@@ -37,6 +37,10 @@ const TypeWriter = ({ text, delay = 10, className = '' }) => {
         setDisplayText(prev => prev + text[currentIndex]);
         setCurrentIndex(prev => prev + 1);
         lastFrameTime.current = currentTime;
+        // Trigger scroll update
+        if (onUpdate) {
+          onUpdate();
+        }
       }
 
       if (currentIndex + 1 < text.length) {
@@ -404,6 +408,13 @@ Use the corresponding command to navigate to each section.`
     }
   };
 
+  // Auto-scroll to bottom when history changes
+  useEffect(() => {
+    if (terminalRef.current) {
+      terminalRef.current.scrollTop = terminalRef.current.scrollHeight;
+    }
+  }, [history]);
+
   const parseCommand = (cmdString) => {
     const parts = cmdString.trim().split(' ');
     const cmd = parts[0].toLowerCase();
@@ -524,8 +535,8 @@ Use the corresponding command to navigate to each section.`
       <div
         ref={terminalRef}
         onClick={handleTerminalClick}
-        className="terminal-container font-mono overflow-auto relative z-10"
-        style={{ height: '60vh' }}
+        className="terminal-container font-mono overflow-y-auto relative z-10"
+        style={{ height: '60vh', minHeight: '400px', maxHeight: '60vh' }}
       >
         {history.map((entry, index) => (
           <div key={index} className="mb-4">
