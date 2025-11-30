@@ -72,6 +72,81 @@
   ],
   "projects": [
     {
+      "name": "Talent Match",
+      "description": "AI-powered recruitment platform with semantic resume screening. Features an interactive orbital visualization showing candidate-role match percentages, intelligent matching algorithms, and a modern dashboard for recruiters to find talent with precision.",
+      "image": "/images/talent-match.gif",
+      "techStack": [
+        "Next.js 15",
+        "React 19",
+        "TypeScript",
+        "PostgreSQL",
+        "Drizzle ORM",
+        "OpenAI",
+        "Tailwind CSS",
+        "Shadcn UI"
+      ],
+      "github": "https://github.com/Msparihar/talent-match",
+      "live": "https://talent-match-six.vercel.app"
+    },
+    {
+      "name": "Three.js Creative Agency",
+      "description": "Award-winning style creative agency website featuring stunning 3D animated graphics built with Three.js. Showcases interactive 3D elements, smooth animations, and modern web design principles inspired by Awwwards-winning sites.",
+      "image": "/images/threejs-experiment.gif",
+      "techStack": [
+        "Next.js",
+        "TypeScript",
+        "Three.js",
+        "React Three Fiber",
+        "Tailwind CSS",
+        "Framer Motion"
+      ],
+      "github": "https://github.com/Msparihar/threejs-experiment",
+      "live": "https://threejs-experiment-coral.vercel.app"
+    },
+    {
+      "_disabled": true,
+      "name": "LinkedIn Messaging Clone",
+      "description": "A pixel-perfect recreation of LinkedIn's messaging interface. Features real-time chat UI, conversation threads, and professional design patterns matching the LinkedIn aesthetic.",
+      "image": "/images/linkedin-messaging-placeholder.png",
+      "techStack": [
+        "Next.js",
+        "TypeScript",
+        "Tailwind CSS",
+        "Shadcn UI"
+      ],
+      "github": "https://github.com/Msparihar/v0-linked-in-messaging-app",
+      "live": "https://v0-linked-in-messaging-app.vercel.app"
+    },
+    {
+      "_disabled": true,
+      "name": "Awwwards Site Clone",
+      "description": "A design-focused website inspired by Awwwards-winning designs. Features creative layouts, smooth animations, and cutting-edge UI/UX patterns showcasing modern web design capabilities.",
+      "image": "/images/awwwards-site-placeholder.png",
+      "techStack": [
+        "Next.js",
+        "TypeScript",
+        "Tailwind CSS",
+        "Framer Motion"
+      ],
+      "github": "https://github.com/Msparihar/v0-awwwards-site",
+      "live": "https://v0-awwwards-site-seven-delta.vercel.app"
+    },
+    {
+      "_disabled": true,
+      "name": "Pokemon MCP UI",
+      "description": "A demonstration of Claude's Model Context Protocol (MCP) with a Pokemon-themed interface. Showcases how to build interactive UIs that communicate with MCP servers for AI-powered data retrieval and interactions.",
+      "image": "/images/pokemon-mcp-placeholder.png",
+      "techStack": [
+        "Next.js",
+        "TypeScript",
+        "MCP Protocol",
+        "Tailwind CSS",
+        "Docker"
+      ],
+      "github": "https://github.com/Msparihar/pokemon-mcp-ui",
+      "live": "https://pokemon-mcp-ui.vercel.app"
+    },
+    {
       "name": "ReddiChat",
       "description": "An intelligent AI chatbot that combines advanced language models with real-time Reddit insights. Features Google OAuth authentication, persistent chat history, and smart tool selection for enriched conversations with community perspectives from Reddit discussions.",
       "image": "/images/optimized/reddichat-hero.webp",

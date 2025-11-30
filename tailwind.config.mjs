@@ -100,6 +100,10 @@ const config = {
           "0%, 100%": { opacity: 0 },
           "50%": { opacity: 1 },
         },
+        "terminal-blink": {
+          "0%, 100%": { opacity: 1 },
+          "50%": { opacity: 0.3 },
+        },
         "print-text": {
           from: { width: "0" },
           to: { width: "100%" },
@@ -111,6 +115,7 @@ const config = {
         "terminal-flicker": "terminal-flicker 5s ease-in-out infinite",
         "terminal-scan": "terminal-scan 10s linear infinite",
         "cursor-blink": "cursor-blink 1s step-end infinite",
+        "terminal-blink": "terminal-blink 0.5s step-end infinite",
         "print-text": "print-text 3s steps(60, end)",
       },
       typography: {

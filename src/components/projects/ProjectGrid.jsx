@@ -150,11 +150,12 @@ const ProjectGrid = ({ searchQuery = '', activeFilter = 'all' }) => {
   const [selectedProject, setSelectedProject] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  // Load projects data
+  // Load projects data (filter out disabled projects)
   useEffect(() => {
     const loadProjects = async () => {
       try {
-        setProjects(portfolioData.projects);
+        const activeProjects = portfolioData.projects.filter(p => !p._disabled);
+        setProjects(activeProjects);
         setLoading(false);
       } catch (err) {
         console.error('Error loading projects:', err);
