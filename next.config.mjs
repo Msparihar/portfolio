@@ -1,5 +1,8 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  // Enable standalone output for Docker deployments
+  output: "standalone",
+
   // Enable experimental features for better performance
   experimental: {
     optimizePackageImports: [
@@ -100,9 +103,9 @@ const nextConfig = {
               );
             },
             name(module) {
-              const packageName = module.identifier().match(
-                /[\\/]node_modules[\\/](.*?)([\\/]|$)/
-              )?.[1];
+              const packageName = module
+                .identifier()
+                .match(/[\\/]node_modules[\\/](.*?)([\\/]|$)/)?.[1];
               return `lib-${packageName?.replace("@", "")}`;
             },
             priority: 30,
