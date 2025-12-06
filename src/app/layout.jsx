@@ -113,7 +113,7 @@ export default function RootLayout({ children }) {
         <link rel="dns-prefetch" href="//images.unsplash.com" />
         <link rel="dns-prefetch" href="//res.cloudinary.com" />
       </head>
-      <body>
+      <body suppressHydrationWarning>
         <Providers>{children}</Providers>
       </body>
     </html>
