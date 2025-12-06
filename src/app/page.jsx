@@ -3,22 +3,15 @@ import Link from "next/link";
 import portfolioData from '@/config/portfolio.json';
 import { Github, Linkedin, Twitter, Hash } from 'lucide-react';
 import dynamic from 'next/dynamic';
-
-// Lazy load Terminal component to reduce initial bundle size
-const Terminal = dynamic(() => import('@/components/TerminalContext').then(mod => ({ default: mod.Terminal })), {
-  ssr: true,
-  loading: () => (
-    <div className="terminal-container relative overflow-hidden min-h-[200px] flex items-center justify-center">
-      <div className="text-center text-muted-foreground">Loading terminal...</div>
-    </div>
-  )
-});
+import { Terminal } from '@/components/TerminalContext';
 
 // Lazy load GitHub contributions to reduce initial bundle size
 const GithubContributions = dynamic(() => import('@/components/GithubContributions'), {
   ssr: true, // Keep SSR for ISR data
   loading: () => <div className="py-8 text-center text-muted-foreground">Loading GitHub contributions...</div>
 });
+
+import FeaturedProjects from '@/components/FeaturedProjects';
 import { ClientWrapper } from '@/components/ClientWrapper';
 import { personSchema, websiteSchema, profilePageSchema } from './metadata';
 
@@ -127,6 +120,9 @@ export default async function Home() {
           <div className="relative">
             <Terminal />
           </div>
+
+          {/* Featured Projects Section */}
+          <FeaturedProjects />
 
           {/* GitHub Contributions Section */}
           <div className="mt-12 min-h-[520px]">
