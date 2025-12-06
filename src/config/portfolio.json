@@ -86,7 +86,8 @@
         "Shadcn UI"
       ],
       "github": "https://github.com/Msparihar/talent-match",
-      "live": "https://talent-match-six.vercel.app"
+      "live": "https://talent-match-six.vercel.app",
+      "featured": true
     },
     {
       "name": "Three.js Creative Agency",
@@ -101,7 +102,8 @@
         "Framer Motion"
       ],
       "github": "https://github.com/Msparihar/threejs-experiment",
-      "live": "https://threejs-experiment-coral.vercel.app"
+      "live": "https://threejs-experiment-coral.vercel.app",
+      "featured": true
     },
     {
       "_disabled": true,
@@ -160,7 +162,8 @@
         "Google Cloud Run"
       ],
       "github": "https://github.com/Msparihar/ReddiChat",
-      "live": "https://chat.manishsingh.tech"
+      "live": "https://reddichat.manishsingh.tech",
+      "featured": true
     },
     {
       "name": "Novel Writing AI with LLaMA 3.1",
