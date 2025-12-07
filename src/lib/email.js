@@ -1,5 +1,12 @@
 import nodemailer from "nodemailer";
 
+console.log("[Email] Initializing email transport", {
+  host: process.env.SMTP_SERVER,
+  port: process.env.SMTP_PORT || "587",
+  user: process.env.EMAIL ? `${process.env.EMAIL.substring(0, 5)}...` : "NOT SET",
+  passSet: !!process.env.EMAIL_PASSWORD,
+});
+
 const transporter = nodemailer.createTransport({
   host: process.env.SMTP_SERVER,
   port: parseInt(process.env.SMTP_PORT || "587"),
@@ -11,8 +18,20 @@ const transporter = nodemailer.createTransport({
 });
 
 export async function sendVisitorAlert(source, data) {
+  console.log("[Email] sendVisitorAlert called", { source, data });
+
+  if (!process.env.SMTP_SERVER || !process.env.EMAIL || !process.env.EMAIL_PASSWORD) {
+    console.error("[Email] Missing email configuration:", {
+      SMTP_SERVER: !!process.env.SMTP_SERVER,
+      EMAIL: !!process.env.EMAIL,
+      EMAIL_PASSWORD: !!process.env.EMAIL_PASSWORD,
+    });
+    return;
+  }
+
   try {
-    await transporter.sendMail({
+    console.log("[Email] Attempting to send email...");
+    const result = await transporter.sendMail({
       from: process.env.EMAIL,
       to: "manishsparihar2020@gmail.com",
       subject: `Portfolio Visit from ${source}`,
@@ -30,7 +49,9 @@ export async function sendVisitorAlert(source, data) {
         </table>
       `,
     });
+    console.log("[Email] Email sent successfully:", result.messageId);
   } catch (error) {
-    console.error("Failed to send visitor alert email:", error);
+    console.error("[Email] Failed to send visitor alert email:", error.message);
+    console.error("[Email] Error details:", error);
   }
 }

@@ -85,8 +85,12 @@ export async function POST(request) {
       });
 
       // Send email alert for LinkedIn visitors (only on first pageview of session)
+      console.log("[Track] Checking referral source:", { utmSource, entryPage: session.entryPage, path });
       if (utmSource === "ln" && session.entryPage === path) {
-        sendVisitorAlert("LinkedIn", { device, browser, country, path }).catch(() => {});
+        console.log("[Track] LinkedIn visitor detected! Sending email alert...");
+        sendVisitorAlert("LinkedIn", { device, browser, country, path }).catch((err) => {
+          console.error("[Track] Failed to send email alert:", err);
+        });
       }
     } else if (type === "event") {
       await prisma.event.create({
