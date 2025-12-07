@@ -3,6 +3,23 @@ const nextConfig = {
   // Enable standalone output for Docker deployments
   output: "standalone",
 
+  // Required for PostHog proxy to work correctly
+  skipTrailingSlashRedirect: true,
+
+  // Proxy PostHog requests to bypass ad blockers
+  async rewrites() {
+    return [
+      {
+        source: "/ingest/static/:path*",
+        destination: "https://us-assets.i.posthog.com/static/:path*",
+      },
+      {
+        source: "/ingest/:path*",
+        destination: "https://us.i.posthog.com/:path*",
+      },
+    ];
+  },
+
   // Enable experimental features for better performance
   experimental: {
     optimizePackageImports: [

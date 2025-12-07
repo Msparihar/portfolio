@@ -1,0 +1,92 @@
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["multiSchema"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+  schemas  = ["analytics"]
+}
+
+// Visitor tracking - unique visitors identified by fingerprint
+model Visitor {
+  id          String     @id @default(cuid())
+  fingerprint String     @unique
+  firstSeenAt DateTime   @default(now())
+  lastSeenAt  DateTime   @updatedAt
+  country     String?
+  city        String?
+  region      String?
+  device      String?    // desktop, mobile, tablet
+  browser     String?
+  os          String?
+  sessions    Session[]
+  pageViews   PageView[]
+  events      Event[]
+
+  @@index([firstSeenAt])
+  @@index([country])
+  @@schema("analytics")
+}
+
+// Session tracking - groups page views into browsing sessions
+model Session {
+  id          String     @id @default(cuid())
+  visitorId   String
+  visitor     Visitor    @relation(fields: [visitorId], references: [id], onDelete: Cascade)
+  startedAt   DateTime   @default(now())
+  endedAt     DateTime?
+  referrer    String?
+  utmSource   String?
+  utmMedium   String?
+  utmCampaign String?
+  entryPage   String?
+  exitPage    String?
+  pageViews   PageView[]
+  events      Event[]
+
+  @@index([visitorId])
+  @@index([startedAt])
+  @@index([referrer])
+  @@schema("analytics")
+}
+
+// Page view tracking
+model PageView {
+  id          String   @id @default(cuid())
+  visitorId   String
+  visitor     Visitor  @relation(fields: [visitorId], references: [id], onDelete: Cascade)
+  sessionId   String
+  session     Session  @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  path        String
+  title       String?
+  viewedAt    DateTime @default(now())
+  duration    Int?     // Time on page in seconds
+  scrollDepth Int?     // Percentage scrolled (0-100)
+
+  @@index([visitorId])
+  @@index([sessionId])
+  @@index([path])
+  @@index([viewedAt])
+  @@schema("analytics")
+}
+
+// Custom event tracking
+model Event {
+  id          String   @id @default(cuid())
+  visitorId   String
+  visitor     Visitor  @relation(fields: [visitorId], references: [id], onDelete: Cascade)
+  sessionId   String
+  session     Session  @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  name        String   // e.g., "project_click", "contact_submit", "terminal_command"
+  category    String?  // e.g., "engagement", "navigation"
+  properties  Json?    // Flexible JSON for event-specific data
+  createdAt   DateTime @default(now())
+
+  @@index([visitorId])
+  @@index([sessionId])
+  @@index([name])
+  @@index([createdAt])
+  @@schema("analytics")
+}
