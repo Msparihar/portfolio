@@ -2,6 +2,7 @@ FROM oven/bun:1-alpine AS base
 
 # Stage 1: Install dependencies
 FROM base AS deps
+RUN apk add --no-cache openssl
 WORKDIR /app
 COPY package.json bun.lockb ./
 COPY prisma ./prisma
@@ -17,6 +18,7 @@ RUN bun run build
 
 # Stage 3: Production server
 FROM base AS runner
+RUN apk add --no-cache openssl
 WORKDIR /app
 ENV NODE_ENV=production
 COPY --from=builder /app/.next/standalone ./
