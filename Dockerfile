@@ -11,6 +11,7 @@ RUN bunx prisma generate
 
 # Stage 2: Build the application
 FROM base AS builder
+RUN apk add --no-cache openssl
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
