@@ -1,7 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // Enable standalone output for Docker deployments
-  output: "standalone",
+  // Enable standalone output for Docker deployments (requires admin on Windows)
+  // output: "standalone",
 
   // Enable experimental features for better performance
   experimental: {
