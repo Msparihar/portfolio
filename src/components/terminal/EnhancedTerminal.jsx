@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
 
 const EnhancedTerminal = ({ onNavigate }) => {
   const [input, setInput] = useState('');
@@ -365,42 +364,35 @@ const EnhancedTerminal = ({ onNavigate }) => {
         )}
 
         {/* Command History */}
-        <AnimatePresence>
-          {history.map((entry, index) => (
-            <motion.div
-              key={index}
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="mb-2"
-            >
-              {entry.type === 'command' && (
-                <div className="text-green-400">{entry.content}</div>
-              )}
-              {entry.type === 'output' && (
-                <div className="text-gray-300 ml-2">
-                  {Array.isArray(entry.content) ? (
-                    entry.content.map((line, i) => (
-                      <div key={i}>{line}</div>
-                    ))
-                  ) : (
-                    <div>{entry.content}</div>
-                  )}
-                </div>
-              )}
-              {entry.type === 'error' && (
-                <div className="text-red-400 ml-2">
-                  {Array.isArray(entry.content) ? (
-                    entry.content.map((line, i) => (
-                      <div key={i}>{line}</div>
-                    ))
-                  ) : (
-                    <div>{entry.content}</div>
-                  )}
-                </div>
-              )}
-            </motion.div>
-          ))}
-        </AnimatePresence>
+        {history.map((entry, index) => (
+          <div key={index} className="mb-2">
+            {entry.type === 'command' && (
+              <div className="text-green-400">{entry.content}</div>
+            )}
+            {entry.type === 'output' && (
+              <div className="text-gray-300 ml-2">
+                {Array.isArray(entry.content) ? (
+                  entry.content.map((line, i) => (
+                    <div key={i}>{line}</div>
+                  ))
+                ) : (
+                  <div>{entry.content}</div>
+                )}
+              </div>
+            )}
+            {entry.type === 'error' && (
+              <div className="text-red-400 ml-2">
+                {Array.isArray(entry.content) ? (
+                  entry.content.map((line, i) => (
+                    <div key={i}>{line}</div>
+                  ))
+                ) : (
+                  <div>{entry.content}</div>
+                )}
+              </div>
+            )}
+          </div>
+        ))}
 
         {/* Current Input Line */}
         <div className="flex items-center text-green-400">

@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { motion } from "framer-motion";
 import { Lock, Terminal, AlertCircle } from "lucide-react";
 
 export default function AnalyticsLoginPage() {
@@ -41,11 +40,7 @@ export default function AnalyticsLoginPage() {
       <div className="absolute inset-0 dark:bg-dot-white/[0.2] bg-dot-black/[0.2] -z-10" />
       <div className="absolute inset-0 bg-gradient-radial from-background via-background/80 to-transparent -z-10" />
 
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="w-full max-w-md mx-4"
-      >
+      <div className="w-full max-w-md mx-4">
         <div className="border border-border/30 rounded-lg overflow-hidden bg-background/80 backdrop-blur-sm">
           {/* Terminal header */}
           <div className="flex items-center gap-2 px-4 py-3 bg-black/50 border-b border-border/20">
@@ -95,14 +90,10 @@ export default function AnalyticsLoginPage() {
               </div>
 
               {error && (
-                <motion.div
-                  initial={{ opacity: 0, y: -10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  className="flex items-center gap-2 p-3 bg-red-500/10 border border-red-500/30 rounded-md"
-                >
+                <div className="flex items-center gap-2 p-3 bg-red-500/10 border border-red-500/30 rounded-md">
                   <AlertCircle className="w-4 h-4 text-red-500" />
                   <span className="text-sm text-red-500 font-mono">{error}</span>
-                </motion.div>
+                </div>
               )}
 
               <button
@@ -122,7 +113,7 @@ export default function AnalyticsLoginPage() {
             </form>
           </div>
         </div>
-      </motion.div>
+      </div>
     </main>
   );
 }

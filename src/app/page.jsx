@@ -48,9 +48,9 @@ async function fetchGithubContributions() {
 
 const NavLink = ({ path, label, isActive = false }) => (
   <Link
+    data-anim-nav-item
     href={`/${path === 'home' ? '' : path}`}
-    className={`group text-left transition-colors px-3 sm:px-4 py-2 sm:py-2.5 rounded-md text-sm sm:text-base
-    ${isActive
+    className={`group text-left transition-colors px-3 sm:px-4 py-2 sm:py-2.5 rounded-md text-sm sm:text-base     ${isActive
       ? 'bg-green-500/20 text-green-500 hover:bg-green-500/30'
       : 'hover:bg-black/20 dark:hover:bg-white/5 hover:text-green-500'
     }`}
@@ -86,14 +86,14 @@ export default async function Home() {
 
       <main className="min-h-screen bg-gradient-to-b from-background to-background/80 relative overflow-hidden">
         {/* Grid background for the entire page */}
-        <div className="absolute inset-0 dark:bg-dot-white/[0.2] bg-dot-black/[0.2] -z-10" />
+        <div data-anim-bg className="absolute inset-0 dark:bg-dot-white/[0.2] bg-dot-black/[0.2] -z-10" />
 
         {/* Radial gradient */}
         <div className="absolute inset-0 bg-gradient-radial from-background via-background/80 to-transparent -z-10" />
 
         <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8 py-3 sm:py-4 md:py-8">
           {/* Header with Navigation */}
-          <div className="mb-6 sm:mb-8 border-[0.5px] border-border/30 rounded-lg terminal-nav relative overflow-hidden backdrop-blur-sm">
+          <div data-anim-header className="mb-6 sm:mb-8 border-[0.5px] border-border/30 rounded-lg terminal-nav relative overflow-hidden backdrop-blur-sm gsap-hidden">
             <div className="p-3 sm:p-4 md:p-5 grid [grid-template-columns:1fr_auto] md:grid-cols-3 gap-3 sm:gap-4 md:items-center">
               {/* Terminal identifier - Left */}
               <div className="col-start-1 row-start-1 flex items-center text-sm sm:text-base text-green-500/90">
@@ -117,20 +117,22 @@ export default async function Home() {
           </div>
 
           {/* Main terminal interface */}
-          <div className="relative">
+          <div data-anim-terminal className="relative gsap-hidden">
             <Terminal />
           </div>
 
           {/* Featured Projects Section */}
-          <FeaturedProjects />
+          <div data-anim-section className="gsap-hidden">
+            <FeaturedProjects />
+          </div>
 
           {/* GitHub Contributions Section */}
-          <div className="mt-12 min-h-[520px]">
+          <div data-anim-section className="mt-12 min-h-[520px] gsap-hidden">
             <GithubContributions githubData={githubData} />
           </div>
 
         {/* Footer */}
-        <footer className="mt-6 sm:mt-8 text-center text-xs sm:text-sm text-muted-foreground border-t border-border/20 pt-4 pb-2">
+        <footer data-anim-footer className="mt-6 sm:mt-8 text-center text-xs sm:text-sm text-muted-foreground border-t border-border/20 pt-4 pb-2 gsap-hidden">
           <div className="terminal-line opacity-60 px-2">
             <span className="terminal-prompt">$</span>
             <span className="ml-2 break-words" suppressHydrationWarning>

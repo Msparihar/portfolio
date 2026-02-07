@@ -1,14 +1,18 @@
 "use client";
 
-import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import React, { useState, useRef, useEffect } from 'react';
 import { Calendar, MapPin, ExternalLink, Award, Code, Users, Zap } from 'lucide-react';
 import portfolioConfig from '@/config/portfolio.json';
+import gsap from 'gsap';
+import { useGSAP } from '@gsap/react';
 
 const ExperienceTimeline = () => {
   const [selectedItem, setSelectedItem] = useState(null);
+  const containerRef = useRef(null);
+  const modalBackdropRef = useRef(null);
+  const modalContentRef = useRef(null);
+  const [isModalRendered, setIsModalRendered] = useState(false);
 
-  // Enhanced timeline data with more details
   const timelineData = [
     {
       id: 'stringify-ai',
@@ -84,15 +88,6 @@ const ExperienceTimeline = () => {
     }
   ];
 
-  const getTypeIcon = (type) => {
-    switch (type) {
-      case 'experience': return Code;
-      case 'education': return Award;
-      case 'certification': return Zap;
-      default: return Code;
-    }
-  };
-
   const getTypeColor = (type) => {
     switch (type) {
       case 'experience': return 'bg-green-500';
@@ -102,22 +97,68 @@ const ExperienceTimeline = () => {
     }
   };
 
+  // Staggered entrance animation
+  useGSAP(() => {
+    const mm = gsap.matchMedia();
+    mm.add("(prefers-reduced-motion: no-preference)", () => {
+      gsap.from("[data-timeline-item]", {
+        opacity: 0,
+        x: -50,
+        duration: 0.6,
+        stagger: 0.2,
+        ease: "power2.out",
+      });
+    });
+  }, { scope: containerRef });
+
+  // Modal open
+  const handleOpenModal = (item) => {
+    setSelectedItem(item);
+    setIsModalRendered(true);
+  };
+
+  // Animate modal in after rendered
+  useEffect(() => {
+    if (isModalRendered && selectedItem && modalBackdropRef.current && modalContentRef.current) {
+      gsap.fromTo(modalBackdropRef.current, { opacity: 0 }, { opacity: 1, duration: 0.2 });
+      gsap.fromTo(modalContentRef.current,
+        { scale: 0.8, opacity: 0 },
+        { scale: 1, opacity: 1, duration: 0.35, ease: "back.out(1.7)" }
+      );
+    }
+  }, [isModalRendered, selectedItem]);
+
+  // Modal close
+  const handleCloseModal = () => {
+    if (modalBackdropRef.current && modalContentRef.current) {
+      const tl = gsap.timeline({
+        onComplete: () => {
+          setSelectedItem(null);
+          setIsModalRendered(false);
+        },
+      });
+      tl.to(modalContentRef.current, { scale: 0.8, opacity: 0, duration: 0.2, ease: "power2.in" });
+      tl.to(modalBackdropRef.current, { opacity: 0, duration: 0.15 }, "-=0.1");
+    } else {
+      setSelectedItem(null);
+      setIsModalRendered(false);
+    }
+  };
+
   return (
-    <div className="relative">
+    <div ref={containerRef} className="relative">
       {/* Timeline Line */}
       <div className="absolute left-8 top-0 bottom-0 w-0.5 bg-gradient-to-b from-green-500 via-blue-500 to-purple-500"></div>
 
       {/* Timeline Items */}
       <div className="space-y-8">
-        {timelineData.map((item, index) => {
+        {timelineData.map((item) => {
           const Icon = item.icon;
-          
+
           return (
-            <motion.div
+            <div
               key={item.id}
-              initial={{ opacity: 0, x: -50 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: index * 0.2 }}
+              data-timeline-item
               className="relative flex items-start gap-6"
             >
               {/* Timeline Dot */}
@@ -126,10 +167,9 @@ const ExperienceTimeline = () => {
               </div>
 
               {/* Content Card */}
-              <motion.div
-                whileHover={{ scale: 1.02 }}
-                className="flex-1 bg-gray-900/50 rounded-xl p-6 border border-gray-800 hover:border-gray-700 transition-all duration-300 cursor-pointer"
-                onClick={() => setSelectedItem(item)}
+              <div
+                className="flex-1 bg-gray-900/50 rounded-xl p-6 border border-gray-800 hover:border-gray-700 hover:scale-[1.02] transition-all duration-300 cursor-pointer"
+                onClick={() => handleOpenModal(item)}
               >
                 {/* Header */}
                 <div className="flex items-start justify-between mb-4">
@@ -194,90 +234,87 @@ const ExperienceTimeline = () => {
                     <ExternalLink size={12} />
                   </button>
                 </div>
-              </motion.div>
-            </motion.div>
+              </div>
+            </div>
           );
         })}
       </div>
 
       {/* Detailed Modal */}
-      <AnimatePresence>
-        {selectedItem && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4"
-            onClick={() => setSelectedItem(null)}
+      {isModalRendered && selectedItem && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <div
+            ref={modalBackdropRef}
+            className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+            style={{ opacity: 0 }}
+            onClick={handleCloseModal}
+          />
+          <div
+            ref={modalContentRef}
+            className="relative bg-gray-900 rounded-2xl p-8 max-w-2xl w-full max-h-[80vh] overflow-y-auto border border-gray-700"
+            style={{ opacity: 0, transform: 'scale(0.8)' }}
+            onClick={(e) => e.stopPropagation()}
           >
-            <motion.div
-              initial={{ scale: 0.8, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.8, opacity: 0 }}
-              className="bg-gray-900 rounded-2xl p-8 max-w-2xl w-full max-h-[80vh] overflow-y-auto border border-gray-700"
-              onClick={(e) => e.stopPropagation()}
-            >
-              {/* Modal Header */}
-              <div className="flex items-start justify-between mb-6">
-                <div>
-                  <h2 className="text-2xl font-bold text-white mb-2">{selectedItem.title}</h2>
-                  <p className="text-green-400 text-lg font-medium">{selectedItem.organization}</p>
-                  <div className="flex items-center gap-4 mt-2 text-sm text-gray-400">
-                    <div className="flex items-center gap-1">
-                      <Calendar size={14} />
-                      <span>{selectedItem.period}</span>
-                    </div>
-                    <div className="flex items-center gap-1">
-                      <MapPin size={14} />
-                      <span>{selectedItem.location}</span>
-                    </div>
+            {/* Modal Header */}
+            <div className="flex items-start justify-between mb-6">
+              <div>
+                <h2 className="text-2xl font-bold text-white mb-2">{selectedItem.title}</h2>
+                <p className="text-green-400 text-lg font-medium">{selectedItem.organization}</p>
+                <div className="flex items-center gap-4 mt-2 text-sm text-gray-400">
+                  <div className="flex items-center gap-1">
+                    <Calendar size={14} />
+                    <span>{selectedItem.period}</span>
+                  </div>
+                  <div className="flex items-center gap-1">
+                    <MapPin size={14} />
+                    <span>{selectedItem.location}</span>
                   </div>
                 </div>
-                <button
-                  onClick={() => setSelectedItem(null)}
-                  className="text-gray-400 hover:text-white transition-colors"
-                >
-                  ✕
-                </button>
               </div>
+              <button
+                onClick={handleCloseModal}
+                className="text-gray-400 hover:text-white transition-colors"
+              >
+                &#10005;
+              </button>
+            </div>
 
-              {/* Description */}
-              <div className="mb-6">
-                <h3 className="text-lg font-semibold text-white mb-3">Overview</h3>
-                <p className="text-gray-300 leading-relaxed">{selectedItem.description}</p>
-              </div>
+            {/* Description */}
+            <div className="mb-6">
+              <h3 className="text-lg font-semibold text-white mb-3">Overview</h3>
+              <p className="text-gray-300 leading-relaxed">{selectedItem.description}</p>
+            </div>
 
-              {/* All Achievements */}
-              <div className="mb-6">
-                <h3 className="text-lg font-semibold text-white mb-3">Key Achievements</h3>
-                <ul className="space-y-2">
-                  {selectedItem.achievements.map((achievement, i) => (
-                    <li key={i} className="text-gray-300 flex items-start gap-3">
-                      <span className="text-green-400 mt-1">✓</span>
-                      <span>{achievement}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
+            {/* All Achievements */}
+            <div className="mb-6">
+              <h3 className="text-lg font-semibold text-white mb-3">Key Achievements</h3>
+              <ul className="space-y-2">
+                {selectedItem.achievements.map((achievement, i) => (
+                  <li key={i} className="text-gray-300 flex items-start gap-3">
+                    <span className="text-green-400 mt-1">&#10003;</span>
+                    <span>{achievement}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
 
-              {/* All Technologies */}
-              <div>
-                <h3 className="text-lg font-semibold text-white mb-3">Technologies Used</h3>
-                <div className="flex flex-wrap gap-2">
-                  {selectedItem.technologies.map((tech, i) => (
-                    <span
-                      key={i}
-                      className="px-3 py-1 text-sm rounded-lg bg-gray-800 text-gray-300 border border-gray-700"
-                    >
-                      {tech}
-                    </span>
-                  ))}
-                </div>
+            {/* All Technologies */}
+            <div>
+              <h3 className="text-lg font-semibold text-white mb-3">Technologies Used</h3>
+              <div className="flex flex-wrap gap-2">
+                {selectedItem.technologies.map((tech, i) => (
+                  <span
+                    key={i}
+                    className="px-3 py-1 text-sm rounded-lg bg-gray-800 text-gray-300 border border-gray-700"
+                  >
+                    {tech}
+                  </span>
+                ))}
               </div>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

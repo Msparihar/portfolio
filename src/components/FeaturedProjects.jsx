@@ -1,12 +1,17 @@
 "use client";
 
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useRef } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import dynamic from 'next/dynamic';
 import { useTheme } from 'next-themes';
 import { Github, ExternalLink, ArrowRight, Expand } from 'lucide-react';
 import portfolioData from '@/config/portfolio.json';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { useGSAP } from '@gsap/react';
+
+gsap.registerPlugin(ScrollTrigger);
 
 const PLACEHOLDER_IMAGE = `data:image/svg+xml;base64,${btoa(`
   <svg width="400" height="250" viewBox="0 0 400 250" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -32,6 +37,7 @@ const FeaturedProjectCard = ({ project, onExpand }) => {
 
   return (
     <div
+      data-anim-card
       role="button"
       tabIndex={0}
       className="group relative rounded-xl overflow-hidden bg-gray-900/50 border border-gray-800 hover:border-green-500/50 transition-colors transition-shadow duration-300 cursor-pointer touch-manipulation focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-500 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-900"
@@ -159,10 +165,35 @@ export default function FeaturedProjects() {
   const isDark = theme === 'dark';
   const [selectedProject, setSelectedProject] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const sectionRef = useRef(null);
 
   const featuredProjects = portfolioData.projects.filter(
     (project) => project.featured && !project._disabled
   );
+
+  useGSAP(() => {
+    const mm = gsap.matchMedia();
+    mm.add("(prefers-reduced-motion: no-preference)", () => {
+      gsap.utils.toArray("[data-anim-card]").forEach((card, i) => {
+        gsap.fromTo(card,
+          { y: 50, autoAlpha: 0, scale: 0.95 },
+          {
+            y: 0,
+            autoAlpha: 1,
+            scale: 1,
+            duration: 0.7,
+            delay: i * 0.1,
+            ease: "power2.out",
+            scrollTrigger: {
+              trigger: card,
+              start: "top 88%",
+              toggleActions: "play none none none",
+            },
+          }
+        );
+      });
+    });
+  }, { scope: sectionRef });
 
   const handleProjectExpand = useCallback((project) => {
     setSelectedProject(project);
@@ -177,7 +208,7 @@ export default function FeaturedProjects() {
   if (featuredProjects.length === 0) return null;
 
   return (
-    <section className="mt-12">
+    <section ref={sectionRef} className="mt-12">
       {/* Section Header */}
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-3">

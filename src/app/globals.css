@@ -238,6 +238,11 @@
   }
 }
 
+/* GSAP animation: hide elements before GSAP initializes (prevents FOUC) */
+.gsap-hidden {
+  opacity: 0;
+}
+
 /* Loading skeleton animations */
 @keyframes skeleton-loading {
   0% {
