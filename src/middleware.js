@@ -120,18 +120,22 @@ export async function middleware(request) {
     utmCampaign,
   };
 
-  // Fire tracking request asynchronously (non-blocking)
+  // Fire tracking request and log failures
   const baseUrl = request.nextUrl.origin;
 
-  // Use waitUntil if available (Edge runtime), otherwise fire-and-forget
   try {
-    fetch(`${baseUrl}/api/analytics/track`, {
+    const trackRes = await fetch(`${baseUrl}/api/analytics/track`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(trackingData),
-    }).catch(() => {}); // Silently ignore errors
-  } catch {
-    // Ignore any errors
+    });
+
+    if (!trackRes.ok) {
+      const errBody = await trackRes.text().catch(() => "");
+      console.error(`[Analytics] Track failed (${trackRes.status}): ${errBody}`);
+    }
+  } catch (err) {
+    console.error(`[Analytics] Track request failed: ${err.message} | baseUrl: ${baseUrl}`);
   }
 
   // Set fingerprint cookie for client-side consistency
