@@ -22,7 +22,7 @@ A smart synchronization tool that keeps your local GitHub projects folder in syn
 
 2. **Install Dependencies**:
    ```bash
-   pnpm install
+   bun install
    ```
 
 ## Usage
@@ -30,7 +30,7 @@ A smart synchronization tool that keeps your local GitHub projects folder in syn
 ### Basic Sync
 ```bash
 # Full sync (live mode)
-pnpm run sync-projects
+bun run sync-projects
 
 # Or using node directly
 node scripts/sync-github-projects.js
@@ -39,7 +39,7 @@ node scripts/sync-github-projects.js
 ### Dry Run (Preview Mode)
 ```bash
 # See what would be changed without executing
-pnpm run sync-projects:dry
+bun run sync-projects:dry
 
 # Or with verbose logging
 node scripts/sync-github-projects.js --dry-run --verbose
@@ -158,7 +158,7 @@ To run automatically (e.g., monthly), you can:
 1. **Using cron (Linux/Mac)**:
    ```bash
    # Run on 1st of every month at 2 AM
-   0 2 1 * * cd /path/to/portfolio && pnpm run sync-projects
+   0 2 1 * * cd /path/to/portfolio && bun run sync-projects
    ```
 
 2. **Using Task Scheduler (Windows)**:

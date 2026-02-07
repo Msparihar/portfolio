@@ -152,7 +152,7 @@ async function showUsageInstructions() {
   console.log('\n6. For fire.gif:');
   console.log('   - Still 7.7MB (requires manual optimization)');
   console.log('   - Consider converting to video format or compressing manually');
-  console.log('\n✨ Done! Run `pnpm run dev` to test the optimizations.\n');
+  console.log('\n✨ Done! Run `bun run dev` to test the optimizations.\n');
 }
 
 async function main() {

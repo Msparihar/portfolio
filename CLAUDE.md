@@ -4,16 +4,16 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Package Manager
 
-This project uses **pnpm** as the package manager. Always use `pnpm` commands instead of `npm`.
+This project uses **bun** as the package manager. Always use `bun` commands instead of `npm` or `pnpm`.
 
 ## Development Commands
 
-- **Development server**: `pnpm run dev` (with Turbopack for faster builds)
-- **Build**: `pnpm run build`
-- **Start production**: `pnpm start`
-- **Lint**: `pnpm run lint`
-- **Install dependencies**: `pnpm install`
-- **Add dependency**: `pnpm add <package-name>`
+- **Development server**: `bun run dev` (with Turbopack for faster builds)
+- **Build**: `bun run build`
+- **Start production**: `bun start`
+- **Lint**: `bun run lint`
+- **Install dependencies**: `bun install`
+- **Add dependency**: `bun add <package-name>`
 
 ## Project Architecture
 

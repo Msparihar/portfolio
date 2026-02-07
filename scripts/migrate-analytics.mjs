@@ -3,7 +3,7 @@
  *
  * Usage: node scripts/migrate-analytics.mjs
  *
- * Prerequisites: pnpm add -D pg
+ * Prerequisites: bun add -D pg
  */
 
 import pg from "pg";
