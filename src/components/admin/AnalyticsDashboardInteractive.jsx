@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { motion } from "framer-motion";
 import {
   Users,
   Eye,
@@ -27,11 +26,7 @@ import {
 // Terminal-styled stat card
 function StatCard({ icon: Icon, label, value, loading }) {
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      className="border border-border/30 rounded-lg p-4 bg-background/50 backdrop-blur-sm"
-    >
+    <div className="border border-border/30 rounded-lg p-4 bg-background/50 backdrop-blur-sm">
       <div className="flex items-center gap-3">
         <div className="p-2 rounded-md bg-green-500/10">
           <Icon className="w-5 h-5 text-green-500" />
@@ -45,7 +40,7 @@ function StatCard({ icon: Icon, label, value, loading }) {
           )}
         </div>
       </div>
-    </motion.div>
+    </div>
   );
 }
 
@@ -134,11 +129,9 @@ function BarChart({ data, loading }) {
     <div className="h-48 flex items-end gap-1 px-2">
       {data.map((d, i) => (
         <div key={i} className="flex-1 flex flex-col items-center gap-1">
-          <motion.div
-            initial={{ height: 0 }}
-            animate={{ height: `${(d.views / maxValue) * 100}%` }}
-            transition={{ delay: i * 0.05 }}
+          <div
             className="w-full bg-green-500/60 rounded-t hover:bg-green-500/80 transition-colors min-h-[2px]"
+            style={{ height: `${(d.views / maxValue) * 100}%`, transition: `height 0.3s ease ${i * 0.05}s` }}
             title={`${d.date}: ${d.views} views`}
           />
           <span className="text-[9px] text-muted-foreground font-mono truncate w-full text-center">
@@ -227,12 +220,7 @@ function LinkGenerator({ baseUrl = "https://manishsingh.tech" }) {
       </button>
 
       {expanded && (
-        <motion.div
-          initial={{ opacity: 0, height: 0 }}
-          animate={{ opacity: 1, height: "auto" }}
-          exit={{ opacity: 0, height: 0 }}
-          className="p-4 space-y-4"
-        >
+        <div className="p-4 space-y-4">
           {/* Preset buttons */}
           <div>
             <p className="text-xs text-muted-foreground font-mono mb-2">Quick presets:</p>
@@ -287,7 +275,7 @@ function LinkGenerator({ baseUrl = "https://manishsingh.tech" }) {
               </div>
             </div>
           )}
-        </motion.div>
+        </div>
       )}
     </div>
   );
