@@ -71,14 +71,14 @@ const ProjectModal = ({ isOpen, onClose, children }) => {
             {/* Close Button */}
             <button
               onClick={onClose}
-              className="absolute top-4 right-4 z-10 p-2 rounded-full bg-black/20 hover:bg-black/40 text-white transition-colors"
+              className="absolute top-4 right-4 z-10 p-2 rounded-full bg-black/20 hover:bg-black/40 text-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-500"
               aria-label="Close modal"
             >
               <X size={20} />
             </button>
 
             {/* Modal Content */}
-            <div className="overflow-y-auto max-h-[90vh]">
+            <div className="overflow-y-auto max-h-[90vh] overscroll-contain">
               {children}
             </div>
           </motion.div>

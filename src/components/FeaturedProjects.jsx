@@ -1,28 +1,44 @@
 "use client";
 
-import React from 'react';
+import React, { useState, useCallback } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { Github, ExternalLink, ArrowRight } from 'lucide-react';
+import dynamic from 'next/dynamic';
+import { useTheme } from 'next-themes';
+import { Github, ExternalLink, ArrowRight, Expand } from 'lucide-react';
 import portfolioData from '@/config/portfolio.json';
 
-const FeaturedProjectCard = ({ project }) => {
-  const { name, description, techStack, github, live, image } = project;
+const PLACEHOLDER_IMAGE = `data:image/svg+xml;base64,${btoa(`
+  <svg width="400" height="250" viewBox="0 0 400 250" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <rect width="400" height="250" fill="#111827"/>
+    <rect x="150" y="100" width="100" height="50" fill="#374151"/>
+    <text x="200" y="200" text-anchor="middle" fill="#6b7280" font-size="14" font-family="monospace">Project</text>
+  </svg>
+`)}`;
 
-  const getPlaceholderImage = () => {
-    return `data:image/svg+xml;base64,${btoa(`
-      <svg width="400" height="250" viewBox="0 0 400 250" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <rect width="400" height="250" fill="#111827"/>
-        <rect x="150" y="100" width="100" height="50" fill="#374151"/>
-        <text x="200" y="200" text-anchor="middle" fill="#6b7280" font-size="14" font-family="monospace">Project</text>
-      </svg>
-    `)}`;
+const ProjectModal = dynamic(() => import('./projects/ProjectModal'), { ssr: false });
+const ProjectModalContent = dynamic(() => import('./projects/ProjectModalContent'), { ssr: false });
+
+const FeaturedProjectCard = ({ project, onExpand }) => {
+  const { name, description, techStack, github, live, image } = project;
+  const imageSrc = image || PLACEHOLDER_IMAGE;
+
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      onExpand(project);
+    }
   };
 
-  const imageSrc = image || getPlaceholderImage();
-
   return (
-    <div className="group relative rounded-xl overflow-hidden bg-gray-900/50 border border-gray-800 hover:border-green-500/50 transition-all duration-300">
+    <div
+      role="button"
+      tabIndex={0}
+      className="group relative rounded-xl overflow-hidden bg-gray-900/50 border border-gray-800 hover:border-green-500/50 transition-colors transition-shadow duration-300 cursor-pointer touch-manipulation focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-500 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-900"
+      onClick={() => onExpand(project)}
+      onKeyDown={handleKeyDown}
+      aria-label={`View details for ${name}`}
+    >
       {/* Project Image */}
       <div className="relative h-48 overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black/60 z-10" />
@@ -30,8 +46,9 @@ const FeaturedProjectCard = ({ project }) => {
           src={imageSrc}
           alt={name}
           fill
-          className="object-cover transition-transform duration-500 group-hover:scale-105"
+          className="object-cover transition-transform duration-500 motion-safe:group-hover:scale-105"
           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+          unoptimized={imageSrc.endsWith('.gif')}
         />
 
         {/* Quick Actions Overlay */}
@@ -41,8 +58,9 @@ const FeaturedProjectCard = ({ project }) => {
               href={github}
               target="_blank"
               rel="noopener noreferrer"
-              className="p-2 bg-black/60 hover:bg-black/80 text-white rounded-full transition-colors"
-              title="View Source"
+              onClick={(e) => e.stopPropagation()}
+              className="p-2 bg-black/60 hover:bg-black/80 text-white rounded-full transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-500"
+              aria-label={`View source code for ${name}`}
             >
               <Github size={16} />
             </a>
@@ -52,12 +70,18 @@ const FeaturedProjectCard = ({ project }) => {
               href={live}
               target="_blank"
               rel="noopener noreferrer"
-              className="p-2 bg-black/60 hover:bg-black/80 text-white rounded-full transition-colors"
-              title="Live Demo"
+              onClick={(e) => e.stopPropagation()}
+              className="p-2 bg-black/60 hover:bg-black/80 text-white rounded-full transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-500"
+              aria-label={`View live demo of ${name}`}
             >
               <ExternalLink size={16} />
             </a>
           )}
+        </div>
+
+        {/* Expand indicator */}
+        <div className="absolute bottom-3 right-3 z-10 opacity-0 group-hover:opacity-100 transition-opacity">
+          <Expand size={18} className="text-white" />
         </div>
       </div>
 
@@ -102,8 +126,9 @@ const FeaturedProjectCard = ({ project }) => {
               href={github}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-gray-400 hover:text-green-400 transition-colors"
-              title="View Source"
+              onClick={(e) => e.stopPropagation()}
+              className="text-gray-400 hover:text-green-400 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-500 rounded"
+              aria-label={`View source code for ${name}`}
             >
               <Github size={18} />
             </a>
@@ -113,8 +138,9 @@ const FeaturedProjectCard = ({ project }) => {
               href={live}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-gray-400 hover:text-green-400 transition-colors"
-              title="Live Demo"
+              onClick={(e) => e.stopPropagation()}
+              className="text-gray-400 hover:text-green-400 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-500 rounded"
+              aria-label={`View live demo of ${name}`}
             >
               <ExternalLink size={16} />
             </a>
@@ -129,9 +155,24 @@ const FeaturedProjectCard = ({ project }) => {
 };
 
 export default function FeaturedProjects() {
+  const { theme } = useTheme();
+  const isDark = theme === 'dark';
+  const [selectedProject, setSelectedProject] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
   const featuredProjects = portfolioData.projects.filter(
     (project) => project.featured && !project._disabled
   );
+
+  const handleProjectExpand = useCallback((project) => {
+    setSelectedProject(project);
+    setIsModalOpen(true);
+  }, []);
+
+  const handleModalClose = useCallback(() => {
+    setIsModalOpen(false);
+    setSelectedProject(null);
+  }, []);
 
   if (featuredProjects.length === 0) return null;
 
@@ -141,23 +182,30 @@ export default function FeaturedProjects() {
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-3">
           <span className="text-green-500 font-mono">$</span>
-          <h2 className="text-xl font-semibold text-foreground">Featured Projects</h2>
+          <h2 className="text-xl font-semibold text-foreground text-wrap-balance">Featured Projects</h2>
         </div>
         <Link
           href="/projects"
-          className="flex items-center gap-2 text-sm text-muted-foreground hover:text-green-500 transition-colors group"
+          className="flex items-center gap-2 text-sm text-muted-foreground hover:text-green-500 transition-colors group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-500 rounded"
         >
           <span>View all projects</span>
-          <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
+          <ArrowRight size={16} className="motion-safe:group-hover:translate-x-1 transition-transform" />
         </Link>
       </div>
 
       {/* Projects Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {featuredProjects.map((project, index) => (
-          <FeaturedProjectCard key={index} project={project} />
+          <FeaturedProjectCard key={index} project={project} onExpand={handleProjectExpand} />
         ))}
       </div>
+
+      {/* Project Modal */}
+      <ProjectModal isOpen={isModalOpen} onClose={handleModalClose}>
+        {selectedProject && (
+          <ProjectModalContent project={selectedProject} isDark={isDark} />
+        )}
+      </ProjectModal>
     </section>
   );
 }

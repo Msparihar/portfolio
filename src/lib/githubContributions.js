@@ -13,6 +13,10 @@ const CACHE_FILE = path.join(CACHE_DIR, 'github-contributions.json');
 // Static fallback file
 const FALLBACK_FILE = path.join(process.cwd(), 'public/fallback-github-data.json');
 
+// How often to refresh the fallback file in the background (1 hour)
+const BACKGROUND_REFRESH_INTERVAL = 60 * 60 * 1000;
+let lastBackgroundRefresh = 0;
+
 // Track if cache directory has been initialized
 let cacheDirInitialized = false;
 let cacheLoaded = false;
@@ -171,8 +175,48 @@ export async function getGithubContributions(username = 'Msparihar') {
 }
 
 /**
- * Get GitHub contributions with fallback-first strategy for instant page loads
- * Returns fallback data immediately without waiting for API
+ * Refresh the fallback file in the background by fetching fresh data from the API.
+ * Fire-and-forget — does not block the caller.
+ */
+function refreshFallbackInBackground(username) {
+  const now = Date.now();
+  if (now - lastBackgroundRefresh < BACKGROUND_REFRESH_INTERVAL) return;
+  lastBackgroundRefresh = now;
+
+  // Fire-and-forget — errors are logged, never thrown to caller
+  (async () => {
+    try {
+      const response = await fetch(
+        `https://github-contributions-api.jogruber.de/v4/${username}`,
+        {
+          method: 'GET',
+          headers: { 'Accept': 'application/json', 'User-Agent': 'Portfolio-App/1.0' },
+          cache: 'no-store',
+        }
+      );
+
+      if (!response.ok) throw new Error(`GitHub API error: ${response.status}`);
+
+      const data = await response.json();
+
+      // Update in-memory cache
+      const cacheEntry = { data, timestamp: Date.now() };
+      cache.set(username, cacheEntry);
+      saveFileCache();
+
+      // Update the fallback file so next SSR render picks it up
+      const fallbackData = { [username]: data, generatedAt: new Date().toISOString() };
+      await fs.writeFile(FALLBACK_FILE, JSON.stringify(fallbackData, null, 2));
+      console.log('[github] Background refresh complete');
+    } catch (err) {
+      console.warn('[github] Background refresh failed:', err.message);
+    }
+  })();
+}
+
+/**
+ * Get GitHub contributions with fallback-first strategy for instant page loads.
+ * Returns cached/fallback data immediately, then refreshes in the background.
  */
 export async function getGithubContributionsFast(username = 'Msparihar') {
   try {
@@ -182,6 +226,8 @@ export async function getGithubContributionsFast(username = 'Msparihar') {
     // Check in-memory cache first
     const cached = cache.get(username);
     if (cached && (Date.now() - cached.timestamp < CACHE_DURATION)) {
+      // Still trigger a background refresh if the interval has passed
+      refreshFallbackInBackground(username);
       return {
         data: cached.data,
         cached: true,
@@ -189,9 +235,10 @@ export async function getGithubContributionsFast(username = 'Msparihar') {
       };
     }
 
-    // Return fallback data immediately without API call
+    // Return fallback data immediately, refresh in background
     const fallbackData = await loadFallbackData(username);
     if (fallbackData) {
+      refreshFallbackInBackground(username);
       return {
         data: fallbackData,
         fallback: true,
