@@ -46,7 +46,7 @@ A modern, terminal-themed portfolio website built with Next.js 15, showcasing pr
 - **Image Optimization**: Next.js built-in image optimization
 
 ### Development Tools
-- **Package Manager**: pnpm
+- **Package Manager**: bun
 - **Build Tool**: Turbopack (for faster development builds)
 - **Linting**: ESLint with Next.js configuration
 - **Environment**: Node.js with ES modules
@@ -79,7 +79,7 @@ public/                    # Static assets
 
 ### Prerequisites
 - Node.js 18+
-- pnpm (recommended) or npm
+- bun (recommended) or npm
 
 ### Installation
 
@@ -91,7 +91,7 @@ public/                    # Static assets
 
 2. **Install dependencies**
    ```bash
-   pnpm install
+   bun install
    ```
 
 3. **Set up environment variables**
@@ -102,7 +102,7 @@ public/                    # Static assets
 
 4. **Run the development server**
    ```bash
-   pnpm dev
+   bun dev
    ```
 
 5. **Open your browser**
@@ -111,14 +111,14 @@ public/                    # Static assets
 ## 📜 Available Scripts
 
 ### Development
-- `pnpm dev` - Start development server with Turbopack
-- `pnpm build` - Build the application for production
-- `pnpm start` - Start the production server
-- `pnpm lint` - Run ESLint for code quality
+- `bun dev` - Start development server with Turbopack
+- `bun build` - Build the application for production
+- `bun start` - Start the production server
+- `bun lint` - Run ESLint for code quality
 
 ### GitHub Sync
-- `pnpm sync-projects` - Sync GitHub repositories (live mode)
-- `pnpm sync-projects:dry` - Preview sync changes (dry-run mode)
+- `bun sync-projects` - Sync GitHub repositories (live mode)
+- `bun sync-projects:dry` - Preview sync changes (dry-run mode)
 
 ## 🎮 Terminal Commands
 
