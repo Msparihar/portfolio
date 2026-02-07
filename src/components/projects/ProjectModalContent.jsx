@@ -9,12 +9,19 @@ import {
   GitFork,
   Copy,
   CheckCircle2,
-  Calendar,
-  Users,
   Code,
   Zap
 } from 'lucide-react';
 import { useState, useEffect } from 'react';
+
+const TECH_CATEGORIES = {
+  'Frontend': ['React', 'Next.js', 'Vue', 'Angular', 'Tailwind CSS', 'Shadcn UI', 'HTML', 'CSS', 'JavaScript', 'TypeScript'],
+  'Backend': ['FastAPI', 'Node.js', 'Express', 'Python', 'Django', 'Flask'],
+  'Database': ['PostgreSQL', 'MongoDB', 'Redis', 'SQLite', 'MySQL'],
+  'AI/ML': ['OpenAI GPT-4o', 'LangChain', 'PyTorch', 'TensorFlow', 'Scikit-learn', 'Hugging Face', 'Transformers', 'Whisper', 'Computer Vision', 'LangGraph', 'Google Gemini'],
+  'Infrastructure': ['Docker', 'AWS', 'Google Cloud Run', 'Vercel', 'WebSocket'],
+  'Tools': ['Git', 'GitHub', 'JWT Auth', 'OAuth', 'TanStack Query', 'React Query']
+};
 
 const ProjectModalContent = ({ project, isDark }) => {
   const [copiedUrl, setCopiedUrl] = useState('');
@@ -30,7 +37,7 @@ const ProjectModalContent = ({ project, isDark }) => {
 
     if (typeof window !== 'undefined') {
       setWindowWidth(window.innerWidth);
-      window.addEventListener('resize', handleResize);
+      window.addEventListener('resize', handleResize, { passive: true });
       return () => window.removeEventListener('resize', handleResize);
     }
   }, []);
@@ -87,22 +94,13 @@ const ProjectModalContent = ({ project, isDark }) => {
   };
 
   // Group tech stack by categories
-  const groupTechStack = (techStack) => {
-    const categories = {
-      'Frontend': ['React', 'Next.js', 'Vue', 'Angular', 'Tailwind CSS', 'Shadcn UI', 'HTML', 'CSS', 'JavaScript', 'TypeScript'],
-      'Backend': ['FastAPI', 'Node.js', 'Express', 'Python', 'Django', 'Flask'],
-      'Database': ['PostgreSQL', 'MongoDB', 'Redis', 'SQLite', 'MySQL'],
-      'AI/ML': ['OpenAI GPT-4o', 'LangChain', 'PyTorch', 'TensorFlow', 'Scikit-learn', 'Hugging Face', 'Transformers', 'Whisper', 'Computer Vision', 'LangGraph', 'Google Gemini'],
-      'Infrastructure': ['Docker', 'AWS', 'Google Cloud Run', 'Vercel', 'WebSocket'],
-      'Tools': ['Git', 'GitHub', 'JWT Auth', 'OAuth', 'TanStack Query', 'React Query']
-    };
-
+  const groupedTechStack = (() => {
     const grouped = {};
     const uncategorized = [];
 
-    techStack.forEach(tech => {
+    project.techStack.forEach(tech => {
       let found = false;
-      for (const [category, techs] of Object.entries(categories)) {
+      for (const [category, techs] of Object.entries(TECH_CATEGORIES)) {
         if (techs.some(t => tech.toLowerCase().includes(t.toLowerCase()) || t.toLowerCase().includes(tech.toLowerCase()))) {
           if (!grouped[category]) grouped[category] = [];
           grouped[category].push(tech);
@@ -118,9 +116,7 @@ const ProjectModalContent = ({ project, isDark }) => {
     }
 
     return grouped;
-  };
-
-  const groupedTechStack = groupTechStack(project.techStack);
+  })();
 
   // Generate additional project details based on tech stack
   const getProjectFeatures = (project) => {
@@ -168,14 +164,14 @@ const ProjectModalContent = ({ project, isDark }) => {
           alt={project.name}
           fill
           sizes="(max-width: 768px) 100vw, (max-width: 1024px) 768px, 896px"
-          className={`transition-all duration-300 ${getObjectFit()}`}
+          className={`transition-opacity duration-300 ${getObjectFit()}`}
           priority
           unoptimized={project.image?.endsWith('.gif')}
           onLoad={handleImageLoad}
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
         <div className="absolute bottom-6 left-6 text-white">
-          <h1 className="text-3xl md:text-4xl font-bold mb-2">{project.name}</h1>
+          <h1 className="text-3xl md:text-4xl font-bold mb-2 text-wrap-balance">{project.name}</h1>
           <div className="flex items-center gap-4 text-sm">
             {project.stats && (
               <>
@@ -201,7 +197,7 @@ const ProjectModalContent = ({ project, isDark }) => {
             href={project.live}
             target="_blank"
             rel="noopener noreferrer"
-            className="absolute bottom-6 right-6 z-30 inline-flex items-center gap-2 px-4 py-2 rounded-lg font-medium text-white bg-green-600 hover:bg-green-700 transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105"
+            className="absolute bottom-6 right-6 z-30 inline-flex items-center gap-2 px-4 py-2 rounded-lg font-medium text-white bg-green-600 hover:bg-green-700 transition-colors duration-300 shadow-lg hover:shadow-xl motion-safe:hover:scale-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-500"
             onClick={(e) => e.stopPropagation()}
           >
             <ExternalLink size={18} />
@@ -279,7 +275,7 @@ const ProjectModalContent = ({ project, isDark }) => {
                 href={project.github}
                 target="_blank"
                 rel="noopener noreferrer"
-                className={`inline-flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-colors ${
+                className={`inline-flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-500 ${
                   isDark
                     ? 'bg-gray-800 hover:bg-gray-700 text-white border border-gray-700'
                     : 'bg-gray-100 hover:bg-gray-200 text-gray-900 border border-gray-300'
@@ -290,12 +286,12 @@ const ProjectModalContent = ({ project, isDark }) => {
               </a>
               <button
                 onClick={() => copyToClipboard(project.github, 'github')}
-                className={`p-2 rounded-lg transition-colors ${
+                className={`p-2 rounded-lg transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-500 ${
                   isDark
                     ? 'hover:bg-gray-800 text-gray-400'
                     : 'hover:bg-gray-100 text-gray-500'
                 }`}
-                title="Copy GitHub URL"
+                aria-label={`Copy GitHub URL for ${project.name}`}
               >
                 {copiedUrl === 'github' ? (
                   <CheckCircle2 size={16} className="text-green-500" />
@@ -312,19 +308,19 @@ const ProjectModalContent = ({ project, isDark }) => {
                 href={project.live}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 px-4 py-2 rounded-lg font-medium text-white bg-green-600 hover:bg-green-700 transition-colors"
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-lg font-medium text-white bg-green-600 hover:bg-green-700 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-500"
               >
                 <ExternalLink size={18} />
                 Live Demo
               </a>
               <button
                 onClick={() => copyToClipboard(project.live, 'live')}
-                className={`p-2 rounded-lg transition-colors ${
+                className={`p-2 rounded-lg transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-500 ${
                   isDark
                     ? 'hover:bg-gray-800 text-gray-400'
                     : 'hover:bg-gray-100 text-gray-500'
                 }`}
-                title="Copy Live URL"
+                aria-label={`Copy live URL for ${project.name}`}
               >
                 {copiedUrl === 'live' ? (
                   <CheckCircle2 size={16} className="text-green-500" />

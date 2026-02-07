@@ -72,6 +72,40 @@
   ],
   "projects": [
     {
+      "name": "ReddiChat",
+      "description": "An intelligent AI chatbot that combines advanced language models with real-time Reddit insights. Features Google OAuth authentication, persistent chat history, and smart tool selection for enriched conversations with community perspectives from Reddit discussions.",
+      "image": "/images/optimized/reddichat-hero.webp",
+      "techStack": [
+        "React",
+        "FastAPI",
+        "LangGraph",
+        "Google Gemini",
+        "Tailwind CSS",
+        "SQLAlchemy",
+        "Google Cloud Run"
+      ],
+      "github": "https://github.com/Msparihar/ReddiChat",
+      "live": "https://reddichat.manishsingh.tech",
+      "featured": true
+    },
+    {
+      "name": "LinkFlow",
+      "description": "LinkedIn outreach automation platform with connection search, personalized messaging, and multi-step outreach sequences. Features CSV import, message templates, rate limiting, and a unified dashboard for managing LinkedIn campaigns via Unipile integration.",
+      "image": "/images/linkflow-hero.gif",
+      "techStack": [
+        "Next.js 16",
+        "TypeScript",
+        "SQLite",
+        "Prisma",
+        "Unipile SDK",
+        "Tailwind CSS",
+        "Shadcn UI"
+      ],
+      "github": "https://github.com/Msparihar/linkflow",
+      "live": "https://linkflow.manishsingh.tech",
+      "featured": true
+    },
+    {
       "name": "Talent Match",
       "description": "AI-powered recruitment platform with semantic resume screening. Features an interactive orbital visualization showing candidate-role match percentages, intelligent matching algorithms, and a modern dashboard for recruiters to find talent with precision.",
       "image": "/images/talent-match.gif",
@@ -102,8 +136,7 @@
         "Framer Motion"
       ],
       "github": "https://github.com/Msparihar/threejs-experiment",
-      "live": "https://threejs-experiment-coral.vercel.app",
-      "featured": true
+      "live": "https://threejs-experiment-coral.vercel.app"
     },
     {
       "_disabled": true,
@@ -147,23 +180,6 @@
       ],
       "github": "https://github.com/Msparihar/pokemon-mcp-ui",
       "live": "https://pokemon-mcp-ui.vercel.app"
-    },
-    {
-      "name": "ReddiChat",
-      "description": "An intelligent AI chatbot that combines advanced language models with real-time Reddit insights. Features Google OAuth authentication, persistent chat history, and smart tool selection for enriched conversations with community perspectives from Reddit discussions.",
-      "image": "/images/optimized/reddichat-hero.webp",
-      "techStack": [
-        "React",
-        "FastAPI",
-        "LangGraph",
-        "Google Gemini",
-        "Tailwind CSS",
-        "SQLAlchemy",
-        "Google Cloud Run"
-      ],
-      "github": "https://github.com/Msparihar/ReddiChat",
-      "live": "https://reddichat.manishsingh.tech",
-      "featured": true
     },
     {
       "name": "Novel Writing AI with LLaMA 3.1",

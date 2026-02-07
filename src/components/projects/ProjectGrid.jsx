@@ -1,12 +1,11 @@
 "use client";
 
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useMemo, useCallback } from 'react';
 import { useTheme } from 'next-themes';
 import Image from 'next/image';
 import dynamic from 'next/dynamic';
 import { ExternalLink, Github, Star, GitFork, Expand } from 'lucide-react';
 import portfolioData from '@/config/portfolio.json';
-import { SkeletonGrid } from '../ui/SkeletonCard';
 
 // Lazy load modal components since they're only used on interaction
 const ProjectModal = dynamic(() => import('./ProjectModal'), { ssr: false });
@@ -29,11 +28,24 @@ const ProjectCard = ({ project, isDark, isPriority = false, onExpand }) => {
   // Image source - either from project or placeholder
   const imageSrc = project.image || getPlaceholderImage(project.name);
 
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      onExpand(project);
+    }
+  };
+
   return (
-    <div className={`project-card group relative overflow-hidden rounded-xl transition-all duration-300 cursor-pointer ${
-      isDark ? 'bg-gray-900 hover:bg-gray-800' : 'bg-white hover:bg-gray-50'
-    } border ${isDark ? 'border-gray-800' : 'border-gray-200'} shadow-sm hover:shadow-md`}
-    onClick={() => onExpand(project)}>
+    <div
+      role="button"
+      tabIndex={0}
+      className={`project-card group relative overflow-hidden rounded-xl transition-colors transition-shadow duration-300 cursor-pointer touch-manipulation ${
+        isDark ? 'bg-gray-900 hover:bg-gray-800' : 'bg-white hover:bg-gray-50'
+      } border ${isDark ? 'border-gray-800' : 'border-gray-200'} shadow-sm hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-500 focus-visible:ring-offset-2 ${isDark ? 'focus-visible:ring-offset-gray-900' : 'focus-visible:ring-offset-white'}`}
+      onClick={() => onExpand(project)}
+      onKeyDown={handleKeyDown}
+      aria-label={`View details for ${project.name}`}
+    >
       {/* Project Image with Overlay */}
       <div className="relative h-40 sm:h-48 overflow-hidden image-container">
         <div className="absolute inset-0 bg-gradient-to-b from-black/20 to-black/70 z-10"></div>
@@ -48,7 +60,7 @@ const ProjectCard = ({ project, isDark, isPriority = false, onExpand }) => {
           placeholder="blur"
           blurDataURL="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAwIiBoZWlnaHQ9IjQwMCIgdmlld0JveD0iMCAwIDYwMCA0MDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI2MDAiIGhlaWdodD0iNDAwIiBmaWxsPSIjMTExODI3IiBvcGFjaXR5PSIwLjMiLz4KPC9zdmc+Cg=="
           unoptimized={imageSrc.endsWith('.gif')}
-          className="object-cover w-full h-full transition-all duration-700 group-hover:scale-105"
+          className="object-cover w-full h-full transition-transform duration-700 motion-safe:group-hover:scale-105"
         />
         <div className="absolute bottom-0 left-0 right-0 p-3 sm:p-4 z-20">
           <div className="flex items-center justify-between">
@@ -99,10 +111,10 @@ const ProjectCard = ({ project, isDark, isPriority = false, onExpand }) => {
                 href={project.github}
                 target="_blank"
                 rel="noopener noreferrer"
-                className={`inline-flex items-center ${
+                className={`inline-flex items-center transition-colors rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-500 ${
                   isDark ? 'text-gray-400 hover:text-white' : 'text-gray-500 hover:text-gray-900'
                 }`}
-                aria-label="GitHub"
+                aria-label={`View source code for ${project.name}`}
                 onClick={(e) => e.stopPropagation()}
               >
                 <Github size={16} />
@@ -113,10 +125,10 @@ const ProjectCard = ({ project, isDark, isPriority = false, onExpand }) => {
                 href={project.live}
                 target="_blank"
                 rel="noopener noreferrer"
-                className={`inline-flex items-center ${
+                className={`inline-flex items-center transition-colors rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-500 ${
                   isDark ? 'text-gray-400 hover:text-white' : 'text-gray-500 hover:text-gray-900'
                 }`}
-                aria-label="Live site"
+                aria-label={`View live demo of ${project.name}`}
                 onClick={(e) => e.stopPropagation()}
               >
                 <ExternalLink size={16} />
@@ -142,74 +154,48 @@ const ProjectCard = ({ project, isDark, isPriority = false, onExpand }) => {
   );
 };
 
+const activeProjects = portfolioData.projects.filter(p => !p._disabled);
+
 const ProjectGrid = ({ searchQuery = '', activeFilter = 'all' }) => {
   const { theme } = useTheme();
   const isDark = theme === 'dark';
-  const [projects, setProjects] = useState([]);
-  const [loading, setLoading] = useState(true);
   const [selectedProject, setSelectedProject] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  // Load projects data (filter out disabled projects)
-  useEffect(() => {
-    const loadProjects = async () => {
-      try {
-        const activeProjects = portfolioData.projects.filter(p => !p._disabled);
-        setProjects(activeProjects);
-        setLoading(false);
-      } catch (err) {
-        console.error('Error loading projects:', err);
-        setLoading(false);
-      }
-    };
-
-    loadProjects();
-  }, []);
-
-  // Memoized filtered projects to prevent unnecessary recalculations
+  // Combined single-pass filter for search and technology
   const filteredProjects = useMemo(() => {
-    if (projects.length === 0) return [];
+    const query = searchQuery ? searchQuery.toLowerCase() : '';
+    const filter = activeFilter !== 'all' ? activeFilter.toLowerCase() : '';
 
-    let filtered = [...projects];
+    if (!query && !filter) return activeProjects;
 
-    // Apply search filter if query exists
-    if (searchQuery) {
-      const query = searchQuery.toLowerCase();
-      filtered = filtered.filter(project => {
+    return activeProjects.filter(project => {
+      if (query) {
         const nameMatch = project.name.toLowerCase().includes(query);
         const descMatch = project.description.toLowerCase().includes(query);
         const techMatch = project.techStack.some(tech =>
           tech.toLowerCase().includes(query)
         );
-        return nameMatch || descMatch || techMatch;
-      });
-    }
+        if (!nameMatch && !descMatch && !techMatch) return false;
+      }
 
-    // Apply technology filter if not 'all'
-    if (activeFilter !== 'all') {
-      filtered = filtered.filter(project => {
-        const techStack = project.techStack.map(tech => tech.toLowerCase());
-        return techStack.some(tech => tech.includes(activeFilter.toLowerCase()));
-      });
-    }
+      if (filter) {
+        if (!project.techStack.some(tech => tech.toLowerCase().includes(filter))) return false;
+      }
 
-    return filtered;
-  }, [projects, searchQuery, activeFilter]);
+      return true;
+    });
+  }, [searchQuery, activeFilter]);
 
-  // Modal handlers
-  const handleProjectExpand = (project) => {
+  const handleProjectExpand = useCallback((project) => {
     setSelectedProject(project);
     setIsModalOpen(true);
-  };
+  }, []);
 
-  const handleModalClose = () => {
+  const handleModalClose = useCallback(() => {
     setIsModalOpen(false);
     setSelectedProject(null);
-  };
-
-  if (loading) {
-    return <SkeletonGrid count={9} type="project" />;
-  }
+  }, []);
 
   if (filteredProjects.length === 0) {
     return (
