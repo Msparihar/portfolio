@@ -2,13 +2,24 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { sendVisitorAlert } from "@/lib/email";
 
+// Extract geo data from request headers (Cloudflare/Vercel)
+function getGeoData(request) {
+  return {
+    country: request.headers.get("x-vercel-ip-country") ||
+             request.headers.get("cf-ipcountry") || null,
+    city: request.headers.get("x-vercel-ip-city") ||
+          request.headers.get("cf-ipcity") || null,
+    region: request.headers.get("x-vercel-ip-country-region") || null,
+  };
+}
+
 export async function POST(request) {
   try {
     const body = await request.json().catch(() => ({}));
 
     const {
       type, // 'pageview' | 'event'
-      fingerprint,
+      fingerprint: bodyFingerprint,
       path,
       title,
       referrer,
@@ -17,9 +28,6 @@ export async function POST(request) {
       eventProperties,
       duration,
       scrollDepth,
-      country,
-      city,
-      region,
       device,
       browser,
       os,
@@ -28,10 +36,19 @@ export async function POST(request) {
       utmCampaign,
     } = body;
 
-    // Validate fingerprint
+    // Read fingerprint: prefer body (backward compat), fall back to _afp cookie
+    const fingerprint = bodyFingerprint ||
+      request.cookies.get("_afp")?.value;
+
     if (!fingerprint) {
       return NextResponse.json({ error: "Missing fingerprint" }, { status: 400 });
     }
+
+    // Extract geo from request headers (server-side only)
+    const geo = getGeoData(request);
+    const country = geo.country || body.country || null;
+    const city = geo.city || body.city || null;
+    const region = geo.region || body.region || null;
 
     // Upsert visitor
     const visitor = await prisma.visitor.upsert({
