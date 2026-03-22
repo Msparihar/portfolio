@@ -28,7 +28,6 @@ export function Providers({ children }) {
           attribute="class"
           defaultTheme="dark"
           enableSystem={false}
-          disableTransitionOnChange
           storageKey="portfolio-theme"
         >
           <TerminalProvider>
