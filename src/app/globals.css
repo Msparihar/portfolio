@@ -49,6 +49,12 @@
   }
 }
 
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+
 @layer base {
   * {
     @apply border-border;
@@ -105,8 +111,6 @@
     @apply p-3 sm:p-4 md:p-6 rounded-lg shadow-lg;
     /* Optimize repaints */
     will-change: auto;
-    /* Hide browser's default text cursor */
-    caret-color: transparent;
     /* Better text wrapping on mobile */
     word-wrap: break-word;
     overflow-wrap: break-word;
@@ -159,9 +163,7 @@
   .typing-animation {
     display: inline-block;
     overflow: hidden;
-    border-right: 2px solid;
     white-space: normal;
-    animation: typing 2s steps(40, end), blink-caret 0.75s step-end infinite;
     width: fit-content;
     max-width: 100%;
   }

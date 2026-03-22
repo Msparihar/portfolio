@@ -92,6 +92,8 @@ Type 'help' to see available commands.`
   const [input, setInput] = useState('');
   const [inputEnabled, setInputEnabled] = useState(true);
   const [isNavigating, setIsNavigating] = useState(false);
+  const [commandHistory, setCommandHistory] = useState([]);
+  const [historyIndex, setHistoryIndex] = useState(-1);
 
 
   useEffect(() => {
@@ -299,6 +301,24 @@ ${portfolioData.education.map(edu =>
     }
   };
 
+  const commandNames = Object.keys(commands);
+  const cdDirs = ['projects', 'contact', 'blog', 'home', '..'];
+
+  const getSuggestion = (currentInput) => {
+    if (!currentInput) return '';
+    const lower = currentInput.toLowerCase();
+    if (lower.startsWith('cd ')) {
+      const partial = lower.slice(3);
+      if (!partial) return '';
+      const match = cdDirs.find(d => d.startsWith(partial) && d !== partial);
+      return match ? match.slice(partial.length) : '';
+    }
+    const match = commandNames.find(c => c.startsWith(lower) && c !== lower);
+    return match ? match.slice(lower.length) : '';
+  };
+
+  const suggestion = getSuggestion(input);
+
   const executeCommand = (commandInput) => {
     const [command, ...args] = commandInput.trim().split(' ');
     const argsString = args.join(' ');
@@ -322,6 +342,8 @@ ${portfolioData.education.map(edu =>
     const command = input.trim();
     const output = executeCommand(command);
 
+    setCommandHistory(prev => [...prev, command]);
+    setHistoryIndex(-1);
     setHistory(prev => [...prev, { command, output }]);
     setInput('');
 
@@ -337,7 +359,47 @@ ${portfolioData.education.map(edu =>
   const handleKeyDown = (e) => {
     if (e.key === 'ArrowUp') {
       e.preventDefault();
-      // Could implement command history here
+      if (commandHistory.length === 0) return;
+      const newIndex = historyIndex === -1
+        ? commandHistory.length - 1
+        : Math.max(0, historyIndex - 1);
+      setHistoryIndex(newIndex);
+      setInput(commandHistory[newIndex]);
+    } else if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      if (historyIndex === -1) return;
+      const newIndex = historyIndex + 1;
+      if (newIndex >= commandHistory.length) {
+        setHistoryIndex(-1);
+        setInput('');
+      } else {
+        setHistoryIndex(newIndex);
+        setInput(commandHistory[newIndex]);
+      }
+    } else if (e.key === 'ArrowRight' && suggestion && e.target.selectionStart === input.length) {
+      e.preventDefault();
+      setInput(input + suggestion);
+    } else if (e.key === 'Tab') {
+      e.preventDefault();
+      const lower = input.toLowerCase();
+      if (!lower) return;
+      if (lower.startsWith('cd ')) {
+        const partial = lower.slice(3);
+        if (!partial) return;
+        const matches = cdDirs.filter(d => d.startsWith(partial));
+        if (matches.length === 1) {
+          setInput('cd ' + matches[0]);
+        } else if (matches.length > 1) {
+          setHistory(prev => [...prev, { command: input, output: matches.join('  ') }]);
+        }
+      } else {
+        const matches = commandNames.filter(c => c.startsWith(lower));
+        if (matches.length === 1) {
+          setInput(matches[0]);
+        } else if (matches.length > 1) {
+          setHistory(prev => [...prev, { command: input, output: matches.join('  ') }]);
+        }
+      }
     }
   };
 
@@ -352,7 +414,8 @@ ${portfolioData.education.map(edu =>
     inputRef,
     terminalRef,
     mounted,
-    theme
+    theme,
+    suggestion
   };
 
   return (
@@ -375,7 +438,8 @@ export const Terminal = () => {
     inputRef,
     terminalRef,
     mounted,
-    theme
+    theme,
+    suggestion
   } = useTerminal();
 
   if (!mounted) {
@@ -383,7 +447,7 @@ export const Terminal = () => {
   }
 
   return (
-    <div className="terminal-container relative overflow-hidden">
+    <div className="terminal-container relative overflow-hidden cursor-text select-none" onClick={() => inputRef.current?.focus()}>
       {/* Grid background */}
       <div className="absolute inset-0 bg-grid-small-white/[0.05] dark:bg-grid-small-white/[0.02]" />
 
@@ -438,23 +502,36 @@ export const Terminal = () => {
           {/* Terminal input - positioned right after the last output */}
           <form onSubmit={handleSubmit} className="flex items-center" style={{ minHeight: '24px' }}>
             <span className="terminal-prompt text-green-500 mr-2">$</span>
-            <input
-              ref={inputRef}
-              type="text"
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              onKeyDown={handleKeyDown}
-              disabled={!inputEnabled}
-              className="flex-1 bg-transparent border-none outline-none font-mono placeholder-muted-foreground"
-              style={{
+            <div className="flex-1 relative" style={{ minHeight: '20px' }}>
+              <input
+                ref={inputRef}
+                type="text"
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                onKeyDown={handleKeyDown}
+                disabled={!inputEnabled}
+                className="bg-transparent border-none outline-none font-mono absolute"
+                style={{
+                  color: 'transparent',
+                  opacity: 0,
+                  width: '1px',
+                  height: '1px',
+                  top: 0,
+                  left: 0,
+                  zIndex: -1
+                }}
+                placeholder=""
+                autoComplete="off"
+                autoFocus
+              />
+              <span className="font-mono pointer-events-none whitespace-pre" style={{
                 color: theme === 'dark' ? 'hsl(0, 0%, 98%)' : 'hsl(0, 0%, 3.9%)',
-                position: 'relative',
-                zIndex: 15,
-                minHeight: '20px'
-              }}
-              placeholder={inputEnabled ? "Type a command..." : "Processing..."}
-              autoComplete="off"
-            />
+              }}>
+                {input || (inputEnabled ? <span className="text-muted-foreground">Type a command...</span> : <span className="text-muted-foreground">Processing...</span>)}
+                <span className="inline-block w-[2px] h-[1.1em] bg-green-500 align-middle ml-[1px]" style={{ animation: 'terminal-blink 1s step-end infinite' }} />
+                {suggestion && input && <span className="text-green-500/30">{suggestion}</span>}
+              </span>
+            </div>
             {isNavigating && <LoadingDotsCommand />}
           </form>
         </div>

@@ -107,7 +107,7 @@ export const viewport = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en" suppressHydrationWarning className={`dark ${ibmPlexMono.variable} ${firaCode.variable}`}>
+    <html lang="en" suppressHydrationWarning className={`${ibmPlexMono.variable} ${firaCode.variable}`}>
       <head>
         {/* Resource hints only for external domains used on initial load */}
         <link rel="dns-prefetch" href="//blog.futuresmart.ai" />
