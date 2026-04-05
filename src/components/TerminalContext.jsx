@@ -1,11 +1,85 @@
 "use client";
 
 import React, { createContext, useContext, useState, useEffect, useRef } from 'react';
-import { useRouter } from 'next/navigation';
 import portfolioData from '@/config/portfolio.json';
-import { LoadingDotsCommand, TerminalLoader } from '@/components/ui/LoadingDots';
+import { useWindowStore } from '@/store/windowStore';
+import { TerminalLoader } from '@/components/ui/LoadingDots';
 import { useTheme } from 'next-themes';
 import TerminalLogo from './TerminalLogo';
+
+const BootSequence = () => {
+  const [step, setStep] = useState(0);
+  const [dotsCount, setDotsCount] = useState(0);
+  const maxSteps = 6;
+
+  const skills = portfolioData.skills;
+  const allSkills = [
+    ...skills.languages,
+    ...skills.frameworks.slice(0, 3),
+    ...skills.ai_ml.slice(0, 2)
+  ];
+
+  useEffect(() => {
+    if (step >= maxSteps) return;
+
+    // Step 2 (loading skills) has dot animation
+    if (step === 2 && dotsCount < 10) {
+      const dotTimer = setTimeout(() => setDotsCount(d => d + 1), 80);
+      return () => clearTimeout(dotTimer);
+    }
+
+    const delays = [0, 300, 600, 1400, 1800, 2200];
+    const timer = setTimeout(() => setStep(s => s + 1), delays[step] || 400);
+    return () => clearTimeout(timer);
+  }, [step, dotsCount]);
+
+  return (
+    <div className="font-mono text-sm space-y-1">
+      {step >= 1 && (
+        <div>
+          <span className="text-green-500">{'>'}</span>
+          <span className="text-foreground ml-2 font-bold">{portfolioData.name}</span>
+        </div>
+      )}
+      {step >= 2 && (
+        <div>
+          <span className="text-green-500">{'>'}</span>
+          <span className="text-terminal-cyan ml-2">{portfolioData.title}</span>
+        </div>
+      )}
+      {step >= 3 && (
+        <div>
+          <span className="text-green-500">{'>'}</span>
+          <span className="text-muted-foreground ml-2">
+            Loading skills{'.' .repeat(Math.min(dotsCount, 10))}
+          </span>
+          {dotsCount >= 10 && <span className="text-green-500 ml-1">done</span>}
+        </div>
+      )}
+      {step >= 4 && (
+        <div className="flex flex-wrap gap-1.5 ml-4 mt-1">
+          {allSkills.map((skill, i) => (
+            <span
+              key={skill}
+              className="px-2 py-0.5 text-xs rounded-md bg-green-500/10 text-green-400 border border-green-500/20"
+              style={{ animation: `fadeIn 0.3s ease ${i * 0.05}s both` }}
+            >
+              {skill}
+            </span>
+          ))}
+        </div>
+      )}
+      {step >= 5 && (
+        <div className="mt-2">
+          <span className="text-green-500">{'>'}</span>
+          <span className="text-muted-foreground ml-2">
+            Type <span className="text-terminal-cyan">'help'</span> for available commands
+          </span>
+        </div>
+      )}
+    </div>
+  );
+};
 
 const TypeWriter = ({ text, delay = 10, className = '' }) => {
   const [displayText, setDisplayText] = useState('');
@@ -73,25 +147,20 @@ export const useTerminal = () => {
 
 // Terminal Provider Component
 export const TerminalProvider = ({ children }) => {
-  const router = useRouter();
   const { theme } = useTheme();
+  const openWindow = useWindowStore((s) => s.openWindow);
   const terminalRef = useRef(null);
   const inputRef = useRef(null);
   const [mounted, setMounted] = useState(false);
   const [history, setHistory] = useState([
     {
       command: 'whoami',
-      output: `Welcome! I'm ${portfolioData.name}
-${portfolioData.title}
-${portfolioData.bio}
-
-Type 'help' to see available commands.`
+      output: null,
+      bootSequence: true
     }
   ]);
 
   const [input, setInput] = useState('');
-  const [inputEnabled, setInputEnabled] = useState(true);
-  const [isNavigating, setIsNavigating] = useState(false);
   const [commandHistory, setCommandHistory] = useState([]);
   const [historyIndex, setHistoryIndex] = useState(-1);
 
@@ -106,18 +175,30 @@ Type 'help' to see available commands.`
     }
   }, [mounted, history]);
 
+  // Auto-scroll terminal to bottom on any DOM change
+  useEffect(() => {
+    const el = terminalRef.current;
+    if (!el) return;
+    const scroll = () => { el.scrollTop = el.scrollHeight; };
+    scroll();
+    const observer = new MutationObserver(scroll);
+    observer.observe(el, { childList: true, subtree: true, characterData: true });
+    return () => observer.disconnect();
+  }, [mounted, history]);
+
   const commands = {
     help: {
       description: 'Show available commands',
       execute: () => `Available commands:
 - whoami: About me
-- projects: View my projects
+- projects: Open File Manager (projects)
 - exp | experience: View my work experience
 - edu | education: View my education
-- contact: Get my contact information
-- blog: View my blog
-- github: View GitHub contributions
-- cd [directory]: Navigate to a page (e.g., cd projects, cd contact, cd blog)
+- contact: Open Mail (contact)
+- blog: Open Log Viewer (blog)
+- about: Open About window
+- open [app]: Open an application window
+- cd [directory]: Open an app window (e.g., cd projects, cd contact, cd blog)
 - clear: Clear the terminal
 - echo [text]: Display text
 - date: Show current date and time
@@ -132,66 +213,31 @@ Type 'help' to see available commands.`
       }
     },
     projects: {
-      description: 'View my projects',
+      description: 'Open File Manager (projects)',
       execute: () => {
-        if (!isNavigating) {
-          setIsNavigating(true);
-          setInputEnabled(false);
-
-          const output = `Navigating to projects page...`;
-          setTimeout(() => {
-            router.push('/projects');
-          }, 400);
-
-          return output;
-        }
-        return 'Navigation already in progress...';
+        openWindow('filemanager');
+        return 'Opening File Manager...';
       }
     },
     contact: {
       description: 'Get my contact information',
       execute: () => {
-        if (!isNavigating) {
-          setIsNavigating(true);
-          setInputEnabled(false);
-
-          const output = `Navigating to contact page...`;
-          setTimeout(() => {
-            router.push('/contact');
-          }, 400);
-
-          return output;
-        }
-        return 'Navigation already in progress...';
+        openWindow('mail');
+        return 'Opening Mail...';
       }
     },
     blog: {
       description: 'View my blog',
       execute: () => {
-        if (!isNavigating) {
-          setIsNavigating(true);
-          setInputEnabled(false);
-
-          const output = `Navigating to blog page...`;
-          setTimeout(() => {
-            router.push('/blog');
-          }, 400);
-
-          return output;
-        }
-        return 'Navigation already in progress...';
+        openWindow('logviewer');
+        return 'Opening Log Viewer...';
       }
     },
     github: {
-      description: 'View GitHub contributions',
+      description: 'View GitHub & about info',
       execute: () => {
-        // Scroll to GitHub contributions section
-        const githubSection = document.querySelector('.github-contributions-section');
-        if (githubSection) {
-          githubSection.scrollIntoView({ behavior: 'smooth' });
-          return 'Scrolling to GitHub contributions...';
-        }
-        return 'GitHub contributions section not found.';
+        openWindow('about');
+        return 'Opening About...';
       }
     },
     whoami: {
@@ -253,56 +299,67 @@ ${portfolioData.education.map(edu =>
     },
     ls: {
       description: 'List available sections',
-      execute: () => `Available sections:
-- projects: My development projects
-- contact: Contact information
-- blog: My blog posts
-- github: GitHub contributions
-- experience: Work experience
-- education: Educational background`
+      execute: () => `Available sections (use 'open [name]' to launch):
+- filemanager: My development projects
+- mail: Contact information
+- logviewer: My blog posts
+- about: About & GitHub contributions
+- browser: Web browser
+- experience: Work experience (type 'exp')
+- education: Educational background (type 'edu')`
     },
     dir: {
       description: 'List available sections',
       execute: () => commands.ls.execute()
     },
     cd: {
-      description: 'Navigate to a page',
+      description: 'Open an app window by directory name',
       execute: (args) => {
         if (!args) {
-          return 'Usage: cd [directory]\nAvailable directories: projects, contact, blog';
+          return 'Usage: cd [directory]\nAvailable directories: projects, contact, blog, home, ..';
         }
 
         const validDirectories = ['projects', 'contact', 'blog', 'home', '..'];
-        const directory = args.toLowerCase();
+        const directory = args.toLowerCase().trim();
 
         if (!validDirectories.includes(directory)) {
           return `Directory '${args}' not found. Available: ${validDirectories.join(', ')}`;
         }
 
-        if (!isNavigating) {
-          setIsNavigating(true);
-          setInputEnabled(false);
-
-          let path = '/';
-          if (directory === 'projects') path = '/projects';
-          else if (directory === 'contact') path = '/contact';
-          else if (directory === 'blog') path = '/blog';
-          else if (directory === 'home' || directory === '..') path = '/';
-
-          const output = `Changing directory to ${directory}...`;
-          setTimeout(() => {
-            router.push(path);
-          }, 400);
-
-          return output;
+        if (directory === 'projects') {
+          openWindow('filemanager');
+          return 'Opening File Manager...';
+        } else if (directory === 'contact') {
+          openWindow('mail');
+          return 'Opening Mail...';
+        } else if (directory === 'blog') {
+          openWindow('logviewer');
+          return 'Opening Log Viewer...';
+        } else if (directory === 'home' || directory === '..') {
+          return 'Already at ~/';
         }
-        return 'Navigation already in progress...';
+      }
+    },
+    open: {
+      description: 'Open an application window',
+      execute: (args) => {
+        if (!args) {
+          return 'Usage: open [app]\nAvailable apps: terminal, filemanager, logviewer, mail, about, browser';
+        }
+        const appId = args.toLowerCase().trim();
+        const validApps = ['terminal', 'filemanager', 'logviewer', 'mail', 'about', 'browser'];
+        if (!validApps.includes(appId)) {
+          return `App '${args}' not found. Available: ${validApps.join(', ')}`;
+        }
+        openWindow(appId);
+        return `Opening ${appId}...`;
       }
     }
   };
 
   const commandNames = Object.keys(commands);
   const cdDirs = ['projects', 'contact', 'blog', 'home', '..'];
+  const openApps = ['terminal', 'filemanager', 'logviewer', 'mail', 'about', 'browser'];
 
   const getSuggestion = (currentInput) => {
     if (!currentInput) return '';
@@ -311,6 +368,12 @@ ${portfolioData.education.map(edu =>
       const partial = lower.slice(3);
       if (!partial) return '';
       const match = cdDirs.find(d => d.startsWith(partial) && d !== partial);
+      return match ? match.slice(partial.length) : '';
+    }
+    if (lower.startsWith('open ')) {
+      const partial = lower.slice(5);
+      if (!partial) return '';
+      const match = openApps.find(a => a.startsWith(partial) && a !== partial);
       return match ? match.slice(partial.length) : '';
     }
     const match = commandNames.find(c => c.startsWith(lower) && c !== lower);
@@ -337,7 +400,7 @@ ${portfolioData.education.map(edu =>
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!input.trim() || !inputEnabled) return;
+    if (!input.trim()) return;
 
     const command = input.trim();
     const output = executeCommand(command);
@@ -346,14 +409,6 @@ ${portfolioData.education.map(edu =>
     setHistoryIndex(-1);
     setHistory(prev => [...prev, { command, output }]);
     setInput('');
-
-    // Reset navigation state after a shorter delay
-    if (isNavigating) {
-      setTimeout(() => {
-        setIsNavigating(false);
-        setInputEnabled(true);
-      }, 500); // Reduced from 1000ms to 500ms
-    }
   };
 
   const handleKeyDown = (e) => {
@@ -392,6 +447,15 @@ ${portfolioData.education.map(edu =>
         } else if (matches.length > 1) {
           setHistory(prev => [...prev, { command: input, output: matches.join('  ') }]);
         }
+      } else if (lower.startsWith('open ')) {
+        const partial = lower.slice(5);
+        if (!partial) return;
+        const matches = openApps.filter(a => a.startsWith(partial));
+        if (matches.length === 1) {
+          setInput('open ' + matches[0]);
+        } else if (matches.length > 1) {
+          setHistory(prev => [...prev, { command: input, output: matches.join('  ') }]);
+        }
       } else {
         const matches = commandNames.filter(c => c.startsWith(lower));
         if (matches.length === 1) {
@@ -407,8 +471,6 @@ ${portfolioData.education.map(edu =>
     history,
     input,
     setInput,
-    inputEnabled,
-    isNavigating,
     handleSubmit,
     handleKeyDown,
     inputRef,
@@ -425,14 +487,11 @@ ${portfolioData.education.map(edu =>
   );
 };
 
-// Terminal Component
 export const Terminal = () => {
   const {
     history,
     input,
     setInput,
-    inputEnabled,
-    isNavigating,
     handleSubmit,
     handleKeyDown,
     inputRef,
@@ -447,7 +506,7 @@ export const Terminal = () => {
   }
 
   return (
-    <div className="terminal-container relative overflow-hidden cursor-text select-none" onClick={() => inputRef.current?.focus()}>
+    <div className="terminal-container relative cursor-text select-none" onClick={() => inputRef.current?.focus()} style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
       {/* Grid background */}
       <div className="absolute inset-0 bg-grid-small-white/[0.05] dark:bg-grid-small-white/[0.02]" />
 
@@ -468,7 +527,7 @@ export const Terminal = () => {
       />
 
       {/* Terminal content */}
-      <div className="relative z-10 p-6">
+      <div className="relative z-10 p-6 flex flex-col" style={{ flex: 1, minHeight: 0 }}>
         {/* Terminal header */}
         <div className="flex items-center mb-6">
           <TerminalLogo />
@@ -484,14 +543,18 @@ export const Terminal = () => {
         </div>
 
         {/* Terminal history */}
-        <div ref={terminalRef} className="terminal-output mb-4 space-y-2 min-h-[200px] max-h-[400px] overflow-y-auto">
+        <div ref={terminalRef} className="terminal-output space-y-2 flex-1 overflow-y-auto" style={{ minHeight: 0 }}>
           {history.map((entry, index) => (
             <div key={index} className="terminal-line">
               <div className="flex items-start">
                 <span className="terminal-prompt text-green-500 mr-2 flex-shrink-0">$</span>
                 <span className="text-foreground font-mono">{entry.command}</span>
               </div>
-              {entry.output && (
+              {entry.bootSequence ? (
+                <div className="mt-1 ml-6">
+                  <BootSequence />
+                </div>
+              ) : entry.output && (
                 <div className="mt-1 ml-6 text-muted-foreground font-mono whitespace-pre-wrap">
                   <TypeWriter text={entry.output} delay={10} />
                 </div>
@@ -509,7 +572,6 @@ export const Terminal = () => {
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 onKeyDown={handleKeyDown}
-                disabled={!inputEnabled}
                 className="bg-transparent border-none outline-none font-mono absolute"
                 style={{
                   color: 'transparent',
@@ -525,14 +587,13 @@ export const Terminal = () => {
                 autoFocus
               />
               <span className="font-mono pointer-events-none whitespace-pre" style={{
-                color: theme === 'dark' ? 'hsl(0, 0%, 98%)' : 'hsl(0, 0%, 3.9%)',
+                color: 'var(--dt-text)',
               }}>
-                {input || (inputEnabled ? <span className="text-muted-foreground">Type a command...</span> : <span className="text-muted-foreground">Processing...</span>)}
+                {input || <span className="text-muted-foreground">Type a command...</span>}
                 <span className="inline-block w-[2px] h-[1.1em] bg-green-500 align-middle ml-[1px]" style={{ animation: 'terminal-blink 1s step-end infinite' }} />
                 {suggestion && input && <span className="text-green-500/30">{suggestion}</span>}
               </span>
             </div>
-            {isNavigating && <LoadingDotsCommand />}
           </form>
         </div>
       </div>
