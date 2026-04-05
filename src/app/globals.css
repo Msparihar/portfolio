@@ -24,6 +24,7 @@
     --input: 0 0% 89.8%;
     --ring: 0 0% 3.9%;
     --radius: 0.5rem;
+    --terminal-cyan: 187 100% 42%;
   }
 
   .dark {
@@ -46,7 +47,107 @@
     --border: 0 0% 14.9%;
     --input: 0 0% 14.9%;
     --ring: 0 0% 83.1%;
+    --terminal-cyan: 187 100% 50%;
   }
+}
+
+/* ══════════════════════════════════════════════════
+   Desktop OS Theme Tokens
+   All desktop components use var(--dt-*) references.
+   Change the accent color here to re-theme the entire OS.
+   ══════════════════════════════════════════════════ */
+.desktop-canvas {
+  /* Accent: muted indigo-violet (Linear-inspired) */
+  --dt-accent:              #5e6ad2;
+  --dt-accent-hover:        #7170ff;
+  --dt-accent-dim:          rgba(94, 106, 210, 0.5);
+  --dt-accent-soft:         rgba(94, 106, 210, 0.08);
+  --dt-accent-soft-2:       rgba(94, 106, 210, 0.12);
+  --dt-accent-border:       rgba(255, 255, 255, 0.06);
+  --dt-accent-border-strong:rgba(255, 255, 255, 0.09);
+  --dt-accent-border-dim:   rgba(255, 255, 255, 0.03);
+  --dt-accent-glow:         rgba(94, 106, 210, 0.3);
+  --dt-accent-glow-soft:    rgba(94, 106, 210, 0.06);
+  --dt-accent-70:           rgba(94, 106, 210, 0.7);
+  --dt-accent-45:           rgba(94, 106, 210, 0.45);
+  --dt-accent-30:           rgba(94, 106, 210, 0.3);
+  --dt-accent-20:           rgba(94, 106, 210, 0.2);
+  --dt-accent-03:           rgba(94, 106, 210, 0.03);
+
+  /* Surfaces */
+  --dt-bg:                  #09090b;
+  --dt-surface:             rgba(15, 16, 17, 0.97);
+  --dt-surface-deep:        rgba(10, 10, 11, 0.98);
+  --dt-surface-input:       rgba(255, 255, 255, 0.04);
+
+  /* Text hierarchy (5 stops, neutral) */
+  --dt-text:                #f7f8f8;
+  --dt-text-muted:          #8a8f98;
+
+  /* Window shadows */
+  --dt-shadow-focused:      0 2px 4px rgba(0,0,0,0.4), 0 8px 24px rgba(0,0,0,0.6), 0 24px 48px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.08), 0 0 60px rgba(94,106,210,0.06), inset 0 0 0 1px rgba(255,255,255,0.03);
+  --dt-shadow-unfocused:    0 2px 4px rgba(0,0,0,0.3), 0 8px 24px rgba(0,0,0,0.4), 0 0 0 1px rgba(255,255,255,0.05);
+
+  /* Titlebar */
+  --dt-titlebar-bg:         linear-gradient(180deg, rgba(22, 22, 24, 0.98) 0%, rgba(16, 16, 18, 0.98) 50%, rgba(12, 12, 14, 0.99) 100%);
+  --dt-titlebar-shadow:     inset 0 1px 0 rgba(255,255,255,0.06), inset 0 0 12px rgba(255,255,255,0.01);
+  --dt-titlebar-border:     rgba(255, 255, 255, 0.06);
+
+  /* Taskbar */
+  --dt-taskbar-bg:          linear-gradient(180deg, rgba(14, 14, 16, 0.9) 0%, rgba(10, 10, 12, 0.95) 100%);
+  --dt-taskbar-border:      rgba(255, 255, 255, 0.06);
+
+  /* Scrollbar (neutral white, not accent-colored) */
+  --dt-scrollbar-thumb:       rgba(255, 255, 255, 0.15);
+  --dt-scrollbar-thumb-hover: rgba(255, 255, 255, 0.25);
+  --dt-scrollbar-track:       rgba(255, 255, 255, 0.02);
+
+  /* Scanline overlay */
+  --dt-scanline-color:      rgba(255, 255, 255, 0.015);
+
+  /* Desktop wallpaper dot grid */
+  --dt-wallpaper-dot:       rgba(255, 255, 255, 0.06);
+
+  /* Desktop wallpaper gradient */
+  --dt-wallpaper-gradient:
+    radial-gradient(ellipse at 20% 50%, rgba(94, 106, 210, 0.22) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 20%, rgba(168, 85, 247, 0.18) 0%, transparent 50%),
+    radial-gradient(ellipse at 60% 80%, rgba(6, 182, 212, 0.15) 0%, transparent 50%),
+    radial-gradient(ellipse at 40% 30%, rgba(59, 130, 246, 0.12) 0%, transparent 50%),
+    radial-gradient(rgba(255,255,255,0.06) 1px, transparent 1px);
+  --dt-wallpaper-gradient-size: 100% 100%, 100% 100%, 100% 100%, 100% 100%, 24px 24px;
+
+  /* Context menu background */
+  --dt-context-bg:          rgba(15, 16, 17, 0.97);
+
+  /* Window backdrop blur (overridden by Glass theme) */
+  --dt-window-blur:         blur(20px) saturate(1.2);
+}
+
+/* Desktop OS Scrollbar — scoped to desktop canvas */
+.desktop-canvas ::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.desktop-canvas ::-webkit-scrollbar-track {
+  background: var(--dt-scrollbar-track);
+  border-radius: 3px;
+}
+
+.desktop-canvas ::-webkit-scrollbar-thumb {
+  background: var(--dt-scrollbar-thumb);
+  border-radius: 3px;
+}
+
+.desktop-canvas ::-webkit-scrollbar-thumb:hover {
+  background: var(--dt-scrollbar-thumb-hover);
+}
+
+/* Firefox scrollbar */
+.desktop-canvas * {
+  scrollbar-width: thin;
+  scrollbar-color: var(--dt-scrollbar-thumb) var(--dt-scrollbar-track);
 }
 
 ::view-transition-old(root),
@@ -108,8 +209,7 @@
 
 @layer components {
   .terminal-container {
-    @apply p-3 sm:p-4 md:p-6 rounded-lg shadow-lg;
-    /* Optimize repaints */
+    @apply p-3 sm:p-4 md:p-6;
     will-change: auto;
     /* Better text wrapping on mobile */
     word-wrap: break-word;
@@ -119,8 +219,8 @@
   /* Dark mode terminal styling */
   .dark .terminal-container {
     @apply text-green-500;
-    background-color: rgba(0, 0, 0, 0.95);
-    box-shadow: 0 0 30px rgba(0, 255, 0, 0.05);
+    background-color: transparent;
+    box-shadow: none;
   }
 
   /* Light mode terminal styling */
@@ -157,7 +257,20 @@
   }
 
   .terminal-link {
-    @apply text-blue-400 hover:text-blue-300 underline-offset-4 hover:underline transition-colors;
+    color: hsl(var(--terminal-cyan));
+    @apply hover:brightness-125 underline-offset-4 hover:underline transition-colors;
+  }
+
+  .text-terminal-cyan {
+    color: hsl(var(--terminal-cyan));
+  }
+
+  .bg-terminal-cyan\/5 {
+    background-color: hsl(var(--terminal-cyan) / 0.05);
+  }
+
+  .border-terminal-cyan\/20 {
+    border-color: hsl(var(--terminal-cyan) / 0.2);
   }
 
   .typing-animation {
@@ -238,6 +351,11 @@
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
   }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 /* GSAP animation: hide elements before GSAP initializes (prevents FOUC) */
