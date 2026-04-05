@@ -9,6 +9,7 @@ import BlogInteractive from '@/components/blog/BlogInteractive';
 export const metadata = {
   title: 'Blog',
   description: `Read articles and insights by ${portfolioData.name} on AI, Machine Learning, Full Stack Development, and more.`,
+  alternates: { canonical: '/blog' },
   openGraph: {
     title: `Blog | ${portfolioData.name}`,
     description: `Read articles and insights by ${portfolioData.name} on AI, Machine Learning, Full Stack Development, and more.`,
@@ -39,10 +40,10 @@ const BlogPage = () => {
                 <span className="terminal-prompt">$</span>
                 <span className="ml-1">cd ..</span>
               </Link>
-              <div className="text-lg sm:text-xl md:text-2xl font-bold text-foreground">
+              <h1 className="text-lg sm:text-xl md:text-2xl font-bold text-foreground">
                 <span className="terminal-prompt">$</span>
                 <span className="ml-2">ls blog/</span>
-              </div>
+              </h1>
             </div>
           </div>
         </div>

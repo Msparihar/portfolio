@@ -22,6 +22,7 @@ export const revalidate = 86400;
 export const metadata = {
   title: 'Home',
   description: `${portfolioData.name} - ${portfolioData.title}. ${portfolioData.bio}`,
+  alternates: { canonical: '/' },
   openGraph: {
     title: `${portfolioData.name} | ${portfolioData.title}`,
     description: portfolioData.bio,
@@ -115,6 +116,9 @@ export default async function Home() {
               </div>
             </div>
           </div>
+
+          {/* Visually hidden H1 for SEO and accessibility */}
+          <h1 className="sr-only">Manish Singh Parihar — Full Stack & AI Engineer Portfolio</h1>
 
           {/* Main terminal interface */}
           <div data-anim-terminal className="relative gsap-hidden">

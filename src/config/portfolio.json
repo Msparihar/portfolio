@@ -91,7 +91,7 @@
     {
       "name": "LinkFlow",
       "description": "LinkedIn outreach automation platform with connection search, personalized messaging, and multi-step outreach sequences. Features CSV import, message templates, rate limiting, and a unified dashboard for managing LinkedIn campaigns via Unipile integration.",
-      "image": "/images/linkflow-hero.gif",
+      "image": "/images/linkflow-hero.webm",
       "techStack": [
         "Next.js 16",
         "TypeScript",
@@ -108,7 +108,7 @@
     {
       "name": "Talent Match",
       "description": "AI-powered recruitment platform with semantic resume screening. Features an interactive orbital visualization showing candidate-role match percentages, intelligent matching algorithms, and a modern dashboard for recruiters to find talent with precision.",
-      "image": "/images/talent-match.gif",
+      "image": "/images/talent-match.webm",
       "techStack": [
         "Next.js 15",
         "React 19",
@@ -126,7 +126,7 @@
     {
       "name": "Three.js Creative Agency",
       "description": "Award-winning style creative agency website featuring stunning 3D animated graphics built with Three.js. Showcases interactive 3D elements, smooth animations, and modern web design principles inspired by Awwwards-winning sites.",
-      "image": "/images/threejs-experiment.gif",
+      "image": "/images/threejs-experiment.webm",
       "techStack": [
         "Next.js",
         "TypeScript",
@@ -198,7 +198,7 @@
     {
       "name": "Fire Detection System",
       "description": "Developed a real-time fire detection system using YOLOv5, capable of identifying fires through camera feeds. Provides an alternative to traditional smoke detectors with visual detection capabilities.",
-      "image": "/images/fire.gif",
+      "image": "/images/fire.webm",
       "techStack": ["Python", "YOLOv5", "PyTorch", "OpenCV", "FastAPI"],
       "github": "https://github.com/Msparihar/Fire-Detection-using-YoloV5",
       "live": "https://github.com/Msparihar/Fire-Detection-using-YoloV5"
