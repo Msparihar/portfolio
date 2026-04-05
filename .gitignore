@@ -47,3 +47,7 @@ dist/
 .playwright-mcp/
 .claude/
 .next
+
+# POC / scratch files
+poc-*.html
+CODEX.md
