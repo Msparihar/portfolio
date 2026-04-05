@@ -5,6 +5,8 @@ export function cn(...inputs) {
   return twMerge(clsx(inputs));
 }
 
+export const isVideoSrc = (src) => src?.endsWith('.webm') || src?.endsWith('.mp4');
+
 export const extractUniqueTags = (items) => {
   const tags = items.reduce((acc, item) => {
     item.tags?.forEach(tag => acc.add(tag));

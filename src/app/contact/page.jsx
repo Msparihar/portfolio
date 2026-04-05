@@ -9,6 +9,7 @@ import ContactInteractive from '@/components/contact/ContactInteractive';
 export const metadata = {
   title: 'Contact',
   description: `Get in touch with ${portfolioData.name}. Available for freelance projects, collaborations, and opportunities.`,
+  alternates: { canonical: '/contact' },
   openGraph: {
     title: `Contact | ${portfolioData.name}`,
     description: `Get in touch with ${portfolioData.name}. Available for freelance projects, collaborations, and opportunities.`,
@@ -39,10 +40,10 @@ const ContactPage = () => {
                 <span className="terminal-prompt">$</span>
                 <span className="ml-1">cd ..</span>
               </Link>
-              <div className="text-lg sm:text-xl md:text-2xl font-bold text-foreground">
+              <h1 className="text-lg sm:text-xl md:text-2xl font-bold text-foreground">
                 <span className="terminal-prompt">$</span>
                 <span className="ml-2">cat contact.txt</span>
-              </div>
+              </h1>
             </div>
           </div>
         </div>

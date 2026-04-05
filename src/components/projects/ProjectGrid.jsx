@@ -3,6 +3,8 @@
 import React, { useState, useMemo, useCallback } from 'react';
 import { useTheme } from 'next-themes';
 import Image from 'next/image';
+import { isVideoSrc } from '@/lib/utils';
+import ProjectVideo from '../ProjectVideo';
 import dynamic from 'next/dynamic';
 import { ExternalLink, Github, Star, GitFork, Expand } from 'lucide-react';
 import portfolioData from '@/config/portfolio.json';
@@ -49,19 +51,28 @@ const ProjectCard = ({ project, isDark, isPriority = false, onExpand }) => {
       {/* Project Image with Overlay */}
       <div className="relative h-40 sm:h-48 overflow-hidden image-container">
         <div className="absolute inset-0 bg-gradient-to-b from-black/20 to-black/70 z-10"></div>
-        <Image
-          src={imageSrc}
-          alt={project.name}
-          width={600}
-          height={400}
-          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-          priority={isPriority}
-          loading={isPriority ? undefined : 'lazy'}
-          placeholder="blur"
-          blurDataURL="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAwIiBoZWlnaHQ9IjQwMCIgdmlld0JveD0iMCAwIDYwMCA0MDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI2MDAiIGhlaWdodD0iNDAwIiBmaWxsPSIjMTExODI3IiBvcGFjaXR5PSIwLjMiLz4KPC9zdmc+Cg=="
-          unoptimized={imageSrc.endsWith('.gif')}
-          className="object-cover w-full h-full transition-transform duration-700 motion-safe:group-hover:scale-105"
-        />
+        {isVideoSrc(imageSrc) ? (
+          <ProjectVideo
+            src={imageSrc}
+            alt={project.name}
+            fill
+            className="object-cover transition-transform duration-700 motion-safe:group-hover:scale-105"
+          />
+        ) : (
+          <Image
+            src={imageSrc}
+            alt={project.name}
+            width={600}
+            height={400}
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+            priority={isPriority}
+            loading={isPriority ? undefined : 'lazy'}
+            placeholder="blur"
+            blurDataURL="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAwIiBoZWlnaHQ9IjQwMCIgdmlld0JveD0iMCAwIDYwMCA0MDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI2MDAiIGhlaWdodD0iNDAwIiBmaWxsPSIjMTExODI3IiBvcGFjaXR5PSIwLjMiLz4KPC9zdmc+Cg=="
+            unoptimized={imageSrc.endsWith('.gif')}
+            className="object-cover w-full h-full transition-transform duration-700 motion-safe:group-hover:scale-105"
+          />
+        )}
         <div className="absolute bottom-0 left-0 right-0 p-3 sm:p-4 z-20">
           <div className="flex items-center justify-between">
             <h3 className="text-base sm:text-lg font-bold text-white mb-1 group-hover:text-green-400 transition-colors truncate pr-2">

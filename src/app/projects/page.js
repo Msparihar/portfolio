@@ -9,6 +9,7 @@ import ProjectsInteractive from '@/components/projects/ProjectsInteractive';
 export const metadata = {
   title: 'Projects',
   description: `Explore ${portfolioData.name}'s portfolio of AI, Machine Learning, and Full Stack development projects.`,
+  alternates: { canonical: '/projects' },
   openGraph: {
     title: `Projects | ${portfolioData.name}`,
     description: `Explore ${portfolioData.name}'s portfolio of AI, Machine Learning, and Full Stack development projects.`,
@@ -39,10 +40,10 @@ const ProjectsPage = () => {
                 <span className="terminal-prompt">$</span>
                 <span className="ml-1">cd ..</span>
               </Link>
-              <div className="text-lg sm:text-xl md:text-2xl font-bold text-foreground">
+              <h1 className="text-lg sm:text-xl md:text-2xl font-bold text-foreground">
                 <span className="terminal-prompt">$</span>
                 <span className="ml-2">ls projects/</span>
-              </div>
+              </h1>
             </div>
           </div>
         </div>

@@ -110,6 +110,7 @@ export default function RootLayout({ children }) {
     <html lang="en" suppressHydrationWarning className={`${ibmPlexMono.variable} ${firaCode.variable}`}>
       <head>
         {/* Resource hints only for external domains used on initial load */}
+        <link rel="preconnect" href="https://avatars.githubusercontent.com" />
         <link rel="dns-prefetch" href="//blog.futuresmart.ai" />
         <link rel="dns-prefetch" href="//images.unsplash.com" />
         <link rel="dns-prefetch" href="//res.cloudinary.com" />

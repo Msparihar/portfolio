@@ -2,6 +2,8 @@
 
 import React from 'react';
 import Image from 'next/image';
+import ProjectVideo from '../ProjectVideo';
+import { isVideoSrc } from '@/lib/utils';
 import {
   ExternalLink,
   Github,
@@ -159,16 +161,26 @@ const ProjectModalContent = ({ project, isDark }) => {
           transition: 'height 0.3s ease-in-out'
         }}
       >
-        <Image
-          src={project.image || '/images/project-placeholder.png'}
-          alt={project.name}
-          fill
-          sizes="(max-width: 768px) 100vw, (max-width: 1024px) 768px, 896px"
-          className={`transition-opacity duration-300 ${getObjectFit()}`}
-          priority
-          unoptimized={project.image?.endsWith('.gif')}
-          onLoad={handleImageLoad}
-        />
+        {isVideoSrc(project.image) ? (
+          <ProjectVideo
+            src={project.image}
+            alt={project.name}
+            fill
+            className={`transition-opacity duration-300 ${getObjectFit()}`}
+            onLoad={handleImageLoad}
+          />
+        ) : (
+          <Image
+            src={project.image || '/images/project-placeholder.png'}
+            alt={project.name}
+            fill
+            sizes="(max-width: 768px) 100vw, (max-width: 1024px) 768px, 896px"
+            className={`transition-opacity duration-300 ${getObjectFit()}`}
+            priority
+            unoptimized={project.image?.endsWith('.gif')}
+            onLoad={handleImageLoad}
+          />
+        )}
         <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
         <div className="absolute bottom-6 left-6 text-white">
           <h1 className="text-3xl md:text-4xl font-bold mb-2 text-wrap-balance">{project.name}</h1>
