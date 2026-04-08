@@ -1,5 +1,5 @@
 import { Providers } from "./providers";
-import { IBM_Plex_Mono, Fira_Code } from 'next/font/google';
+import { IBM_Plex_Mono, Fira_Code, Cinzel, Crimson_Text } from 'next/font/google';
 import Script from 'next/script';
 import "./globals.css";
 import portfolioData from '@/config/portfolio.json';
@@ -21,6 +21,22 @@ const firaCode = Fira_Code({
   display: 'swap', // Show fallback immediately, swap when loaded
   preload: false,
   adjustFontFallback: true, // Automatically adjust fallback font metrics to minimize layout shift
+});
+
+const cinzel = Cinzel({
+  weight: ['400', '600', '700'],
+  subsets: ['latin'],
+  variable: '--font-cinzel',
+  display: 'swap',
+  preload: false,
+});
+
+const crimsonText = Crimson_Text({
+  weight: ['400', '600'],
+  subsets: ['latin'],
+  variable: '--font-crimson-text',
+  display: 'swap',
+  preload: false,
 });
 
 // Metadata configuration
@@ -107,7 +123,7 @@ export const viewport = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en" suppressHydrationWarning className={`${ibmPlexMono.variable} ${firaCode.variable}`}>
+    <html lang="en" suppressHydrationWarning className={`${ibmPlexMono.variable} ${firaCode.variable} ${cinzel.variable} ${crimsonText.variable}`}>
       <head>
         {/* Resource hints only for external domains used on initial load */}
         <link rel="preconnect" href="https://avatars.githubusercontent.com" />

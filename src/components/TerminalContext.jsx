@@ -37,19 +37,19 @@ const BootSequence = () => {
     <div className="font-mono text-sm space-y-1">
       {step >= 1 && (
         <div>
-          <span className="text-green-500">{'>'}</span>
+          <span className="text-green-500" data-world-accent="">{'>'}</span>
           <span className="text-foreground ml-2 font-bold">{portfolioData.name}</span>
         </div>
       )}
       {step >= 2 && (
         <div>
-          <span className="text-green-500">{'>'}</span>
+          <span className="text-green-500" data-world-accent="">{'>'}</span>
           <span className="text-terminal-cyan ml-2">{portfolioData.title}</span>
         </div>
       )}
       {step >= 3 && (
         <div>
-          <span className="text-green-500">{'>'}</span>
+          <span className="text-green-500" data-world-accent="">{'>'}</span>
           <span className="text-muted-foreground ml-2">
             Loading skills{'.' .repeat(Math.min(dotsCount, 10))}
           </span>
@@ -71,7 +71,7 @@ const BootSequence = () => {
       )}
       {step >= 5 && (
         <div className="mt-2">
-          <span className="text-green-500">{'>'}</span>
+          <span className="text-green-500" data-world-accent="">{'>'}</span>
           <span className="text-muted-foreground ml-2">
             Type <span className="text-terminal-cyan">'help'</span> for available commands
           </span>
@@ -549,7 +549,7 @@ export const Terminal = () => {
           {history.map((entry, index) => (
             <div key={index} className="terminal-line">
               <div className="flex items-start">
-                <span className="terminal-prompt text-green-500 mr-2 flex-shrink-0">$</span>
+                <span className="terminal-prompt text-green-500 mr-2 flex-shrink-0" data-world-accent="">$</span>
                 <span className="text-foreground font-mono">{entry.command}</span>
               </div>
               {entry.bootSequence ? (
@@ -566,7 +566,7 @@ export const Terminal = () => {
 
           {/* Terminal input - positioned right after the last output */}
           <form onSubmit={handleSubmit} className="flex items-center" style={{ minHeight: '24px' }}>
-            <span className="terminal-prompt text-green-500 mr-2">$</span>
+            <span className="terminal-prompt text-green-500 mr-2" data-world-accent="">$</span>
             <div className="flex-1 relative" style={{ minHeight: '20px' }}>
               <input
                 ref={inputRef}

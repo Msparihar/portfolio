@@ -113,6 +113,24 @@ export default function WindowTitlebar({ title, onClose, onMinimize, onMaximize,
           {hovered ? (isMaximized ? '⊡' : '+') : ''}
         </button>
       </div>
+
+      {/* Title text */}
+      <span
+        data-world-heading=""
+        style={{
+          flex: 1,
+          textAlign: 'center',
+          fontFamily: 'monospace',
+          fontSize: '12px',
+          color: 'var(--dt-text-muted)',
+          pointerEvents: 'none',
+          overflow: 'hidden',
+          textOverflow: 'ellipsis',
+          whiteSpace: 'nowrap',
+        }}
+      >
+        {title}
+      </span>
     </div>
   );
 }

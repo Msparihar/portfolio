@@ -189,6 +189,7 @@ export default function Mail() {
             <div style={{ fontSize: '14px', color: TEXT_MUTED, marginBottom: '18px', letterSpacing: '0.05em' }}>
               NEW MESSAGE
             </div>
+            <div className="world-divider" />
 
             {status === 'sent' ? (
               <div style={{

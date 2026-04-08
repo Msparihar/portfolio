@@ -111,6 +111,7 @@ export default function About() {
         </div>
       </div>
 
+      <div className="world-divider" />
       <div style={{ borderTop: `1px solid ${GREEN_BORDER}`, marginBottom: '20px' }} />
 
       {/* Skills section */}

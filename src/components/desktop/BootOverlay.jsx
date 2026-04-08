@@ -20,7 +20,7 @@ const BOOT_LINES = [
 // Lines that end with "OK" get the brighter green treatment
 const isOkLine = (line) => line.trimEnd().endsWith("OK");
 
-function BootLine({ line }) {
+function BootLine({ line, okColor }) {
   if (line === "") return <div className="h-4" />;
 
   if (isOkLine(line)) {
@@ -29,7 +29,7 @@ function BootLine({ line }) {
     return (
       <div>
         <span>{before}</span>
-        <span style={{ color: "#4ade80" }}>OK</span>
+        <span style={{ color: okColor || "#4ade80" }}>OK</span>
       </div>
     );
   }
@@ -37,7 +37,9 @@ function BootLine({ line }) {
   return <div>{line}</div>;
 }
 
-export default function BootOverlay({ onBootComplete }) {
+export default function BootOverlay({ onBootComplete, bootLines: customBootLines, bootAccentColor }) {
+  const activeBootLines = customBootLines && customBootLines.length > 0 ? customBootLines : BOOT_LINES;
+
   const [visibleLines, setVisibleLines] = useState([]);
   const [fading, setFading] = useState(false);
   const [done, setDone] = useState(false);
@@ -57,13 +59,13 @@ export default function BootOverlay({ onBootComplete }) {
     let timeoutId;
 
     async function runBootSequence() {
-      for (let i = 0; i < BOOT_LINES.length; i++) {
+      for (let i = 0; i < activeBootLines.length; i++) {
         if (cancelled) return;
         await new Promise((resolve) => {
           timeoutId = setTimeout(resolve, i === 0 ? 0 : 175);
         });
         if (cancelled) return;
-        setVisibleLines((prev) => [...prev, BOOT_LINES[i]]);
+        setVisibleLines((prev) => [...prev, activeBootLines[i]]);
       }
 
       // All lines shown — wait 500ms then fade out
@@ -109,7 +111,7 @@ export default function BootOverlay({ onBootComplete }) {
         padding: "40px",
         fontFamily: "monospace",
         fontSize: "0.875rem",
-        color: "#22c55e",
+        color: bootAccentColor?.text || "#22c55e",
         opacity: fading ? 0 : 1,
         transition: "opacity 0.8s ease",
         pointerEvents: fading ? "none" : "auto",
@@ -119,14 +121,14 @@ export default function BootOverlay({ onBootComplete }) {
         const isLast = i === visibleLines.length - 1;
         return (
           <div key={i} style={{ display: "flex", alignItems: "center" }}>
-            <BootLine line={line} />
+            <BootLine line={line} okColor={bootAccentColor?.ok} />
             {isLast && !fading && (
               <span
                 style={{
                   display: "inline-block",
                   width: "0.6em",
                   height: "1.1em",
-                  backgroundColor: "#22c55e",
+                  backgroundColor: bootAccentColor?.text || "#22c55e",
                   marginLeft: "2px",
                   verticalAlign: "text-bottom",
                   animation: "boot-cursor-blink 1s step-end infinite",

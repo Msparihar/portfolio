@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import dynamic from "next/dynamic";
 import { useUiStore } from "@/store/uiStore";
+import { WORLDS, WORLD_STORAGE_KEY } from '@/config/worlds';
 import BootOverlay from "./BootOverlay";
 import Desktop from "./Desktop";
 
@@ -14,6 +15,18 @@ export default function DesktopPage({ githubData }) {
   const [booted, setBooted] = useState(false);
   const [initialApp, setInitialApp] = useState(null);
   const websiteMode = useUiStore((s) => s.websiteMode);
+  const [worldBootConfig] = useState(() => {
+    try {
+      const worldId = localStorage.getItem(WORLD_STORAGE_KEY);
+      if (!worldId) return null;
+      const world = WORLDS.find(w => w.id === worldId);
+      if (!world?.bootLines) return null;
+      return {
+        bootLines: world.bootLines,
+        bootAccentColor: world.bootAccentColor ?? null,
+      };
+    } catch { return null; }
+  });
 
   // Read ?app= from URL on mount (client-side, compatible with ISR pages)
   useEffect(() => {
@@ -29,7 +42,13 @@ export default function DesktopPage({ githubData }) {
 
   return (
     <>
-      {!booted && <BootOverlay onBootComplete={() => setBooted(true)} />}
+      {!booted && (
+        <BootOverlay
+          bootLines={worldBootConfig?.bootLines ?? null}
+          bootAccentColor={worldBootConfig?.bootAccentColor ?? null}
+          onBootComplete={() => setBooted(true)}
+        />
+      )}
       <Desktop githubData={githubData} initialApp={initialApp} />
     </>
   );

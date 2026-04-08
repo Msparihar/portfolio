@@ -431,3 +431,92 @@
     min-height: 44px;
   }
 }
+
+/* ══════════════════════════════════════════════════
+   World: Dark Fantasy (Elden Ring / Souls aesthetic)
+   Active when .world-dark-fantasy is on .desktop-canvas
+   ══════════════════════════════════════════════════ */
+
+/* Typography — activate Cinzel / Crimson Text */
+.desktop-canvas.world-dark-fantasy {
+  font-family: var(--font-crimson-text), Georgia, serif;
+  font-size: 1.05rem;
+}
+
+.desktop-canvas.world-dark-fantasy .window-drag-handle,
+.desktop-canvas.world-dark-fantasy [data-world-heading] {
+  font-family: var(--font-cinzel), Georgia, serif;
+  letter-spacing: 0.05em;
+}
+
+/* Stone grain texture overlay */
+.desktop-canvas.world-dark-fantasy::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 200px 200px;
+  opacity: 0.04;
+  mix-blend-mode: overlay;
+}
+
+/* Fog / mist vignette on desktop wallpaper */
+.desktop-canvas.world-dark-fantasy .desktop-wallpaper-layer::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at center, transparent 40%, rgba(5, 3, 1, 0.5) 75%, rgba(0, 0, 0, 0.85) 100%);
+  pointer-events: none;
+}
+
+/* Chamfered window panels */
+.desktop-canvas.world-dark-fantasy .window-panel {
+  clip-path: polygon(
+    10px 0%, calc(100% - 10px) 0%, 100% 10px,
+    100% calc(100% - 10px), calc(100% - 10px) 100%,
+    10px 100%, 0% calc(100% - 10px), 0% 10px
+  );
+  border-radius: 0 !important;
+}
+
+/* Pulsing gold rune glow on accent elements */
+@keyframes runeGlow {
+  0%, 100% { text-shadow: 0 0 6px rgba(201,168,76,0.7), 0 0 16px rgba(249,192,67,0.3); }
+  50%       { text-shadow: 0 0 12px rgba(201,168,76,0.9), 0 0 32px rgba(238,138,5,0.4), 0 0 48px rgba(139,105,20,0.2); }
+}
+
+.desktop-canvas.world-dark-fantasy [data-world-accent] {
+  animation: runeGlow 3s ease-in-out infinite;
+}
+
+/* Gold ornamental divider */
+.desktop-canvas.world-dark-fantasy .world-divider {
+  height: 1px;
+  background: linear-gradient(
+    to right,
+    transparent,
+    rgba(92, 66, 0, 0.6) 15%,
+    #c9a84c 40%,
+    #f9c043 50%,
+    #c9a84c 60%,
+    rgba(92, 66, 0, 0.6) 85%,
+    transparent
+  );
+  position: relative;
+  margin: 12px 0;
+}
+
+.desktop-canvas.world-dark-fantasy .world-divider::before {
+  content: "\2726";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  color: #f9c043;
+  font-size: 0.65rem;
+  text-shadow: 0 0 8px rgba(201,168,76,0.8);
+  background: var(--dt-bg);
+  padding: 0 0.4rem;
+}
