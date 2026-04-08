@@ -41,18 +41,41 @@ export default function Mail() {
   const [focusedField, setFocusedField] = useState(null);
   const [form, setForm] = useState({ from: '', subject: '', message: '' });
   const [status, setStatus] = useState('idle'); // idle | sending | sent
+  const [error, setError] = useState('');
 
-  function handleSend(e) {
+  async function handleSend(e) {
     e.preventDefault();
     if (!form.from || !form.subject || !form.message) return;
     setStatus('sending');
-    setTimeout(() => {
-      setStatus('sent');
-      setTimeout(() => {
-        setForm({ from: '', subject: '', message: '' });
+    setError('');
+
+    try {
+      const res = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email: form.from,
+          subject: form.subject,
+          message: form.message,
+        }),
+      });
+      const data = await res.json();
+
+      if (res.ok && data.success) {
+        setStatus('sent');
+        setTimeout(() => {
+          setForm({ from: '', subject: '', message: '' });
+          setStatus('idle');
+          setError('');
+        }, 3000);
+      } else {
         setStatus('idle');
-      }, 3000);
-    }, 2000);
+        setError(data.error || 'Failed to send. Try emailing directly: ' + (contact.email || 'manishsparihar@gmail.com'));
+      }
+    } catch {
+      setStatus('idle');
+      setError('Failed to send. Try emailing directly: ' + (contact.email || 'manishsparihar@gmail.com'));
+    }
   }
 
   return (
@@ -264,6 +287,11 @@ export default function Mail() {
                     {status === 'sending' ? '⏳ Sending...' : '📨 Send'}
                   </button>
                 </div>
+                {error && (
+                  <div style={{ color: 'var(--dt-accent)', fontSize: '12px', textAlign: 'right', marginTop: '4px' }}>
+                    {error}
+                  </div>
+                )}
               </form>
             )}
           </div>

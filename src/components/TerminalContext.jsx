@@ -305,6 +305,8 @@ ${portfolioData.education.map(edu =>
 - logviewer: My blog posts
 - about: About & GitHub contributions
 - browser: Web browser
+- trash: Trash / deleted items
+- gallery: Image gallery
 - experience: Work experience (type 'exp')
 - education: Educational background (type 'edu')`
     },
@@ -344,10 +346,10 @@ ${portfolioData.education.map(edu =>
       description: 'Open an application window',
       execute: (args) => {
         if (!args) {
-          return 'Usage: open [app]\nAvailable apps: terminal, filemanager, logviewer, mail, about, browser';
+          return 'Usage: open [app]\nAvailable apps: terminal, filemanager, logviewer, mail, about, browser, trash, gallery';
         }
         const appId = args.toLowerCase().trim();
-        const validApps = ['terminal', 'filemanager', 'logviewer', 'mail', 'about', 'browser'];
+        const validApps = ['terminal', 'filemanager', 'logviewer', 'mail', 'about', 'browser', 'trash', 'gallery'];
         if (!validApps.includes(appId)) {
           return `App '${args}' not found. Available: ${validApps.join(', ')}`;
         }
@@ -359,7 +361,7 @@ ${portfolioData.education.map(edu =>
 
   const commandNames = Object.keys(commands);
   const cdDirs = ['projects', 'contact', 'blog', 'home', '..'];
-  const openApps = ['terminal', 'filemanager', 'logviewer', 'mail', 'about', 'browser'];
+  const openApps = ['terminal', 'filemanager', 'logviewer', 'mail', 'about', 'browser', 'trash', 'gallery'];
 
   const getSuggestion = (currentInput) => {
     if (!currentInput) return '';

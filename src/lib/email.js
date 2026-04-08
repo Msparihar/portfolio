@@ -55,3 +55,36 @@ export async function sendVisitorAlert(source, data) {
     console.error("[Email] Error details:", error);
   }
 }
+
+export async function sendContactMessage({ name, email, subject, message }) {
+  console.log('[Email] sendContactMessage called', { name, email, subject });
+
+  if (!process.env.SMTP_SERVER || !process.env.EMAIL || !process.env.EMAIL_PASSWORD) {
+    console.error('[Email] Missing email configuration for contact message');
+    return { success: false, error: 'Email not configured' };
+  }
+
+  try {
+    const result = await transporter.sendMail({
+      from: process.env.EMAIL,
+      replyTo: email,
+      to: 'manishsparihar2020@gmail.com',
+      subject: `Portfolio Contact: ${subject || '(no subject)'}`,
+      text: `New contact form submission:\n\nFrom: ${name || 'Anonymous'} <${email}>\nSubject: ${subject || '(no subject)'}\n\nMessage:\n${message}\n\nSent at: ${new Date().toISOString()}`,
+      html: `
+        <h2>New Portfolio Contact</h2>
+        <table style="border-collapse: collapse;">
+          <tr><td style="padding: 8px; border: 1px solid #ddd;"><strong>From</strong></td><td style="padding: 8px; border: 1px solid #ddd;">${name || 'Anonymous'} &lt;${email}&gt;</td></tr>
+          <tr><td style="padding: 8px; border: 1px solid #ddd;"><strong>Subject</strong></td><td style="padding: 8px; border: 1px solid #ddd;">${subject || '(no subject)'}</td></tr>
+          <tr><td style="padding: 8px; border: 1px solid #ddd;"><strong>Message</strong></td><td style="padding: 8px; border: 1px solid #ddd;">${message}</td></tr>
+          <tr><td style="padding: 8px; border: 1px solid #ddd;"><strong>Time</strong></td><td style="padding: 8px; border: 1px solid #ddd;">${new Date().toLocaleString()}</td></tr>
+        </table>
+      `,
+    });
+    console.log('[Email] Contact email sent:', result.messageId);
+    return { success: true };
+  } catch (error) {
+    console.error('[Email] Failed to send contact email:', error.message);
+    return { success: false, error: 'Failed to send email' };
+  }
+}

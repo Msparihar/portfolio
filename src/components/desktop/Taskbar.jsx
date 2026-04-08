@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { useWindowStore } from '@/store/windowStore';
 import TaskbarIcon from './TaskbarIcon';
 import ThemePicker from './ThemePicker';
+import { useUiStore } from '@/store/uiStore';
 
 function useClock() {
   const [time, setTime] = useState('');
@@ -32,6 +33,7 @@ export default function Taskbar() {
   const restoreWindow = useWindowStore((s) => s.restoreWindow);
   const focusWindow = useWindowStore((s) => s.focusWindow);
   const clock = useClock();
+  const toggleWebsiteMode = useUiStore((s) => s.toggleWebsiteMode);
 
   const nextZIndex = useWindowStore((s) => s.nextZIndex);
   const focusedId = windows.find((w) => w.zIndex >= nextZIndex - 1 && !w.isMinimized)?.id ?? null;
@@ -112,6 +114,24 @@ export default function Taskbar() {
           userSelect: 'none',
         }}
       >
+        <button
+          onClick={toggleWebsiteMode}
+          title="Switch to Website Mode"
+          style={{
+            background: 'none',
+            border: 'none',
+            color: 'var(--dt-text-muted)',
+            cursor: 'pointer',
+            fontSize: '13px',
+            fontFamily: 'monospace',
+            padding: '2px 4px',
+            transition: 'color 0.15s ease',
+          }}
+          onMouseEnter={(e) => e.currentTarget.style.color = 'var(--dt-accent)'}
+          onMouseLeave={(e) => e.currentTarget.style.color = 'var(--dt-text-muted)'}
+        >
+          ⊞
+        </button>
         <ThemePicker />
         <span style={{ color: 'var(--dt-accent-70)', fontSize: '11px', letterSpacing: '1px' }} title="WiFi connected">
           ●●● wifi
