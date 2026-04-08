@@ -27,6 +27,8 @@ const LogViewer = dynamic(() => import('@/components/apps/LogViewer'), { ssr: fa
 const Mail = dynamic(() => import('@/components/apps/Mail'), { ssr: false });
 const About = dynamic(() => import('@/components/apps/About'), { ssr: false });
 const Browser = dynamic(() => import('@/components/apps/Browser'), { ssr: false });
+const Trash = dynamic(() => import('@/components/apps/Trash'), { ssr: false });
+const Gallery = dynamic(() => import('@/components/apps/Gallery'), { ssr: false });
 
 function getAppContent(appId) {
   switch (appId) {
@@ -42,6 +44,10 @@ function getAppContent(appId) {
       return <About />;
     case 'browser':
       return <Browser />;
+    case 'trash':
+      return <Trash />;
+    case 'gallery':
+      return <Gallery />;
     default:
       return (
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%', fontFamily: 'monospace', color: '#6b7a6e' }}>

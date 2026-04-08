@@ -38,6 +38,18 @@ const APP_DEFAULTS = {
     defaultPos: { x: 100, y: 60 },
     defaultSize: { width: 900, height: 600 },
   },
+  trash: {
+    title: 'Trash',
+    icon: '🗑️',
+    defaultPos: { x: 200, y: 120 },
+    defaultSize: { width: 640, height: 440 },
+  },
+  gallery: {
+    title: 'Gallery',
+    icon: '🖼️',
+    defaultPos: { x: 160, y: 80 },
+    defaultSize: { width: 860, height: 580 },
+  },
 };
 
 export { APP_DEFAULTS };

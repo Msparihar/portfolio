@@ -2,9 +2,11 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { useWindowStore } from '@/store/windowStore';
+import { useUiStore } from '@/store/uiStore';
 
 export default function ContextMenu({ x, y, onClose }) {
   const openWindow = useWindowStore((s) => s.openWindow);
+  const toggleWebsiteMode = useUiStore((s) => s.toggleWebsiteMode);
   const menuRef = useRef(null);
   const [focusedIndex, setFocusedIndex] = useState(-1);
 
@@ -14,6 +16,8 @@ export default function ContextMenu({ x, y, onClose }) {
     { type: 'divider' },
     { label: 'Refresh Desktop', action: () => window.location.reload(), icon: '🔄' },
     { label: 'neofetch', action: () => openWindow('about'), icon: 'ℹ️' },
+    { type: 'divider' },
+    { label: 'Switch to Website Mode', action: () => toggleWebsiteMode(), icon: '🌐' },
     { type: 'divider' },
     { label: 'View Source', action: () => window.open('https://github.com/Msparihar', '_blank'), icon: '📄' },
   ];

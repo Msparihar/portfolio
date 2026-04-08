@@ -1,12 +1,15 @@
 'use client';
 
-import { useEffect, useState, useCallback, useRef } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { useWindowStore } from '@/store/windowStore';
 import DesktopIconGrid from './DesktopIconGrid';
 import WindowManager from './WindowManager';
 import Taskbar from './Taskbar';
 import ContextMenu from './ContextMenu';
 import { THEME_STORAGE_KEY, DEFAULT_THEME_ID, applyTheme } from '@/config/themes';
+import Sidebar from './Sidebar';
+import { useSidebarStore } from '@/store/sidebarStore';
+import { useUiStore } from '@/store/uiStore';
 
 function MobileFallback() {
   return (
@@ -28,12 +31,12 @@ function MobileFallback() {
 
 export default function Desktop({ githubData, initialApp }) {
   const openWindow = useWindowStore((s) => s.openWindow);
+  const sidebarOpen = useSidebarStore((s) => s.sidebarOpen);
+  const toggleWebsiteMode = useUiStore((s) => s.toggleWebsiteMode);
 
   const [isMobile, setIsMobile] = useState(false);
   const [selectedIcon, setSelectedIcon] = useState(null);
   const [contextMenu, setContextMenu] = useState(null);
-  const [trashToast, setTrashToast] = useState(false);
-  const trashTimerRef = useRef(null);
 
   // Mobile detection on mount + resize
   useEffect(() => {
@@ -59,11 +62,19 @@ export default function Desktop({ githubData, initialApp }) {
     if (canvas) applyTheme(canvas, saved);
   }, []);
 
-  const showTrashToast = useCallback(() => {
-    setTrashToast(true);
-    clearTimeout(trashTimerRef.current);
-    trashTimerRef.current = setTimeout(() => setTrashToast(false), 2500);
-  }, []);
+  // Ctrl+Shift+W toggles Website Mode (skip if typing in input)
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.ctrlKey && e.shiftKey && e.key === 'W') {
+        const tag = e.target.tagName;
+        if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return;
+        e.preventDefault();
+        toggleWebsiteMode();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [toggleWebsiteMode]);
 
   const handleOpenApp = useCallback(
     (appId) => {
@@ -71,13 +82,9 @@ export default function Desktop({ githubData, initialApp }) {
         window.open('/resume.pdf', '_blank');
         return;
       }
-      if (appId === 'trash') {
-        showTrashToast();
-        return;
-      }
       openWindow(appId);
     },
-    [openWindow, showTrashToast]
+    [openWindow]
   );
 
   const handleDesktopClick = useCallback(() => {
@@ -129,7 +136,7 @@ export default function Desktop({ githubData, initialApp }) {
       />
 
       {/* Desktop icons */}
-      <div className="absolute inset-0 p-4" style={{ zIndex: 10, paddingBottom: '60px' }}>
+      <div className="absolute inset-0 p-4" style={{ zIndex: 10, paddingBottom: '60px', paddingRight: sidebarOpen ? '216px' : '56px' }}>
         <DesktopIconGrid
           onOpenApp={handleOpenApp}
           selectedIcon={selectedIcon}
@@ -143,6 +150,9 @@ export default function Desktop({ githubData, initialApp }) {
       {/* Taskbar */}
       <Taskbar />
 
+      {/* Right sidebar */}
+      <Sidebar />
+
       {/* Context menu */}
       {contextMenu && (
         <ContextMenu
@@ -152,20 +162,7 @@ export default function Desktop({ githubData, initialApp }) {
         />
       )}
 
-      {/* Trash toast */}
-      {trashToast && (
-        <div
-          className="fixed bottom-16 left-1/2 -translate-x-1/2 font-mono text-xs px-4 py-2 rounded-md pointer-events-none"
-          style={{
-            background: 'var(--dt-context-bg)',
-            border: '1px solid var(--dt-accent-border)',
-            color: 'var(--dt-text)',
-            zIndex: 9999,
-          }}
-        >
-          Trash is empty 🗑️
-        </div>
-      )}
+
     </div>
   );
 }
