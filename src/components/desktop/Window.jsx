@@ -29,7 +29,13 @@ export default function Window({ windowData, children }) {
     size: { width: viewportWidth, height: viewportHeight - TASKBAR_HEIGHT },
   };
 
-  const rndPosition = isMaximized ? maximizedStyle.position : position;
+  // Clamp position so titlebar is always reachable
+  const clampedPosition = {
+    x: Math.max(-((size?.width || 320) - 100), Math.min(position.x, viewportWidth - 100)),
+    y: Math.max(0, Math.min(position.y, viewportHeight - TASKBAR_HEIGHT - 40)),
+  };
+
+  const rndPosition = isMaximized ? maximizedStyle.position : clampedPosition;
   const rndSize = isMaximized ? maximizedStyle.size : size;
 
   const windowStyle = {
@@ -60,7 +66,9 @@ export default function Window({ windowData, children }) {
       role="dialog"
       aria-label={title}
       onDragStop={(_e, d) => {
-        setPosition(id, { x: d.x, y: d.y });
+        const clampedX = Math.max(-((size?.width || 320) - 100), Math.min(d.x, viewportWidth - 100));
+        const clampedY = Math.max(0, Math.min(d.y, viewportHeight - TASKBAR_HEIGHT - 40));
+        setPosition(id, { x: clampedX, y: clampedY });
       }}
       onResizeStop={(_e, _dir, _ref, _delta, pos) => {
         setSize(id, {
