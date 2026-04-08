@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { THEMES, THEME_STORAGE_KEY, DEFAULT_THEME_ID, applyTheme } from '@/config/themes';
+import { WORLD_STORAGE_KEY } from '@/config/worlds';
 
 export default function ThemePicker() {
   const [isOpen, setIsOpen] = useState(false);
@@ -32,8 +33,14 @@ export default function ThemePicker() {
   const handleSelect = (themeId) => {
     setActiveTheme(themeId);
     localStorage.setItem(THEME_STORAGE_KEY, themeId);
+    // Clear any active world — themes and worlds are mutually exclusive
+    localStorage.removeItem(WORLD_STORAGE_KEY);
     const canvas = document.querySelector('.desktop-canvas');
-    if (canvas) applyTheme(canvas, themeId);
+    if (canvas) {
+      // Remove any world-* classes
+      [...canvas.classList].filter(c => c.startsWith('world-')).forEach(c => canvas.classList.remove(c));
+      applyTheme(canvas, themeId);
+    }
     setIsOpen(false);
   };
 

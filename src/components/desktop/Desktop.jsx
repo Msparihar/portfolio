@@ -7,6 +7,7 @@ import WindowManager from './WindowManager';
 import Taskbar from './Taskbar';
 import ContextMenu from './ContextMenu';
 import { THEME_STORAGE_KEY, DEFAULT_THEME_ID, applyTheme } from '@/config/themes';
+import { WORLD_STORAGE_KEY, applyWorld } from '@/config/worlds';
 import Sidebar from './Sidebar';
 import { useSidebarStore } from '@/store/sidebarStore';
 import { useUiStore } from '@/store/uiStore';
@@ -57,9 +58,16 @@ export default function Desktop({ githubData, initialApp }) {
 
   // Apply saved theme on mount
   useEffect(() => {
-    const saved = localStorage.getItem(THEME_STORAGE_KEY) ?? DEFAULT_THEME_ID;
     const canvas = document.querySelector('.desktop-canvas');
-    if (canvas) applyTheme(canvas, saved);
+    if (!canvas) return;
+
+    const savedWorld = localStorage.getItem(WORLD_STORAGE_KEY);
+    if (savedWorld) {
+      applyWorld(canvas, savedWorld);
+    } else {
+      const saved = localStorage.getItem(THEME_STORAGE_KEY) ?? DEFAULT_THEME_ID;
+      applyTheme(canvas, saved);
+    }
   }, []);
 
   // Ctrl+Shift+W toggles Website Mode (skip if typing in input)
@@ -117,7 +125,7 @@ export default function Desktop({ githubData, initialApp }) {
     >
       {/* Gradient wallpaper layer */}
       <div
-        className="desktop-bg-layer absolute inset-0"
+        className="desktop-bg-layer desktop-wallpaper-layer absolute inset-0"
         style={{
           backgroundImage: 'var(--dt-wallpaper-gradient)',
           backgroundSize: 'var(--dt-wallpaper-gradient-size)',

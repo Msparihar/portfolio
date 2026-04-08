@@ -49,6 +49,7 @@ export default function FileManager() {
         <div style={{ padding: '0 12px 8px', color: TEXT_MUTED, fontSize: '11px', letterSpacing: '0.05em' }}>
           ~/projects/
         </div>
+        <div className="world-divider" />
         {dirs.map((dir) => (
           <div
             key={dir.id}

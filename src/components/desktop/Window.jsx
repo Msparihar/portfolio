@@ -82,7 +82,7 @@ export default function Window({ windowData, children }) {
       minHeight={200}
     >
       {/* Full-height inner wrapper — Rnd doesn't pass height to children */}
-      <div style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', overflow: 'hidden', borderRadius: '12px' }}>
+      <div className="window-panel" style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', overflow: 'hidden', borderRadius: '12px' }}>
         <WindowTitlebar
           title={title}
           isMaximized={isMaximized}
