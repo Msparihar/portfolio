@@ -83,6 +83,8 @@ export default function WorldPicker() {
     togglePin();
   };
 
+  const currentWorldConfig = activeWorld ? WORLDS.find((w) => w.id === activeWorld) : null;
+
   return (
     <div style={{ position: 'relative' }}>
       {/* Trigger button */}
@@ -92,19 +94,41 @@ export default function WorldPicker() {
         aria-label="Change world"
         title="Change world"
         style={{
-          background: 'transparent',
-          border: 'none',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '6px',
+          background: isOpen ? 'var(--dt-accent-soft)' : 'transparent',
+          border: '1px solid var(--dt-accent-border)',
+          borderRadius: '999px',
           cursor: 'pointer',
-          padding: '2px 4px',
-          fontSize: '13px',
+          padding: '3px 10px 3px 6px',
+          fontSize: '11px',
           fontFamily: 'var(--dt-font-mono)',
-          color: activeWorld ? 'var(--dt-accent)' : 'var(--dt-text-muted)',
-          transition: 'color 0.15s ease',
+          color: 'var(--dt-accent-70)',
+          transition: 'background 0.15s ease, border-color 0.15s ease',
+          whiteSpace: 'nowrap',
         }}
-        onMouseEnter={(e) => e.currentTarget.style.color = 'var(--dt-accent)'}
-        onMouseLeave={(e) => e.currentTarget.style.color = activeWorld ? 'var(--dt-accent)' : 'var(--dt-text-muted)'}
+        onMouseEnter={(e) => {
+          e.currentTarget.style.background = 'var(--dt-accent-soft)';
+          e.currentTarget.style.borderColor = 'var(--dt-accent-border-strong)';
+        }}
+        onMouseLeave={(e) => {
+          if (!isOpen) {
+            e.currentTarget.style.background = 'transparent';
+            e.currentTarget.style.borderColor = 'var(--dt-accent-border)';
+          }
+        }}
       >
-        ✦
+        <span style={{
+          width: '8px',
+          height: '8px',
+          borderRadius: '50%',
+          background: currentWorldConfig?.swatch ?? 'var(--dt-text-muted)',
+          flexShrink: 0,
+          boxShadow: `0 0 4px ${currentWorldConfig?.swatch ?? 'transparent'}66`,
+        }} />
+        <span>{currentWorldConfig?.name ?? 'Theme'}</span>
+        <span style={{ fontSize: '8px', opacity: 0.6 }}>▾</span>
       </button>
 
       {/* Popover */}
@@ -121,49 +145,14 @@ export default function WorldPicker() {
             border: '1px solid var(--dt-accent-border-strong)',
             borderRadius: 'var(--dt-window-radius, 8px)',
             padding: '10px 12px',
-            minWidth: '200px',
+            minWidth: '220px',
             boxShadow: 'var(--dt-shadow-focused)',
             zIndex: 300,
           }}
         >
           <div style={{ color: 'var(--dt-text-muted)', fontSize: '10px', letterSpacing: '0.08em', marginBottom: '8px', textTransform: 'uppercase' }}>
-            Worlds
+            Switch World
           </div>
-
-          {/* None option */}
-          <button
-            role="option"
-            aria-selected={activeWorld === null}
-            onClick={() => handleSelect(null)}
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '8px',
-              width: '100%',
-              padding: '6px 8px',
-              background: activeWorld === null ? 'var(--dt-accent-soft)' : 'transparent',
-              border: 'none',
-              borderRadius: 'var(--dt-radius-sm, 4px)',
-              cursor: 'pointer',
-              fontFamily: 'var(--dt-font-mono)',
-              fontSize: '12px',
-              color: activeWorld === null ? 'var(--dt-accent)' : 'var(--dt-text)',
-              transition: 'background 0.1s ease',
-              textAlign: 'left',
-            }}
-            onMouseEnter={(e) => { if (activeWorld !== null) e.currentTarget.style.background = 'var(--dt-accent-soft)'; }}
-            onMouseLeave={(e) => { if (activeWorld !== null) e.currentTarget.style.background = 'transparent'; }}
-          >
-            <span style={{
-              width: '14px',
-              height: '14px',
-              borderRadius: '50%',
-              background: 'var(--dt-text-muted)',
-              border: activeWorld === null ? '2px solid var(--dt-text)' : '1.5px solid var(--dt-accent-20)',
-              flexShrink: 0,
-            }} />
-            <span>None (use theme)</span>
-          </button>
 
           {/* World options */}
           {WORLDS.map((world) => (

@@ -3,7 +3,6 @@
 import { useState, useEffect } from 'react';
 import { useWindowStore } from '@/store/windowStore';
 import TaskbarIcon from './TaskbarIcon';
-import ThemePicker from './ThemePicker';
 import WorldPicker from './WorldPicker';
 import { useUiStore } from '@/store/uiStore';
 import { WORLDS, WORLD_STORAGE_KEY } from '@/config/worlds';
@@ -153,7 +152,6 @@ export default function Taskbar() {
           ⊞
         </button>
         <WorldPicker />
-        <ThemePicker />
         <span style={{ color: 'var(--dt-accent-70)', fontSize: '11px', letterSpacing: '1px' }} title="WiFi connected">
           {getWorldTaskbar(currentWorld?.id ?? null).wifiLabel}
         </span>
