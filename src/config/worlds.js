@@ -85,6 +85,7 @@ export const WORLDS = [
       '--dt-window-blur':          'blur(8px) saturate(1.0)',
       '--dt-wallpaper-gradient':   'radial-gradient(ellipse at 30% 60%, rgba(238, 138, 5, 0.15) 0%, transparent 45%), radial-gradient(ellipse at 75% 25%, rgba(201, 168, 76, 0.10) 0%, transparent 40%), radial-gradient(ellipse at 50% 90%, rgba(139, 105, 20, 0.12) 0%, transparent 35%), radial-gradient(ellipse at 15% 20%, rgba(201, 168, 76, 0.06) 0%, transparent 30%), radial-gradient(rgba(201,168,76,0.04) 1px, transparent 1px)',
       '--dt-wallpaper-gradient-size': '100% 100%, 100% 100%, 100% 100%, 100% 100%, 32px 32px',
+      '--dt-icon-text-shadow':     '0 1px 4px rgba(0,0,0,0.9)',
     },
   },
   {
@@ -164,6 +165,7 @@ export const WORLDS = [
       '--dt-window-blur':          'blur(16px) saturate(1.1)',
       '--dt-wallpaper-gradient':   'linear-gradient(160deg, #d4e8d0 0%, #e8f0e5 40%, #f0e8d8 75%, #faf6ed 100%)',
       '--dt-wallpaper-gradient-size': '100% 100%',
+      '--dt-icon-text-shadow':     '0 1px 2px rgba(0,0,0,0.15)',
     },
   },
   {
@@ -242,6 +244,7 @@ export const WORLDS = [
           '--dt-window-blur': 'blur(12px) saturate(1.1)',
           '--dt-wallpaper-gradient': 'radial-gradient(ellipse at 30% 40%, rgba(74, 158, 218, 0.15) 0%, transparent 50%), radial-gradient(ellipse at 70% 70%, rgba(168, 196, 216, 0.08) 0%, transparent 40%)',
           '--dt-wallpaper-gradient-size': '100% 100%, 100% 100%',
+          '--dt-icon-text-shadow': '0 1px 3px rgba(0,0,0,0.8)',
         },
       },
       'kings-landing': {
@@ -288,6 +291,7 @@ export const WORLDS = [
           '--dt-window-blur': 'blur(10px) saturate(1.0)',
           '--dt-wallpaper-gradient': 'radial-gradient(ellipse at 40% 50%, rgba(201, 168, 76, 0.12) 0%, transparent 50%), radial-gradient(ellipse at 70% 30%, rgba(212, 165, 116, 0.08) 0%, transparent 40%)',
           '--dt-wallpaper-gradient-size': '100% 100%, 100% 100%',
+          '--dt-icon-text-shadow': '0 1px 3px rgba(0,0,0,0.8)',
         },
       },
       'nights-watch': {
@@ -334,6 +338,7 @@ export const WORLDS = [
           '--dt-window-blur': 'blur(8px) saturate(1.0)',
           '--dt-wallpaper-gradient': 'radial-gradient(ellipse at 50% 30%, rgba(74, 158, 218, 0.06) 0%, transparent 60%)',
           '--dt-wallpaper-gradient-size': '100% 100%',
+          '--dt-icon-text-shadow': '0 1px 3px rgba(0,0,0,0.8)',
         },
       },
       'dragonstone': {
@@ -380,6 +385,7 @@ export const WORLDS = [
           '--dt-window-blur': 'blur(10px) saturate(1.0)',
           '--dt-wallpaper-gradient': 'radial-gradient(ellipse at 30% 70%, rgba(196, 60, 44, 0.15) 0%, transparent 50%), radial-gradient(ellipse at 70% 30%, rgba(232, 101, 26, 0.08) 0%, transparent 40%)',
           '--dt-wallpaper-gradient-size': '100% 100%, 100% 100%',
+          '--dt-icon-text-shadow': '0 1px 3px rgba(0,0,0,0.8)',
         },
       },
     },
@@ -422,6 +428,7 @@ export const WORLDS = [
       '--dt-window-blur': 'blur(12px) saturate(1.1)',
       '--dt-wallpaper-gradient': 'radial-gradient(ellipse at 30% 40%, rgba(74, 158, 218, 0.15) 0%, transparent 50%), radial-gradient(ellipse at 70% 70%, rgba(168, 196, 216, 0.08) 0%, transparent 40%)',
       '--dt-wallpaper-gradient-size': '100% 100%, 100% 100%',
+      '--dt-icon-text-shadow': '0 1px 3px rgba(0,0,0,0.8)',
     },
   },
 ];

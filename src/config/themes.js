@@ -59,6 +59,7 @@ export const BASE_THEME_VARS = {
   '--dt-wallpaper-gradient-size': '100% 100%, 100% 100%, 100% 100%, 100% 100%, 24px 24px',
   '--dt-context-bg':           'rgba(15, 16, 17, 0.97)',
   '--dt-window-blur':          'blur(20px) saturate(1.2)',
+  '--dt-icon-text-shadow':     '0 1px 3px rgba(0,0,0,0.8)',
 };
 
 export const THEMES = [

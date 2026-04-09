@@ -1,5 +1,5 @@
 import { Providers } from "./providers";
-import { IBM_Plex_Mono, Fira_Code, Cinzel, Crimson_Text, Newsreader, IM_Fell_English } from 'next/font/google';
+import { IBM_Plex_Mono, Fira_Code, Cinzel, Crimson_Text, Newsreader, IM_Fell_English, Geist, Geist_Mono } from 'next/font/google';
 import Script from 'next/script';
 import "./globals.css";
 import portfolioData from '@/config/portfolio.json';
@@ -50,6 +50,20 @@ const imFellEnglish = IM_Fell_English({
   weight: '400',
   subsets: ['latin'],
   variable: '--font-im-fell-english',
+  display: 'swap',
+  preload: false,
+});
+
+const geist = Geist({
+  subsets: ['latin'],
+  variable: '--font-geist',
+  display: 'swap',
+  preload: false,
+});
+
+const geistMono = Geist_Mono({
+  subsets: ['latin'],
+  variable: '--font-geist-mono',
   display: 'swap',
   preload: false,
 });
@@ -138,7 +152,7 @@ export const viewport = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en" suppressHydrationWarning className={`${ibmPlexMono.variable} ${firaCode.variable} ${cinzel.variable} ${crimsonText.variable} ${newsreader.variable} ${imFellEnglish.variable}`}>
+    <html lang="en" suppressHydrationWarning className={`${ibmPlexMono.variable} ${firaCode.variable} ${cinzel.variable} ${crimsonText.variable} ${newsreader.variable} ${imFellEnglish.variable} ${geist.variable} ${geistMono.variable}`}>
       <head>
         {/* Resource hints only for external domains used on initial load */}
         <link rel="preconnect" href="https://avatars.githubusercontent.com" />

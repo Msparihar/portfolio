@@ -218,14 +218,14 @@
 
   /* Dark mode terminal styling */
   .dark .terminal-container {
-    @apply text-green-500;
+    color: var(--dt-accent);
     background-color: transparent;
     box-shadow: none;
   }
 
   /* Light mode terminal styling */
   .terminal-container:not(.dark *) {
-    @apply text-green-800;
+    color: var(--dt-accent);
     background-color: rgba(255, 255, 255, 0.95);
     box-shadow: 0 0 30px rgba(0, 100, 0, 0.08);
   }
@@ -248,12 +248,12 @@
   }
 
   .command-prompt {
-    @apply text-green-500/80 dark:text-green-500/80;
+    color: var(--dt-accent-70);
   }
 
   /* Light mode command prompt */
   :not(.dark) .command-prompt {
-    @apply text-green-700/90;
+    color: var(--dt-accent);
   }
 
   .terminal-link {
@@ -305,7 +305,9 @@
   }
 
   .highlighted-text {
-    @apply text-yellow-500 font-semibold px-1 py-0.5 bg-yellow-500/10 rounded;
+    color: var(--dt-accent);
+    background-color: var(--dt-accent-soft);
+    @apply font-semibold px-1 py-0.5 rounded;
   }
 
   .terminal-title {
@@ -543,6 +545,35 @@
 .world-ghibli .window-titlebar .traffic-minimize { background: #e8c170; }
 .world-ghibli .window-titlebar .traffic-maximize { background: #8bc49e; }
 
+/* Typography — activate Newsreader heading font */
+.desktop-canvas.world-ghibli {
+  font-family: var(--font-geist), 'Segoe UI', system-ui, sans-serif;
+  font-size: 0.95rem;
+  -webkit-font-smoothing: antialiased;
+}
+
+.desktop-canvas.world-ghibli .window-drag-handle,
+.desktop-canvas.world-ghibli [data-world-heading] {
+  font-family: var(--font-newsreader), Georgia, serif;
+  letter-spacing: 0.02em;
+}
+
+/* Soft nature-themed window styling */
+.desktop-canvas.world-ghibli .window-panel {
+  border-radius: 16px !important;
+}
+
+/* Warm soft shadow on windows (override the dark shadow vars don't fully cover) */
+.desktop-canvas.world-ghibli .window-panel::after {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border-radius: 17px;
+  pointer-events: none;
+  box-shadow: 0 0 0 1px rgba(74, 124, 89, 0.08);
+  z-index: -1;
+}
+
 /* ══════════════════════════════════════════════════
    World: Game of Thrones (Westeros — Four houses)
    Active when .world-got is on .desktop-canvas
@@ -551,3 +582,15 @@
 .world-got .window-titlebar .traffic-close { background: #e85a5a; }
 .world-got .window-titlebar .traffic-minimize { background: #4a9eda; }
 .world-got .window-titlebar .traffic-maximize { background: #8ba4b8; }
+
+/* Typography — activate IM Fell English heading font */
+.desktop-canvas.world-got {
+  font-family: var(--font-geist), 'Segoe UI', system-ui, sans-serif;
+  font-size: 1rem;
+}
+
+.desktop-canvas.world-got .window-drag-handle,
+.desktop-canvas.world-got [data-world-heading] {
+  font-family: var(--font-im-fell-english), Georgia, serif;
+  letter-spacing: 0.03em;
+}
