@@ -15,7 +15,7 @@ const SkillsVisualization = () => {
     languages: {
       icon: Code,
       title: 'Programming Languages',
-      color: 'from-blue-500 to-cyan-500',
+      color: 'from-[var(--dt-accent)] to-[var(--dt-accent-hover)]',
       skills: portfolioConfig.skills.languages || []
     },
     frameworks: {
@@ -27,13 +27,13 @@ const SkillsVisualization = () => {
     tools: {
       icon: Database,
       title: 'Tools & Technologies',
-      color: 'from-purple-500 to-pink-500',
+      color: 'from-[var(--dt-accent-70)] to-[var(--dt-accent)]',
       skills: portfolioConfig.skills.tools || []
     },
     ai_ml: {
       icon: Brain,
       title: 'AI & Machine Learning',
-      color: 'from-orange-500 to-red-500',
+      color: 'from-[var(--dt-accent-dim)] to-[var(--dt-accent-70)]',
       skills: portfolioConfig.skills.ai_ml || []
     }
   };
@@ -209,7 +209,7 @@ const SkillsVisualization = () => {
                         <div className="flex items-center gap-1">
                           <span className="text-sm" style={{ color: 'var(--dt-text-muted)' }}>{proficiency}%</span>
                           {proficiency >= 90 && (
-                            <Star className="text-yellow-400" size={12} fill="currentColor" />
+                            <Star size={12} fill="currentColor" style={{ color: 'var(--dt-accent)' }} />
                           )}
                         </div>
                       </div>

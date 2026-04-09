@@ -108,7 +108,7 @@ export default function Sidebar() {
                 e.currentTarget.style.color = 'var(--dt-text)';
               }}
             >
-              <span style={{ fontSize: '16px', flexShrink: 0 }}>{icon}</span>
+              <span style={{ fontSize: '20px', flexShrink: 0 }}>{icon}</span>
               {sidebarOpen && <span>{label}</span>}
             </button>
           );

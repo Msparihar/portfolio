@@ -35,42 +35,28 @@ export default function DesktopIcon({ icon, label, appId, isSelected, onSelect, 
       tabIndex={0}
       aria-label={label}
       className="flex flex-col items-center gap-1 cursor-pointer select-none outline-none rounded-lg"
-      style={{ width: '80px' }}
+      style={{ width: '88px' }}
       onClick={handleClick}
       onDoubleClick={handleDoubleClick}
       onKeyDown={handleKeyDown}
     >
       {/* Icon container */}
       <div
-        className="flex items-center justify-center transition-colors duration-100"
+        className="flex items-center justify-center transition-transform duration-100"
         style={{
-          width: '48px',
-          height: '48px',
-          fontSize: '24px',
-          borderRadius: 'var(--dt-radius-sm, 8px)',
-          backgroundColor: isSelected
-            ? 'var(--dt-accent-soft-2)'
-            : 'var(--dt-accent-soft)',
-          border: isSelected
-            ? '1px solid var(--dt-accent-glow)'
-            : '1px solid var(--dt-accent-border-dim)',
-          boxShadow: isSelected
-            ? '0 0 12px var(--dt-accent-border), inset 0 0 8px var(--dt-accent-border-dim)'
+          width: '56px',
+          height: '56px',
+          fontSize: '36px',
+          filter: isSelected
+            ? 'drop-shadow(0 0 8px var(--dt-accent-glow))'
             : 'none',
+          transform: 'scale(1)',
         }}
         onMouseEnter={(e) => {
-          if (!isSelected) {
-            e.currentTarget.style.backgroundColor = 'var(--dt-accent-soft)';
-            e.currentTarget.style.opacity = '1';
-          } else {
-            e.currentTarget.style.opacity = '0.9';
-          }
+          e.currentTarget.style.transform = 'scale(1.1)';
         }}
         onMouseLeave={(e) => {
-          if (!isSelected) {
-            e.currentTarget.style.backgroundColor = 'transparent';
-          }
-          e.currentTarget.style.opacity = '1';
+          e.currentTarget.style.transform = 'scale(1)';
         }}
       >
         {icon}
@@ -81,9 +67,9 @@ export default function DesktopIcon({ icon, label, appId, isSelected, onSelect, 
         className="text-center w-full truncate leading-tight"
         style={{
           fontFamily: 'var(--dt-font-mono, monospace)',
-          fontSize: '9px',
+          fontSize: '11px',
           color: 'var(--dt-text)',
-          textShadow: '0 1px 3px rgba(0,0,0,0.8)',
+          textShadow: 'var(--dt-icon-text-shadow, 0 1px 3px rgba(0,0,0,0.8))',
         }}
       >
         {label}

@@ -9,6 +9,7 @@ import ContextMenu from './ContextMenu';
 import { THEME_STORAGE_KEY, DEFAULT_THEME_ID, applyTheme } from '@/config/themes';
 import { WORLD_STORAGE_KEY, WORLDS, applyWorld } from '@/config/worlds';
 import Sidebar from './Sidebar';
+import WorldSwitcherPopup from './WorldSwitcherPopup';
 import { useSidebarStore } from '@/store/sidebarStore';
 import { useUiStore } from '@/store/uiStore';
 import { useSeasonStore } from '@/store/seasonStore';
@@ -43,6 +44,7 @@ export default function Desktop({ githubData, initialApp }) {
   const [selectedIcon, setSelectedIcon] = useState(null);
   const [contextMenu, setContextMenu] = useState(null);
   const [currentWorldId, setCurrentWorldId] = useState(null);
+  const [showWorldSwitcher, setShowWorldSwitcher] = useState(false);
 
   // Mobile detection on mount + resize
   useEffect(() => {
@@ -73,17 +75,17 @@ export default function Desktop({ githubData, initialApp }) {
     }
 
     const savedWorld = localStorage.getItem(WORLD_STORAGE_KEY);
-    if (savedWorld) {
-      applyWorld(canvas, savedWorld);
-      setCurrentWorldId(savedWorld);
-    } else {
-      const saved = localStorage.getItem(THEME_STORAGE_KEY) ?? DEFAULT_THEME_ID;
-      applyTheme(canvas, saved);
-      setCurrentWorldId(null);
+    const worldToApply = savedWorld || 'elden-ring';
+    applyWorld(canvas, worldToApply);
+    setCurrentWorldId(worldToApply);
+
+    // Persist the default so subsequent visits remember it
+    if (!savedWorld) {
+      localStorage.setItem(WORLD_STORAGE_KEY, worldToApply);
     }
 
     // Start seasonal cycle if the saved world is GoT
-    if (savedWorld === 'got') {
+    if (worldToApply === 'got') {
       const gotWorld = WORLDS.find((w) => w.id === 'got');
       if (gotWorld) startCycle(gotWorld);
     }
@@ -114,6 +116,31 @@ export default function Desktop({ githubData, initialApp }) {
     applyWorld(canvas, 'got', currentRegion);
   }, [currentRegion, currentWorldId]);
 
+  // World switcher popup — appears after 5 minutes
+  useEffect(() => {
+    const SWITCHER_DISMISSED_KEY = 'portfolio_world_switcher_dismissed';
+    if (localStorage.getItem(SWITCHER_DISMISSED_KEY) === 'true') return;
+
+    let timerId = setTimeout(() => {
+      setShowWorldSwitcher(true);
+    }, 5 * 60 * 1000);
+
+    // Reset timer when world changes
+    const handleWorldChange = () => {
+      setShowWorldSwitcher(false);
+      clearTimeout(timerId);
+      timerId = setTimeout(() => {
+        setShowWorldSwitcher(true);
+      }, 5 * 60 * 1000);
+    };
+
+    window.addEventListener('worldchange', handleWorldChange);
+    return () => {
+      clearTimeout(timerId);
+      window.removeEventListener('worldchange', handleWorldChange);
+    };
+  }, []);
+
   // Ctrl+Shift+W toggles Website Mode (skip if typing in input)
   useEffect(() => {
     const handleKeyDown = (e) => {
@@ -127,6 +154,15 @@ export default function Desktop({ githubData, initialApp }) {
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [toggleWebsiteMode]);
+
+  const handleWorldSwitcherClose = useCallback(() => {
+    setShowWorldSwitcher(false);
+  }, []);
+
+  const handleWorldSwitcherDontShow = useCallback(() => {
+    setShowWorldSwitcher(false);
+    localStorage.setItem('portfolio_world_switcher_dismissed', 'true');
+  }, []);
 
   const handleOpenApp = useCallback(
     (appId) => {
@@ -271,6 +307,12 @@ export default function Desktop({ githubData, initialApp }) {
         />
       )}
 
+      {/* World Switcher Popup */}
+      <WorldSwitcherPopup
+        isOpen={showWorldSwitcher}
+        onClose={handleWorldSwitcherClose}
+        onDontShowAgain={handleWorldSwitcherDontShow}
+      />
 
     </div>
   );
