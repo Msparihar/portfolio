@@ -1,14 +1,15 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import { WORLDS, WORLD_STORAGE_KEY, applyWorld } from '@/config/worlds';
-import { THEME_STORAGE_KEY, applyTheme, DEFAULT_THEME_ID } from '@/config/themes';
+import { WORLDS, WORLD_STORAGE_KEY, applyWorld, applyWorldWithTransition } from '@/config/worlds';
+import { THEME_STORAGE_KEY } from '@/config/themes';
+import { getCurrentWorldId } from '@/config/worldContent';
 import { useSeasonStore } from '@/store/seasonStore';
 
 export default function WorldPicker() {
   const [isOpen, setIsOpen] = useState(false);
   const [activeWorld, setActiveWorld] = useState(
-    () => (typeof window !== 'undefined' ? localStorage.getItem(WORLD_STORAGE_KEY) : null) ?? null
+    () => getCurrentWorldId()
   );
   const popoverRef = useRef(null);
   const buttonRef = useRef(null);
@@ -36,34 +37,10 @@ export default function WorldPicker() {
     };
   }, [isOpen]);
 
-  const applyWorldWithTransition = (worldId) => {
-    const canvas = document.querySelector('.desktop-canvas');
-    if (!canvas) return;
-
-    canvas.style.transition = 'opacity 200ms ease';
-    canvas.style.opacity = '0';
-
-    setTimeout(() => {
-      if (worldId) {
-        applyWorld(canvas, worldId);
-        localStorage.setItem(WORLD_STORAGE_KEY, worldId);
-        localStorage.removeItem(THEME_STORAGE_KEY);
-      } else {
-        // Clear world, revert to saved theme
-        applyWorld(canvas, null);
-        localStorage.removeItem(WORLD_STORAGE_KEY);
-        const savedTheme = localStorage.getItem(THEME_STORAGE_KEY) || DEFAULT_THEME_ID;
-        applyTheme(canvas, savedTheme);
-      }
-      canvas.style.opacity = '1';
-    }, 200);
-  };
-
   const handleSelect = (worldId) => {
     setActiveWorld(worldId);
     applyWorldWithTransition(worldId);
     setIsOpen(false);
-    window.dispatchEvent(new CustomEvent('worldchange', { detail: { worldId } }));
   };
 
   const handleRegionSelect = (regionId) => {

@@ -14,6 +14,8 @@ import { useSidebarStore } from '@/store/sidebarStore';
 import { useUiStore } from '@/store/uiStore';
 import { useSeasonStore } from '@/store/seasonStore';
 
+const SWITCHER_DISMISSED_KEY = SWITCHER_DISMISSED_KEY;
+
 function MobileFallback() {
   return (
     <div
@@ -118,7 +120,6 @@ export default function Desktop({ githubData, initialApp }) {
 
   // World switcher popup — appears after 5 minutes
   useEffect(() => {
-    const SWITCHER_DISMISSED_KEY = 'portfolio_world_switcher_dismissed';
     if (localStorage.getItem(SWITCHER_DISMISSED_KEY) === 'true') return;
 
     let timerId = setTimeout(() => {
@@ -161,7 +162,7 @@ export default function Desktop({ githubData, initialApp }) {
 
   const handleWorldSwitcherDontShow = useCallback(() => {
     setShowWorldSwitcher(false);
-    localStorage.setItem('portfolio_world_switcher_dismissed', 'true');
+    localStorage.setItem(SWITCHER_DISMISSED_KEY, 'true');
   }, []);
 
   const handleOpenApp = useCallback(
