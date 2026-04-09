@@ -48,21 +48,22 @@ const FeaturedProjectCard = ({ project, onExpand, isHero = false }) => {
         data-anim-card
         role="button"
         tabIndex={0}
-        className="group relative rounded-xl overflow-hidden col-span-full cursor-pointer touch-manipulation focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-500 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-900 border border-green-500/30 hover:border-green-500/60 transition-all duration-300"
+        className="group relative rounded-xl overflow-hidden col-span-full cursor-pointer touch-manipulation focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-current focus-visible:ring-offset-2 transition-all duration-300"
         style={{
-          background: 'linear-gradient(135deg, rgba(0,20,10,0.95) 0%, rgba(10,10,10,0.95) 100%)',
-          boxShadow: '0 0 40px rgba(0, 255, 100, 0.08), 0 4px 30px rgba(0, 0, 0, 0.4)',
+          background: 'linear-gradient(135deg, var(--dt-surface-deep) 0%, var(--dt-bg) 100%)',
+          boxShadow: 'var(--dt-shadow-focused, 0 0 40px rgba(0, 255, 100, 0.08)), 0 4px 30px rgba(0, 0, 0, 0.4)',
+          border: '1px solid var(--dt-accent-border)',
         }}
         onClick={() => onExpand(project)}
         onKeyDown={handleKeyDown}
         aria-label={`View details for ${name}`}
       >
         {/* Terminal-style top bar */}
-        <div className="flex items-center gap-2 px-5 py-3 border-b border-green-500/20">
+        <div className="flex items-center gap-2 px-5 py-3" style={{ borderBottom: '1px solid var(--dt-accent-20)' }}>
           <div className="w-3 h-3 rounded-full bg-red-500/80" />
           <div className="w-3 h-3 rounded-full bg-yellow-500/80" />
-          <div className="w-3 h-3 rounded-full bg-green-500/80" />
-          <span className="ml-3 text-xs font-mono text-terminal-cyan">~/projects/{name.toLowerCase().replace(/\s+/g, '-')}</span>
+          <div className="w-3 h-3 rounded-full" style={{ background: 'var(--dt-accent)', opacity: 0.8 }} />
+          <span className="ml-3 text-xs text-current" style={{ fontFamily: 'var(--dt-font-mono)' }}>~/projects/{name.toLowerCase().replace(/\s+/g, '-')}</span>
         </div>
 
         <div className="grid md:grid-cols-[3fr_2fr] gap-0">
@@ -93,45 +94,55 @@ const FeaturedProjectCard = ({ project, onExpand, isHero = false }) => {
           {/* Hero Content — 40%, top-aligned */}
           <div className="p-6 md:p-7 flex flex-col justify-start">
             {/* Terminal-style label */}
-            <div className="mb-3 font-mono text-sm">
-              <span className="text-green-500">{'>'}</span>
-              <span className="text-terminal-cyan ml-2">featured</span>
+            <div className="mb-3 text-sm" style={{ fontFamily: 'var(--dt-font-mono)' }}>
+              <span style={{ color: 'var(--dt-accent)' }}>{'>'}</span>
+              <span className="text-current ml-2">featured</span>
             </div>
 
-            {/* Title — properly scaled $ */}
-            <h3 className="text-xl md:text-2xl font-bold text-foreground mb-3 group-hover:text-green-400 transition-colors font-mono">
-              <span className="text-green-500 mr-1">$</span>
+            {/* Title */}
+            <h3 className="text-xl md:text-2xl font-bold text-foreground mb-3 transition-colors" style={{ fontFamily: 'var(--dt-font-mono)' }}>
+              <span className="mr-1" style={{ color: 'var(--dt-accent)' }}>$</span>
               {name}
             </h3>
 
             {/* Short description */}
-            <p className="text-muted-foreground text-sm mb-5 leading-relaxed font-mono">
+            <p className="text-sm mb-5 leading-relaxed" style={{ color: 'var(--dt-text-muted)', fontFamily: 'var(--dt-font-mono)' }}>
               {shortDesc}
             </p>
 
-            {/* Tech Stack — cyan-bordered, slightly larger */}
+            {/* Tech Stack */}
             <div className="mb-5">
               <div className="flex flex-wrap gap-2">
                 {techStack.slice(0, 6).map((tech, index) => (
                   <span key={index}
-                    className="px-2.5 py-1 text-xs font-mono rounded bg-terminal-cyan/5 text-terminal-cyan border border-terminal-cyan/20"
-                    style={{ color: 'hsl(var(--terminal-cyan))' }}>
+                    className="px-2.5 py-1 text-xs rounded"
+                    style={{
+                      fontFamily: 'var(--dt-font-mono)',
+                      color: 'var(--dt-accent)',
+                      background: 'var(--dt-accent-soft)',
+                      border: '1px solid var(--dt-accent-20)',
+                    }}>
                     {tech}
                   </span>
                 ))}
                 {techStack.length > 6 && (
-                  <span className="px-2.5 py-1 text-xs font-mono rounded bg-gray-800 text-gray-400">
+                  <span className="px-2.5 py-1 text-xs rounded" style={{ background: 'var(--dt-surface)', color: 'var(--dt-text-muted)' }}>
                     +{techStack.length - 6}
                   </span>
                 )}
               </div>
             </div>
 
-            {/* CTA Buttons — prominent */}
+            {/* CTA Buttons */}
             <div className="flex items-center gap-3 mt-auto">
               {github && (
                 <a href={github} target="_blank" rel="noopener noreferrer" onClick={(e) => e.stopPropagation()}
-                  className="flex items-center gap-2 px-4 py-2 text-sm font-mono rounded-lg border border-green-500/40 text-green-400 hover:bg-green-500/10 hover:border-green-500/60 transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-500"
+                  className="flex items-center gap-2 px-4 py-2 text-sm rounded-lg transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-current"
+                  style={{
+                    fontFamily: 'var(--dt-font-mono)',
+                    border: '1px solid var(--dt-accent-border)',
+                    color: 'var(--dt-accent)',
+                  }}
                   aria-label={`View source code for ${name}`}>
                   <Github size={16} />
                   <span>Source</span>
@@ -139,9 +150,11 @@ const FeaturedProjectCard = ({ project, onExpand, isHero = false }) => {
               )}
               {live && (
                 <a href={live} target="_blank" rel="noopener noreferrer" onClick={(e) => e.stopPropagation()}
-                  className="flex items-center gap-2 px-4 py-2 text-sm font-mono rounded-lg text-white hover:text-white transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-500"
+                  className="flex items-center gap-2 px-4 py-2 text-sm rounded-lg transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-current"
                   style={{
-                    background: 'linear-gradient(135deg, hsl(var(--terminal-cyan)) 0%, hsl(187 100% 35%) 100%)',
+                    fontFamily: 'var(--dt-font-mono)',
+                    background: 'var(--dt-accent)',
+                    color: 'var(--dt-bg)',
                   }}
                   aria-label={`View live demo of ${name}`}>
                   <ExternalLink size={16} />
@@ -155,7 +168,7 @@ const FeaturedProjectCard = ({ project, onExpand, isHero = false }) => {
         {/* Scanline overlay for terminal feel */}
         <div className="absolute inset-0 pointer-events-none opacity-[0.03]"
           style={{
-            backgroundImage: 'repeating-linear-gradient(0deg, rgba(0,255,100,0.1), rgba(0,255,100,0.1) 1px, transparent 1px, transparent 3px)',
+            backgroundImage: 'repeating-linear-gradient(0deg, var(--dt-scanline-color), var(--dt-scanline-color) 1px, transparent 1px, transparent 3px)',
             backgroundSize: '100% 3px',
           }}
         />
@@ -168,7 +181,11 @@ const FeaturedProjectCard = ({ project, onExpand, isHero = false }) => {
       data-anim-card
       role="button"
       tabIndex={0}
-      className="group relative rounded-xl overflow-hidden bg-gray-900/50 border border-gray-800 hover:border-green-500/50 transition-colors transition-shadow duration-300 cursor-pointer touch-manipulation focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-500 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-900"
+      className="group relative rounded-xl overflow-hidden transition-colors transition-shadow duration-300 cursor-pointer touch-manipulation focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-current focus-visible:ring-offset-2"
+      style={{
+        background: 'var(--dt-surface)',
+        border: '1px solid var(--dt-accent-border)',
+      }}
       onClick={() => onExpand(project)}
       onKeyDown={handleKeyDown}
       aria-label={`View details for ${name}`}
@@ -202,7 +219,8 @@ const FeaturedProjectCard = ({ project, onExpand, isHero = false }) => {
               target="_blank"
               rel="noopener noreferrer"
               onClick={(e) => e.stopPropagation()}
-              className="p-2 bg-black/60 hover:bg-black/80 text-white rounded-full transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-500"
+              className="p-2 bg-black/60 hover:bg-black/80 rounded-full transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-current"
+              style={{ color: 'var(--dt-text)' }}
               aria-label={`View source code for ${name}`}
             >
               <Github size={16} />
@@ -214,7 +232,8 @@ const FeaturedProjectCard = ({ project, onExpand, isHero = false }) => {
               target="_blank"
               rel="noopener noreferrer"
               onClick={(e) => e.stopPropagation()}
-              className="p-2 bg-black/60 hover:bg-black/80 text-white rounded-full transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-500"
+              className="p-2 bg-black/60 hover:bg-black/80 rounded-full transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-current"
+              style={{ color: 'var(--dt-text)' }}
               aria-label={`View live demo of ${name}`}
             >
               <ExternalLink size={16} />
@@ -224,7 +243,7 @@ const FeaturedProjectCard = ({ project, onExpand, isHero = false }) => {
 
         {/* Expand indicator */}
         <div className="absolute bottom-3 right-3 z-10 opacity-0 group-hover:opacity-100 transition-opacity">
-          <Expand size={18} className="text-white" />
+          <Expand size={18} style={{ color: 'var(--dt-text)' }} />
         </div>
       </div>
 
@@ -232,14 +251,14 @@ const FeaturedProjectCard = ({ project, onExpand, isHero = false }) => {
       <div className="p-5">
         {/* Header */}
         <div className="mb-3">
-          <h3 className="text-lg font-semibold text-green-400 mb-1 group-hover:text-green-300 transition-colors">
-            <span className="text-sm text-gray-500 mr-2">$</span>
+          <h3 className="text-lg font-semibold mb-1 transition-colors" style={{ color: 'var(--dt-accent)' }}>
+            <span className="text-sm mr-2" style={{ color: 'var(--dt-text-muted)' }}>$</span>
             {name}
           </h3>
         </div>
 
         {/* Description */}
-        <p className="text-gray-300 text-sm mb-4 line-clamp-2 leading-relaxed">
+        <p className="text-sm mb-4 line-clamp-2 leading-relaxed" style={{ color: 'var(--dt-text-muted)' }}>
           {description}
         </p>
 
@@ -249,13 +268,18 @@ const FeaturedProjectCard = ({ project, onExpand, isHero = false }) => {
             {techStack.slice(0, 4).map((tech, index) => (
               <span
                 key={index}
-                className="px-2 py-1 text-xs rounded-md bg-green-500/10 text-green-400 border border-green-500/20"
+                className="px-2 py-1 text-xs rounded-md"
+                style={{
+                  background: 'var(--dt-accent-soft)',
+                  color: 'var(--dt-accent)',
+                  border: '1px solid var(--dt-accent-20)',
+                }}
               >
                 {tech}
               </span>
             ))}
             {techStack.length > 4 && (
-              <span className="px-2 py-1 text-xs rounded-md bg-gray-800 text-gray-400">
+              <span className="px-2 py-1 text-xs rounded-md" style={{ background: 'var(--dt-surface)', color: 'var(--dt-text-muted)' }}>
                 +{techStack.length - 4}
               </span>
             )}
@@ -270,7 +294,8 @@ const FeaturedProjectCard = ({ project, onExpand, isHero = false }) => {
               target="_blank"
               rel="noopener noreferrer"
               onClick={(e) => e.stopPropagation()}
-              className="text-gray-400 hover:text-green-400 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-500 rounded"
+              className="transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-current rounded"
+              style={{ color: 'var(--dt-text-muted)' }}
               aria-label={`View source code for ${name}`}
             >
               <Github size={18} />
@@ -282,7 +307,8 @@ const FeaturedProjectCard = ({ project, onExpand, isHero = false }) => {
               target="_blank"
               rel="noopener noreferrer"
               onClick={(e) => e.stopPropagation()}
-              className="text-gray-400 hover:text-green-400 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-500 rounded"
+              className="transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-current rounded"
+              style={{ color: 'var(--dt-text-muted)' }}
               aria-label={`View live demo of ${name}`}
             >
               <ExternalLink size={16} />
@@ -292,7 +318,7 @@ const FeaturedProjectCard = ({ project, onExpand, isHero = false }) => {
       </div>
 
       {/* Hover Effect */}
-      <div className="absolute inset-0 bg-green-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
+      <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" style={{ background: 'var(--dt-accent-soft)' }} />
     </div>
   );
 };
@@ -349,12 +375,13 @@ export default function FeaturedProjects() {
       {/* Section Header */}
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-3">
-          <span className="text-green-500 font-mono">$</span>
+          <span style={{ color: 'var(--dt-accent)', fontFamily: 'var(--dt-font-mono)' }}>$</span>
           <h2 className="text-xl font-semibold text-foreground text-wrap-balance">Featured Projects</h2>
         </div>
         <Link
           href="/projects"
-          className="flex items-center gap-2 text-sm text-muted-foreground hover:text-green-500 transition-colors group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-500 rounded"
+          className="flex items-center gap-2 text-sm transition-colors group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-current rounded"
+          style={{ color: 'var(--dt-text-muted)' }}
         >
           <span>View all projects</span>
           <ArrowRight size={16} className="motion-safe:group-hover:translate-x-1 transition-transform" />

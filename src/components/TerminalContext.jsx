@@ -6,11 +6,17 @@ import { useWindowStore } from '@/store/windowStore';
 import { TerminalLoader } from '@/components/ui/LoadingDots';
 import { useTheme } from 'next-themes';
 import TerminalLogo from './TerminalLogo';
+import { getCurrentWorldId, getWorldTerminal, getWorldAppTitle, createWorldChangeListener } from '@/config/worldContent';
 
-const BootSequence = () => {
+const BootSequence = ({ worldId }) => {
   const [step, setStep] = useState(0);
   const [dotsCount, setDotsCount] = useState(0);
   const maxSteps = 6;
+
+  const worldTerminal = getWorldTerminal(worldId);
+  const displayName = worldTerminal.bootName ?? portfolioData.name;
+  const displayTitle = worldTerminal.bootTitle ?? portfolioData.title;
+  const skillsLabel = worldTerminal.bootSkillsLabel ?? 'Loading skills';
 
   const skills = portfolioData.skills;
   const allSkills = [
@@ -37,23 +43,23 @@ const BootSequence = () => {
     <div className="font-mono text-sm space-y-1">
       {step >= 1 && (
         <div>
-          <span className="text-green-500" data-world-accent="">{'>'}</span>
-          <span className="text-foreground ml-2 font-bold">{portfolioData.name}</span>
+          <span style={{color:"var(--dt-accent)"}} data-world-accent="">{'>'}</span>
+          <span className="text-foreground ml-2 font-bold">{displayName}</span>
         </div>
       )}
       {step >= 2 && (
         <div>
-          <span className="text-green-500" data-world-accent="">{'>'}</span>
-          <span className="text-terminal-cyan ml-2">{portfolioData.title}</span>
+          <span style={{color:"var(--dt-accent)"}} data-world-accent="">{'>'}</span>
+          <span style={{color:"var(--dt-accent-hover)"}} className=" ml-2">{displayTitle}</span>
         </div>
       )}
       {step >= 3 && (
         <div>
-          <span className="text-green-500" data-world-accent="">{'>'}</span>
+          <span style={{color:"var(--dt-accent)"}} data-world-accent="">{'>'}</span>
           <span className="text-muted-foreground ml-2">
-            Loading skills{'.' .repeat(Math.min(dotsCount, 10))}
+            {skillsLabel}{'.' .repeat(Math.min(dotsCount, 10))}
           </span>
-          {dotsCount >= 10 && <span className="text-green-500 ml-1">done</span>}
+          {dotsCount >= 10 && <span className="ml-1" style={{color:'var(--dt-accent)'}}>done</span>}
         </div>
       )}
       {step >= 4 && (
@@ -61,8 +67,8 @@ const BootSequence = () => {
           {allSkills.map((skill, i) => (
             <span
               key={skill}
-              className="px-2 py-0.5 text-xs rounded-md bg-green-500/10 text-green-400 border border-green-500/20"
-              style={{ animation: `fadeIn 0.3s ease ${i * 0.05}s both` }}
+              className="px-2 py-0.5 text-xs rounded-md"
+              style={{background:"var(--dt-accent-soft)",color:"var(--dt-accent)",border:"1px solid var(--dt-accent-20)", animation: `fadeIn 0.3s ease ${i * 0.05}s both`}}
             >
               {skill}
             </span>
@@ -71,9 +77,9 @@ const BootSequence = () => {
       )}
       {step >= 5 && (
         <div className="mt-2">
-          <span className="text-green-500" data-world-accent="">{'>'}</span>
+          <span style={{color:"var(--dt-accent)"}} data-world-accent="">{'>'}</span>
           <span className="text-muted-foreground ml-2">
-            Type <span className="text-terminal-cyan">'help'</span> for available commands
+            Type <span style={{color:"var(--dt-accent-hover)"}} className="">'help'</span> for available commands
           </span>
         </div>
       )}
@@ -152,6 +158,7 @@ export const TerminalProvider = ({ children }) => {
   const terminalRef = useRef(null);
   const inputRef = useRef(null);
   const [mounted, setMounted] = useState(false);
+  const [worldId, setWorldId] = useState(null);
   const [history, setHistory] = useState([
     {
       command: 'whoami',
@@ -167,6 +174,9 @@ export const TerminalProvider = ({ children }) => {
 
   useEffect(() => {
     setMounted(true);
+    setWorldId(getCurrentWorldId());
+    const cleanup = createWorldChangeListener((id) => setWorldId(id));
+    return cleanup;
   }, []);
 
   useEffect(() => {
@@ -242,9 +252,12 @@ export const TerminalProvider = ({ children }) => {
     },
     whoami: {
       description: 'Display user information',
-      execute: () => `${portfolioData.name}
-${portfolioData.title}
-${portfolioData.bio}`
+      execute: () => {
+        const wt = getWorldTerminal(worldId);
+        const name = wt.whoamiName ?? portfolioData.name;
+        const title = wt.whoamiTitle ?? portfolioData.title;
+        return `${name}\n${title}\n${portfolioData.bio}`;
+      }
     },
     date: {
       description: 'Display current date and time',
@@ -479,7 +492,8 @@ ${portfolioData.education.map(edu =>
     terminalRef,
     mounted,
     theme,
-    suggestion
+    suggestion,
+    worldId
   };
 
   return (
@@ -500,8 +514,14 @@ export const Terminal = () => {
     terminalRef,
     mounted,
     theme,
-    suggestion
+    suggestion,
+    worldId
   } = useTerminal();
+
+  const worldTerminal = getWorldTerminal(worldId);
+  const promptUser = worldTerminal.promptUser;
+  const promptHost = worldTerminal.promptHost;
+  const promptLabel = `${promptUser}@${promptHost}`;
 
   if (!mounted) {
     return <TerminalLoader />;
@@ -518,8 +538,8 @@ export const Terminal = () => {
         style={{
           backgroundImage: `repeating-linear-gradient(
             0deg,
-            rgba(0, 150, 0, 0.1),
-            rgba(0, 150, 0, 0.1) 1px,
+            var(--dt-scanline-color, var(--dt-accent-soft)),
+            var(--dt-scanline-color, var(--dt-accent-soft)) 1px,
             transparent 1px,
             transparent 2px
           )`,
@@ -534,12 +554,12 @@ export const Terminal = () => {
         <div className="flex items-center mb-6">
           <TerminalLogo />
           <div className="ml-4">
-            <div className="text-sm text-green-500/80 font-mono">
-              <span className="terminal-prompt">$</span>
-              <span className="ml-2">Terminal v2.0</span>
+            <div className="text-sm font-mono" style={{color:"var(--dt-accent-70)"}}>
+              <span className="terminal-prompt">{promptLabel}</span>
+              <span className="ml-2">{getWorldAppTitle(worldId, 'terminal', 'Terminal')} v2.0</span>
             </div>
             <div className="text-xs text-muted-foreground font-mono">
-              Connected to portfolio server
+              {worldId ? `Connected to ${worldTerminal.promptHost}` : 'Connected to portfolio server'}
             </div>
           </div>
         </div>
@@ -549,12 +569,12 @@ export const Terminal = () => {
           {history.map((entry, index) => (
             <div key={index} className="terminal-line">
               <div className="flex items-start">
-                <span className="terminal-prompt text-green-500 mr-2 flex-shrink-0" data-world-accent="">$</span>
+                <span className="terminal-prompt mr-2 flex-shrink-0" style={{color:"var(--dt-accent)"}} data-world-accent="">{promptLabel} $</span>
                 <span className="text-foreground font-mono">{entry.command}</span>
               </div>
               {entry.bootSequence ? (
                 <div className="mt-1 ml-6">
-                  <BootSequence />
+                  <BootSequence worldId={worldId} />
                 </div>
               ) : entry.output && (
                 <div className="mt-1 ml-6 text-muted-foreground font-mono whitespace-pre-wrap">
@@ -566,7 +586,7 @@ export const Terminal = () => {
 
           {/* Terminal input - positioned right after the last output */}
           <form onSubmit={handleSubmit} className="flex items-center" style={{ minHeight: '24px' }}>
-            <span className="terminal-prompt text-green-500 mr-2" data-world-accent="">$</span>
+            <span className="terminal-prompt mr-2" style={{color:"var(--dt-accent)"}} data-world-accent="">{promptLabel} $</span>
             <div className="flex-1 relative" style={{ minHeight: '20px' }}>
               <input
                 ref={inputRef}
@@ -592,8 +612,8 @@ export const Terminal = () => {
                 color: 'var(--dt-text)',
               }}>
                 {input || <span className="text-muted-foreground">Type a command...</span>}
-                <span className="inline-block w-[2px] h-[1.1em] bg-green-500 align-middle ml-[1px]" style={{ animation: 'terminal-blink 1s step-end infinite' }} />
-                {suggestion && input && <span className="text-green-500/30">{suggestion}</span>}
+                <span className="inline-block w-[2px] h-[1.1em] align-middle ml-[1px]" style={{background:"var(--dt-accent)", animation: 'terminal-blink 1s step-end infinite'}} />
+                {suggestion && input && <span style={{color:"var(--dt-accent-30)"}}>{suggestion}</span>}
               </span>
             </div>
           </form>

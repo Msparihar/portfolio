@@ -75,7 +75,7 @@ export default function Gallery() {
   }, [lightboxIndex, goNext, goPrev]);
 
   return (
-    <div style={{ height: '100%', overflowY: 'auto', fontFamily: 'monospace', color: TEXT, padding: '16px' }}>
+    <div style={{ height: '100%', overflowY: 'auto', fontFamily: 'var(--dt-font-mono, monospace)', color: TEXT, padding: '16px' }}>
       {/* Header */}
       <div style={{ color: MUTED, fontSize: '11px', letterSpacing: '0.08em', marginBottom: '14px', textTransform: 'uppercase' }}>
         Gallery — Work Samples ({items.length})
@@ -97,7 +97,7 @@ export default function Gallery() {
           >
             <div style={{
               aspectRatio: '16/9',
-              borderRadius: '4px',
+              borderRadius: 'var(--dt-radius-sm, 4px)',
               overflow: 'hidden',
               border: hoveredIndex === i ? `1px solid ${ACCENT}` : `1px solid ${BORDER}`,
               boxShadow: hoveredIndex === i ? `0 0 12px ${GLOW}` : 'none',
@@ -109,7 +109,7 @@ export default function Gallery() {
                 style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
               />
             </div>
-            <div style={{ color: MUTED, fontSize: '11px', fontFamily: 'monospace', marginTop: '4px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+            <div style={{ color: MUTED, fontSize: '11px', fontFamily: 'var(--dt-font-mono, monospace)', marginTop: '4px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
               {project.name}
             </div>
           </div>
@@ -123,7 +123,7 @@ export default function Gallery() {
           style={{
             position: 'absolute',
             inset: 0,
-            background: 'rgba(0,0,0,0.85)',
+            background: 'var(--dt-overlay-bg, rgba(0,0,0,0.85))',
             zIndex: 50,
             display: 'flex',
             flexDirection: 'column',
@@ -140,7 +140,7 @@ export default function Gallery() {
               right: '16px',
               background: 'none',
               border: 'none',
-              color: '#fff',
+              color: 'var(--dt-text)',
               fontSize: '24px',
               cursor: 'pointer',
               zIndex: 51,
@@ -157,13 +157,13 @@ export default function Gallery() {
               left: '12px',
               top: '50%',
               transform: 'translateY(-50%)',
-              background: 'rgba(255,255,255,0.1)',
+              background: 'var(--dt-accent-soft)',
               border: 'none',
-              color: '#fff',
+              color: 'var(--dt-text)',
               fontSize: '24px',
               cursor: 'pointer',
               padding: '8px 12px',
-              borderRadius: '4px',
+              borderRadius: 'var(--dt-radius-sm, 4px)',
               zIndex: 51,
             }}
           >
@@ -178,13 +178,13 @@ export default function Gallery() {
               right: '12px',
               top: '50%',
               transform: 'translateY(-50%)',
-              background: 'rgba(255,255,255,0.1)',
+              background: 'var(--dt-accent-soft)',
               border: 'none',
-              color: '#fff',
+              color: 'var(--dt-text)',
               fontSize: '24px',
               cursor: 'pointer',
               padding: '8px 12px',
-              borderRadius: '4px',
+              borderRadius: 'var(--dt-radius-sm, 4px)',
               zIndex: 51,
             }}
           >
@@ -196,19 +196,19 @@ export default function Gallery() {
             <MediaFull
               src={items[lightboxIndex].image}
               alt={items[lightboxIndex].name}
-              style={{ maxWidth: '100%', maxHeight: '60vh', objectFit: 'contain', borderRadius: '4px' }}
+              style={{ maxWidth: '100%', maxHeight: '60vh', objectFit: 'contain', borderRadius: 'var(--dt-radius-sm, 4px)' }}
             />
           </div>
 
           {/* Caption */}
           <div onClick={(e) => e.stopPropagation()} style={{ textAlign: 'center', marginTop: '16px', maxWidth: '60%' }}>
-            <div style={{ color: '#fff', fontFamily: 'monospace', fontSize: '14px', fontWeight: 'bold' }}>
+            <div style={{ color: 'var(--dt-text)', fontFamily: 'var(--dt-font-mono, monospace)', fontSize: '14px', fontWeight: 'bold' }}>
               {items[lightboxIndex].name}
             </div>
-            <div style={{ color: 'rgba(255,255,255,0.6)', fontFamily: 'monospace', fontSize: '12px', marginTop: '6px' }}>
+            <div style={{ color: 'var(--dt-text-muted)', fontFamily: 'var(--dt-font-mono, monospace)', fontSize: '12px', marginTop: '6px' }}>
               {items[lightboxIndex].description}
             </div>
-            <div style={{ color: 'rgba(255,255,255,0.3)', fontFamily: 'monospace', fontSize: '11px', marginTop: '8px' }}>
+            <div style={{ color: 'var(--dt-accent-30)', fontFamily: 'var(--dt-font-mono, monospace)', fontSize: '11px', marginTop: '8px' }}>
               {lightboxIndex + 1} / {items.length}
             </div>
           </div>

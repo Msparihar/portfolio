@@ -4,6 +4,24 @@
 // applyTheme() merges base + delta and sets them as inline CSS custom properties.
 
 export const BASE_THEME_VARS = {
+  // Font vars (overridden per world)
+  '--dt-font-heading':         'Geist, sans-serif',
+  '--dt-font-body':            'Geist, sans-serif',
+  '--dt-font-mono':            'Geist Mono, monospace',
+  // Window structural vars (overridden per world)
+  '--dt-window-radius':        '12px',
+  '--dt-window-border':        '1px solid rgba(255, 255, 255, 0.08)',
+  // Overlay vars (overridden per world)
+  '--dt-overlay-vignette':     'none',
+  '--dt-overlay-grain':        '0',
+  '--dt-overlay-bg':           'rgba(0, 0, 0, 0.85)',
+  // Radius
+  '--dt-radius-sm':            '4px',
+  // Semantic colors
+  '--dt-on-accent':            '#000000',
+  '--dt-warn-color':           '#facc15',
+  '--dt-info-color':           '#60a5fa',
+  // Colors
   '--dt-accent':               '#5e6ad2',
   '--dt-accent-hover':         '#7170ff',
   '--dt-accent-dim':           'rgba(94, 106, 210, 0.5)',

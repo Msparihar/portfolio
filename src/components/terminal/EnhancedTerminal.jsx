@@ -1,3 +1,4 @@
+// LEGACY — not used in desktop OS mode
 "use client";
 
 import React, { useState, useEffect, useRef } from 'react';
@@ -335,15 +336,15 @@ const EnhancedTerminal = ({ onNavigate }) => {
   }, []);
 
   return (
-    <div className="bg-black/90 rounded-lg border border-green-500/30 p-4 font-mono text-sm">
+    <div className="bg-transparent rounded-lg border border-current/30 p-4 font-mono text-sm">
       {/* Terminal Header */}
-      <div className="flex items-center justify-between mb-4 pb-2 border-b border-green-500/30">
+      <div className="flex items-center justify-between mb-4 pb-2 border-b border-current/30">
         <div className="flex items-center space-x-2">
           <div className="w-3 h-3 bg-red-500 rounded-full"></div>
           <div className="w-3 h-3 bg-yellow-500 rounded-full"></div>
-          <div className="w-3 h-3 bg-green-500 rounded-full"></div>
+          <div className="w-3 h-3 rounded-full" style={{background:'var(--dt-accent)'}}></div>
         </div>
-        <div className="text-green-400 text-xs">
+        <div className="text-current text-xs">
           manish@portfolio:~
         </div>
       </div>
@@ -351,11 +352,11 @@ const EnhancedTerminal = ({ onNavigate }) => {
       {/* Terminal Content */}
       <div 
         ref={terminalRef}
-        className="h-64 overflow-y-auto scrollbar-thin scrollbar-thumb-green-500/30 scrollbar-track-transparent"
+        className="h-64 overflow-y-auto scrollbar-thin scrollbar-thumb-current/30 scrollbar-track-transparent"
       >
         {/* Welcome Message */}
         {history.length === 0 && (
-          <div className="text-green-400 mb-4">
+          <div className="text-current mb-4">
             <div>Welcome to Manish's Portfolio Terminal</div>
             <div className="text-gray-400 text-xs mt-1">
               Type 'help' to see available commands
@@ -367,7 +368,7 @@ const EnhancedTerminal = ({ onNavigate }) => {
         {history.map((entry, index) => (
           <div key={index} className="mb-2">
             {entry.type === 'command' && (
-              <div className="text-green-400">{entry.content}</div>
+              <div className="text-current">{entry.content}</div>
             )}
             {entry.type === 'output' && (
               <div className="text-gray-300 ml-2">
@@ -395,7 +396,7 @@ const EnhancedTerminal = ({ onNavigate }) => {
         ))}
 
         {/* Current Input Line */}
-        <div className="flex items-center text-green-400">
+        <div className="flex items-center text-current">
           <span className="mr-2">$</span>
           <div className="flex-1 relative">
             <input
@@ -404,14 +405,14 @@ const EnhancedTerminal = ({ onNavigate }) => {
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={handleKeyDown}
-              className="w-full bg-transparent outline-none text-green-400 caret-green-400"
+              className="w-full bg-transparent outline-none text-current caret-current"
               autoComplete="off"
               spellCheck="false"
             />
             
             {/* Suggestions */}
             {showSuggestions && suggestions.length > 0 && (
-              <div className="absolute top-full left-0 mt-1 bg-gray-900 border border-green-500/30 rounded p-2 z-10">
+              <div className="absolute top-full left-0 mt-1 bg-black border border-current/30 rounded p-2 z-10">
                 {suggestions.map((suggestion, index) => (
                   <button
                     key={index}
@@ -420,7 +421,7 @@ const EnhancedTerminal = ({ onNavigate }) => {
                       setShowSuggestions(false);
                       inputRef.current?.focus();
                     }}
-                    className="block w-full text-left px-2 py-1 text-green-400 hover:bg-green-500/20 rounded text-sm"
+                    className="block w-full text-left px-2 py-1 text-current hover:bg-current/20 rounded text-sm"
                   >
                     {suggestion}
                   </button>
@@ -432,7 +433,7 @@ const EnhancedTerminal = ({ onNavigate }) => {
       </div>
 
       {/* Terminal Footer */}
-      <div className="mt-4 pt-2 border-t border-green-500/30 text-xs text-gray-500">
+      <div className="mt-4 pt-2 border-t border-current/30 text-xs text-current/50">
         <div className="flex justify-between">
           <span>Press Tab for autocomplete, ↑↓ for history</span>
           <span>{commandHistory.length} commands executed</span>

@@ -13,10 +13,10 @@ const placeholderImages = [
   'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAwIiBoZWlnaHQ9IjQwMCIgdmlld0JveD0iMCAwIDYwMCA0MDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI2MDAiIGhlaWdodD0iNDAwIiBmaWxsPSIjMTExODI3Ii8+CjxjaXJjbGUgY3g9IjE1MCIgY3k9IjEwMCIgcj0iMjAiIGZpbGw9IiMzNzQxNTEiLz4KPGNpcmNsZSBjeD0iNDUwIiBjeT0iMzAwIiByPSIzMCIgZmlsbD0iIzQ3NTU2OSIvPgo8dGV4dCB4PSIzMDAiIHk9IjMzMCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0iIzZiNzI4MCIgZm9udC1zaXplPSIxNiIgZm9udC1mYW1pbHk9Im1vbm9zcGFjZSI+QmxvZyBQb3N0PC90ZXh0Pgo8L3N2Zz4K',
   'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAwIiBoZWlnaHQ9IjQwMCIgdmlld0JveD0iMCAwIDYwMCA0MDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI2MDAiIGhlaWdodD0iNDAwIiBmaWxsPSIjMGYxNDE5Ii8+CjxyZWN0IHg9IjIwMCIgeT0iMTAwIiB3aWR0aD0iMjAwIiBoZWlnaHQ9IjE1MCIgZmlsbD0iIzJkNGQzNyIvPgo8dGV4dCB4PSIzMDAiIHk9IjMzMCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0iIzQyYTM2NiIgZm9udC1zaXplPSIxNiIgZm9udC1mYW1pbHk9Im1vbm9zcGFjZSI+QmxvZyBQb3N0PC90ZXh0Pgo8L3N2Zz4K',
   'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAwIiBoZWlnaHQ9IjQwMCIgdmlld0JveD0iMCAwIDYwMCA0MDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI2MDAiIGhlaWdodD0iNDAwIiBmaWxsPSIjMDkwYTEzIi8+CjxwYXRoIGQ9Ik0xMDAgMTAwTDUwMCAxMDBMNDAwIDMwMEwxMDAgMzAwWiIgZmlsbD0iIzJhNTA0OSIvPgo8dGV4dCB4PSIzMDAiIHk9IjM1MCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0iIzJkZGQ2OSIgZm9udC1zaXplPSIxNiIgZm9udC1mYW1pbHk9Im1vbm9zcGFjZSI+QmxvZyBQb3N0PC90ZXh0Pgo8L3N2Zz4K',
-  'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAwIiBoZWlnaHQ9IjQwMCIgdmlld0JveD0iMCAwIDYwMCA0MDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI2MDAiIGhlaWdodD0iNDAwIiBmaWxsPSIjMTEyNTMzIi8+CjxlbGxpcHNlIGN4PSIzMDAiIGN5PSIyMDAiIHJ4PSIxNTAiIHJ5PSIxMDAiIGZpbGw9IiMzNzRjNTciLz4KPHR5cGVUIHg9IjMwMCIgeT0iMzUwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSIjNzAzYzM0IiBmb250LXNpemU9IjE2IiBmb250LWZhbWlseT0ibW9ub3NwYWNlIj5CbG9nIFBvc3Q8L3RleHQ+Cjwvc3ZnPgo='
+  'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAwIiBoZWlnaHQ9IjQwMCIgdmlld0JveD0iMCAwIDYwMCA0MDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI2MDAiIGhlaWdodD0iNDAwIiBmaWxsPSIjMTEyNTMzIi8+PGVsbGlwc2UgY3g9IjMwMCIgY3k9IjIwMCIgcng9IjE1MCIgcnk9IjEwMCIgZmlsbD0iIzM3NGM1NyIvPjx0ZXh0IHg9IjMwMCIgeT0iMzUwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSIjNzAzYzM0IiBmb250LXNpemU9IjE2IiBmb250LWZhbWlseT0ibW9ub3NwYWNlIj5CbG9nIFBvc3Q8L3RleHQ+PC9zdmc+'
 ];
 
-const BlogCard = ({ post, isDark, isPriority = false, onCardClick }) => {
+const BlogCard = ({ post, isPriority = false, onCardClick }) => {
   // Get a placeholder image based on post title hash
   const getPlaceholderImage = (title) => {
     const hash = title.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
@@ -37,10 +37,12 @@ const BlogCard = ({ post, isDark, isPriority = false, onCardClick }) => {
   };
 
   return (
-    <div 
-      className={`group relative overflow-hidden rounded-xl transition-all duration-300 cursor-pointer ${
-        isDark ? 'bg-gray-900 hover:bg-gray-800' : 'bg-white hover:bg-gray-50'
-      } border ${isDark ? 'border-gray-800' : 'border-gray-200'} shadow-sm hover:shadow-md`}
+    <div
+      className="group relative overflow-hidden rounded-xl transition-all duration-300 cursor-pointer shadow-sm hover:shadow-md"
+      style={{
+        background: 'var(--dt-surface)',
+        border: '1px solid var(--dt-accent-border)',
+      }}
       onClick={() => onCardClick(post)}
     >
       {/* Blog Post Image with Overlay */}
@@ -59,10 +61,10 @@ const BlogCard = ({ post, isDark, isPriority = false, onCardClick }) => {
           className="object-cover w-full h-full transition-all duration-700 group-hover:scale-105"
         />
         <div className="absolute bottom-0 left-0 right-0 p-4 z-20">
-          <h3 className="text-lg font-bold text-white mb-1 group-hover:text-green-400 transition-colors">
+          <h3 className="text-lg font-bold mb-1 transition-colors" style={{ color: 'var(--dt-text)' }}>
             {post.title}
           </h3>
-          <div className="flex items-center text-xs text-gray-300">
+          <div className="flex items-center text-xs" style={{ color: 'var(--dt-text-muted)' }}>
             <Calendar size={12} className="mr-1" />
             <span>{formatDate(post.date)}</span>
             <span className="mx-2">•</span>
@@ -74,7 +76,7 @@ const BlogCard = ({ post, isDark, isPriority = false, onCardClick }) => {
 
       {/* Blog Post Body */}
       <div className="p-4">
-        <p className={`text-sm ${isDark ? 'text-gray-300' : 'text-gray-600'} mb-4 line-clamp-3`}>
+        <p className="text-sm mb-4 line-clamp-3" style={{ color: 'var(--dt-text-muted)' }}>
           {post.excerpt}
         </p>
 
@@ -83,11 +85,11 @@ const BlogCard = ({ post, isDark, isPriority = false, onCardClick }) => {
           {post.tags.map((tag, i) => (
             <span
               key={i}
-              className={`text-xs px-2 py-1 rounded-full ${
-                isDark
-                  ? 'bg-gray-800 text-gray-300'
-                  : 'bg-gray-100 text-gray-700'
-              }`}
+              className="text-xs px-2 py-1 rounded-full"
+              style={{
+                background: 'var(--dt-surface)',
+                color: 'var(--dt-text-muted)',
+              }}
             >
               {tag}
             </span>
@@ -95,15 +97,14 @@ const BlogCard = ({ post, isDark, isPriority = false, onCardClick }) => {
         </div>
 
         {/* Action Buttons */}
-        <div className="flex items-center justify-between mt-auto pt-3 border-t border-gray-200 dark:border-gray-800">
+        <div className="flex items-center justify-between mt-auto pt-3" style={{ borderTop: '1px solid var(--dt-accent-border)' }}>
           <button
             onClick={(e) => {
               e.stopPropagation();
               onCardClick(post);
             }}
-            className={`inline-flex items-center ${
-              isDark ? 'text-green-400 hover:text-green-300' : 'text-green-600 hover:text-green-700'
-            } transition-colors`}
+            className="inline-flex items-center transition-colors"
+            style={{ color: 'var(--dt-accent)' }}
           >
             View Details
             <ExternalLink size={14} className="ml-1" />
@@ -113,9 +114,8 @@ const BlogCard = ({ post, isDark, isPriority = false, onCardClick }) => {
             target="_blank"
             rel="noopener noreferrer"
             onClick={(e) => e.stopPropagation()}
-            className={`text-sm ${
-              isDark ? 'text-gray-400 hover:text-gray-300' : 'text-gray-600 hover:text-gray-700'
-            } transition-colors`}
+            className="text-sm transition-colors"
+            style={{ color: 'var(--dt-text-muted)' }}
           >
             Read Article →
           </Link>
@@ -181,7 +181,7 @@ const BlogGrid = ({ searchQuery = '', activeFilter = 'all', onCardClick }) => {
 
   if (filteredPosts.length === 0) {
     return (
-      <div className={`flex flex-col items-center justify-center py-16 ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
+      <div className="flex flex-col items-center justify-center py-16" style={{ color: 'var(--dt-text-muted)' }}>
         {searchQuery || activeFilter !== 'all' ? (
           <>
             <div className="text-center mb-4">
@@ -192,7 +192,8 @@ const BlogGrid = ({ searchQuery = '', activeFilter = 'all', onCardClick }) => {
               {activeFilter !== 'all' && (
                 <button
                   onClick={() => document.dispatchEvent(new CustomEvent('clearFilters'))}
-                  className="px-3 py-1 bg-green-500 text-white text-sm rounded-md hover:bg-green-600 transition-colors"
+                  className="px-3 py-1 text-sm rounded-md transition-colors"
+                  style={{ background: 'var(--dt-accent)', color: 'var(--dt-bg)' }}
                 >
                   Clear Filters
                 </button>
@@ -213,7 +214,7 @@ const BlogGrid = ({ searchQuery = '', activeFilter = 'all', onCardClick }) => {
     <>
       {/* Results summary if filtering is active */}
       {(searchQuery || activeFilter !== 'all') && (
-        <div className={`mb-6 text-sm ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
+        <div className="mb-6 text-sm" style={{ color: 'var(--dt-text-muted)' }}>
           Found {filteredPosts.length} post{filteredPosts.length !== 1 ? 's' : ''}
           {activeFilter !== 'all' && ` with "${activeFilter}"`}
           {searchQuery && ` matching "${searchQuery}"`}
@@ -225,7 +226,6 @@ const BlogGrid = ({ searchQuery = '', activeFilter = 'all', onCardClick }) => {
           <BlogCard
             key={index}
             post={post}
-            isDark={isDark}
             isPriority={index < 3} // Priority load first 3 images
             onCardClick={onCardClick}
           />

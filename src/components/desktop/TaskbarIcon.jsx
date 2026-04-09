@@ -1,10 +1,21 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import { APP_DEFAULTS, useWindowStore } from '@/store/windowStore';
+import { getCurrentWorldId, getWorldIcon, createWorldChangeListener } from '@/config/worldContent';
 
 export default function TaskbarIcon({ windowData, isFocused, onClick }) {
   const { id, appId, isMinimized } = windowData;
-  const icon = APP_DEFAULTS[appId]?.icon ?? '🪟';
+  const defaultIcon = APP_DEFAULTS[appId]?.icon ?? '🪟';
+  const defaultLabel = APP_DEFAULTS[appId]?.title ?? appId;
+
+  const [worldId, setWorldId] = useState(() => getCurrentWorldId());
+
+  useEffect(() => {
+    return createWorldChangeListener((id) => setWorldId(id));
+  }, []);
+
+  const { icon } = getWorldIcon(worldId, appId, defaultIcon, defaultLabel);
 
   return (
     <button
@@ -20,7 +31,7 @@ export default function TaskbarIcon({ windowData, isFocused, onClick }) {
         fontSize: '20px',
         background: isFocused ? 'var(--dt-accent-border)' : 'transparent',
         border: 'none',
-        borderRadius: '8px',
+        borderRadius: 'var(--dt-window-radius, 8px)',
         cursor: 'pointer',
         opacity: isMinimized ? 0.5 : 1,
         transition: 'all 0.15s ease',

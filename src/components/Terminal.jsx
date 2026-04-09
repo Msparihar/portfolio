@@ -6,6 +6,7 @@ import portfolioData from '@/config/portfolio.json';
 import { LoadingDotsCommand, TerminalLoader } from '@/components/ui/LoadingDots';
 import { useTheme } from 'next-themes';
 import TerminalLogo from './TerminalLogo';
+import { getCurrentWorldId, getWorldTerminal, createWorldChangeListener } from '@/config/worldContent';
 
 const TypeWriter = ({ text, delay = 10, className = '', onUpdate }) => {
   const [displayText, setDisplayText] = useState('');
@@ -96,14 +97,14 @@ const HighlightedTypeWriter = ({ text, delay = 3, className = '' }) => {
     return segments.length > 0 ? segments : [{ text, type: 'normal' }];
   };
 
-  const getHighlightClass = (type) => {
+  const getHighlightStyle = (type) => {
     switch (type) {
-      case 'highlight': return 'text-green-600 dark:text-green-400 font-bold';
-      case 'accent': return 'text-cyan-700 dark:text-cyan-400 font-semibold';
-      case 'tech': return 'text-yellow-700 dark:text-yellow-400';
-      case 'link': return 'text-blue-600 dark:text-blue-400 underline';
-      case 'command': return 'text-purple-600 dark:text-purple-400';
-      default: return '';
+      case 'highlight': return { fontWeight: 'bold' };
+      case 'accent': return { color: 'var(--dt-accent-hover)', fontWeight: '600' };
+      case 'tech': return { color: 'var(--dt-warn-color, #a16207)' };
+      case 'link': return { color: 'var(--dt-info-color, #2563eb)', textDecoration: 'underline' };
+      case 'command': return { color: 'var(--dt-accent)' };
+      default: return {};
     }
   };
 
@@ -112,7 +113,7 @@ const HighlightedTypeWriter = ({ text, delay = 3, className = '' }) => {
   return (
     <span className={className}>
       {segments.map((segment, i) => (
-        <span key={i} className={getHighlightClass(segment.type)}>
+        <span key={i} style={getHighlightStyle(segment.type)}>
           {segment.text}
         </span>
       ))}
@@ -139,17 +140,12 @@ const Terminal = () => {
   const terminalRef = useRef(null);
   const inputRef = useRef(null);
   const [mounted, setMounted] = useState(false);
+  const [worldId, setWorldId] = useState(null);
   const [history, setHistory] = useState([
     {
       command: 'whoami',
-      output: null, // Will be handled by multiLineOutput
-      multiLineOutput: [
-        `Welcome! I'm [highlight]${portfolioData.name}[/highlight]`,
-        `[accent]${portfolioData.title}[/accent]`,
-        `A versatile engineer specializing in both [tech]Full Stack Development[/tech] and [tech]Artificial Intelligence[/tech]. Experienced in building modern web applications with [tech]Next.js[/tech] and [tech]FastAPI[/tech], as well as developing AI solutions including [tech]computer vision systems[/tech], [tech]language models[/tech], and [tech]intelligent document processing systems[/tech]. Passionate about creating innovative solutions that combine cutting-edge AI with robust web technologies.`,
-        '',
-        "Type [command]'help'[/command] to see available commands."
-      ]
+      output: null, // Will be handled by multiLineOutput — populated after mount via useEffect
+      multiLineOutput: null
     }
   ]);
 
@@ -162,6 +158,44 @@ const Terminal = () => {
 
   useEffect(() => {
     setMounted(true);
+    const id = getCurrentWorldId();
+    setWorldId(id);
+    const wt = getWorldTerminal(id);
+    const name = wt.whoamiName ?? portfolioData.name;
+    const title = wt.whoamiTitle ?? portfolioData.title;
+    setHistory([
+      {
+        command: 'whoami',
+        output: null,
+        multiLineOutput: [
+          `Welcome! I'm [highlight]${name}[/highlight]`,
+          `[accent]${title}[/accent]`,
+          `A versatile engineer specializing in both [tech]Full Stack Development[/tech] and [tech]Artificial Intelligence[/tech]. Experienced in building modern web applications with [tech]Next.js[/tech] and [tech]FastAPI[/tech], as well as developing AI solutions including [tech]computer vision systems[/tech], [tech]language models[/tech], and [tech]intelligent document processing systems[/tech]. Passionate about creating innovative solutions that combine cutting-edge AI with robust web technologies.`,
+          '',
+          "Type [command]'help'[/command] to see available commands."
+        ]
+      }
+    ]);
+    const cleanup = createWorldChangeListener((newId) => {
+      setWorldId(newId);
+      const newWt = getWorldTerminal(newId);
+      const newName = newWt.whoamiName ?? portfolioData.name;
+      const newTitle = newWt.whoamiTitle ?? portfolioData.title;
+      setHistory([
+        {
+          command: 'whoami',
+          output: null,
+          multiLineOutput: [
+            `Welcome! I'm [highlight]${newName}[/highlight]`,
+            `[accent]${newTitle}[/accent]`,
+            `A versatile engineer specializing in both [tech]Full Stack Development[/tech] and [tech]Artificial Intelligence[/tech]. Experienced in building modern web applications with [tech]Next.js[/tech] and [tech]FastAPI[/tech], as well as developing AI solutions including [tech]computer vision systems[/tech], [tech]language models[/tech], and [tech]intelligent document processing systems[/tech]. Passionate about creating innovative solutions that combine cutting-edge AI with robust web technologies.`,
+            '',
+            "Type [command]'help'[/command] to see available commands."
+          ]
+        }
+      ]);
+    });
+    return cleanup;
   }, []);
 
   useEffect(() => {
@@ -276,9 +310,12 @@ const Terminal = () => {
     },
     whoami: {
       description: 'Display user information',
-      execute: () => `[highlight]${portfolioData.name}[/highlight]
-[accent]${portfolioData.title}[/accent]
-A versatile engineer specializing in both [tech]Full Stack Development[/tech] and [tech]Artificial Intelligence[/tech]. Experienced in building modern web applications with [tech]Next.js[/tech] and [tech]FastAPI[/tech], as well as developing AI solutions including [tech]computer vision systems[/tech], [tech]language models[/tech], and [tech]intelligent document processing systems[/tech]. Passionate about creating innovative solutions that combine cutting-edge AI with robust web technologies.`
+      execute: () => {
+        const wt = getWorldTerminal(worldId);
+        const name = wt.whoamiName ?? portfolioData.name;
+        const title = wt.whoamiTitle ?? portfolioData.title;
+        return `[highlight]${name}[/highlight]\n[accent]${title}[/accent]\nA versatile engineer specializing in both [tech]Full Stack Development[/tech] and [tech]Artificial Intelligence[/tech]. Experienced in building modern web applications with [tech]Next.js[/tech] and [tech]FastAPI[/tech], as well as developing AI solutions including [tech]computer vision systems[/tech], [tech]language models[/tech], and [tech]intelligent document processing systems[/tech]. Passionate about creating innovative solutions that combine cutting-edge AI with robust web technologies.`;
+      }
     },
     date: {
       description: 'Display current date and time',
@@ -486,20 +523,20 @@ Use the corresponding command to navigate to each section.`
   return (
     <div className="relative border border-border/30 rounded-lg overflow-hidden">
       {/* Terminal header */}
-      <div className="bg-white/95 dark:bg-black/90 border-b border-border/20 px-4 py-2 flex items-center">
+      <div className="border-b border-border/20 px-4 py-2 flex items-center" style={{ background: 'var(--dt-surface)' }}>
         <div className="flex space-x-2">
-          <div className="w-3 h-3 rounded-full bg-red-500/80"></div>
-          <div className="w-3 h-3 rounded-full bg-yellow-500/80"></div>
-          <div className="w-3 h-3 rounded-full bg-green-500/80"></div>
+          <div className="traffic-close w-3 h-3 rounded-full"></div>
+          <div className="traffic-minimize w-3 h-3 rounded-full"></div>
+          <div className="w-3 h-3 rounded-full" style={{background:'var(--dt-accent)'}}></div>
         </div>
-        <div className="flex items-center justify-center text-xs text-green-800 dark:text-green-500/80 flex-1">
+        <div className="flex items-center justify-center text-xs text-xs flex-1">
           <TerminalLogo size={18} className="mr-2" />
-          {portfolioData.name} @ portfolio
+          {(() => { const wt = getWorldTerminal(worldId); return `${wt.promptUser}@${wt.promptHost}`; })()}
         </div>
       </div>
 
       {/* Grid background */}
-      <div className="absolute inset-0 top-9 bg-grid-small-black/[0.1] dark:bg-grid-small-white/[0.1] bg-white/95 dark:bg-black/95" />
+      <div className="absolute inset-0 top-9 bg-grid-small-black/[0.1] dark:bg-grid-small-white/[0.1]" style={{ background: 'var(--dt-surface)' }} />
 
       {/* Radial gradient for fading effect */}
       <div className="absolute inset-0 top-9 bg-gradient-to-t from-white/20 via-white/5 to-transparent dark:from-black/20 dark:via-black/5 dark:to-transparent" />
@@ -508,21 +545,13 @@ Use the corresponding command to navigate to each section.`
       <div
         className="hidden md:block absolute inset-0 top-9 bg-scanline pointer-events-none opacity-10"
         style={{
-          backgroundImage: theme === 'dark'
-            ? `repeating-linear-gradient(
-                0deg,
-                rgba(0, 150, 0, 0.05),
-                rgba(0, 150, 0, 0.05) 1px,
-                transparent 1px,
-                transparent 2px
-              )`
-            : `repeating-linear-gradient(
-                0deg,
-                rgba(0, 100, 0, 0.03),
-                rgba(0, 100, 0, 0.03) 1px,
-                transparent 1px,
-                transparent 2px
-              )`,
+          backgroundImage: `repeating-linear-gradient(
+              0deg,
+              var(--dt-scanline-color, var(--dt-accent-soft)),
+              var(--dt-scanline-color, var(--dt-accent-soft)) 1px,
+              transparent 1px,
+              transparent 2px
+            )`,
           backgroundSize: '100% 4px',
           animation: 'scanline 10s linear infinite'
         }}
@@ -541,13 +570,13 @@ Use the corresponding command to navigate to each section.`
         {history.map((entry, index) => (
           <div key={index} className="mb-4">
             <div className="flex">
-              <span className="text-green-700/90 dark:text-green-500/80 mr-2">$</span>
+              <span className="mr-2">$</span>
               <TypeWriter text={entry.command} />
             </div>
             {entry.multiLineOutput && (
               <div className="command-output mt-2">
                 <div className="flex">
-                  <span className="text-green-700/90 dark:text-green-500/80 mr-2">&gt;</span>
+                  <span className="mr-2">&gt;</span>
                   <div className="flex-1">
                     <MultiLineTypeWriter lines={entry.multiLineOutput} />
                   </div>
@@ -557,7 +586,7 @@ Use the corresponding command to navigate to each section.`
             {entry.output && (
               <div className="command-output whitespace-pre-line mt-2">
                 <div className="flex">
-                  <span className="text-green-700/90 dark:text-green-500/80 mr-2">&gt;</span>
+                  <span className="mr-2">&gt;</span>
                   <div className="flex-1">
                     <HighlightedTypeWriter text={entry.output} />
                     {entry.loading && (
@@ -574,7 +603,7 @@ Use the corresponding command to navigate to each section.`
 
         {/* Terminal Input - positioned right after the last output */}
         <div className="flex items-center" style={{ minHeight: '24px' }}>
-          <span className="text-green-700/90 dark:text-green-500/80 mr-2">$</span>
+          <span className="mr-2">$</span>
           <div className="flex-1 relative" style={{ minHeight: '20px' }}>
             {mounted && (
               <input
@@ -602,7 +631,7 @@ Use the corresponding command to navigate to each section.`
             <span
               className="inline-block"
               style={{
-                color: theme === 'dark' ? '#4ade80' : '#166534',
+                color: 'var(--dt-accent)',
                 fontFamily: 'inherit',
                 fontSize: 'inherit',
                 zIndex: 15,
@@ -611,7 +640,7 @@ Use the corresponding command to navigate to each section.`
               }}
             >
               {input}
-              <span className="inline-block w-2 h-[1.2em] bg-green-700/90 dark:bg-green-500/80" style={{
+              <span className="inline-block w-2 h-[1.2em] bg-current" style={{
                 animation: 'terminal-blink 1s step-end infinite'
               }}></span>
             </span>

@@ -12,18 +12,18 @@ const GithubCalendarGrid = ({ contributions, theme = 'dark', className = '' }) =
   // Terminal-themed color schemes that match your portfolio
   const colorSchemes = {
     light: [
-      '#ebedf0', // No contributions - light gray
-      '#9be9a8', // Low contributions - light green
-      '#40c463', // Medium-low contributions - medium green
-      '#30a14e', // Medium-high contributions - dark green
-      '#216e39'  // High contributions - darkest green
+      'var(--dt-cal-l0, #ebedf0)',
+      'var(--dt-cal-l1, #9be9a8)',
+      'var(--dt-cal-l2, #40c463)',
+      'var(--dt-cal-l3, #30a14e)',
+      'var(--dt-cal-l4, #216e39)',
     ],
     dark: [
-      '#161b22', // No contributions - dark gray (matches terminal black)
-      '#0e4429', // Low contributions - dark green
-      '#006d32', // Medium-low contributions - medium dark green
-      '#26a641', // Medium-high contributions - bright green
-      '#39d353'  // High contributions - brightest green (matches terminal green)
+      'var(--dt-bg, #161b22)',
+      'var(--dt-accent-03, #0e4429)',
+      'var(--dt-accent-20, #006d32)',
+      'var(--dt-accent-45, #26a641)',
+      'var(--dt-accent, #39d353)',
     ]
   };
 
@@ -193,7 +193,7 @@ const GithubCalendarGrid = ({ contributions, theme = 'dark', className = '' }) =
       <div className="mt-3 sm:mt-4 text-center text-xs sm:text-sm text-muted-foreground font-mono px-2">
         <span className="terminal-prompt mr-2">&gt;</span>
         <span className="break-words">
-          <span className="text-green-500 font-bold">{totalContributions}</span>
+          <span className="font-bold" style={{ color: 'var(--dt-accent)' }}>{totalContributions}</span>
           <span> contributions in the last year</span>
         </span>
       </div>

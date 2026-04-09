@@ -3,11 +3,11 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Search, Filter, X, ChevronDown, Tag, Calendar, Clock } from 'lucide-react';
 
-const AdvancedSearch = ({ 
-  searchQuery, 
-  onSearchChange, 
-  filters, 
-  onFilterChange, 
+const AdvancedSearch = ({
+  searchQuery,
+  onSearchChange,
+  filters,
+  onFilterChange,
   suggestions = [],
   placeholder = "Search...",
   type = "projects" // "projects" or "blogs"
@@ -63,7 +63,10 @@ const AdvancedSearch = ({
       {/* Search Bar */}
       <div className="relative" ref={searchRef}>
         <div className="relative">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+          <Search
+            className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4"
+            style={{ color: 'var(--dt-text-muted)' }}
+          />
           <input
             type="text"
             placeholder={placeholder}
@@ -73,12 +76,20 @@ const AdvancedSearch = ({
               setShowSuggestions(true);
             }}
             onFocus={() => setShowSuggestions(true)}
-            className="w-full pl-10 pr-10 py-3 bg-gray-900/50 border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500/50 focus:border-green-500/50 transition-colors"
+            className="w-full pl-10 pr-10 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-current/50 focus:border-current/50 transition-colors"
+            style={{
+              background: 'var(--dt-surface)',
+              border: '1px solid var(--dt-accent-border)',
+              color: 'var(--dt-text)',
+            }}
           />
           {searchQuery && (
             <button
               onClick={clearSearch}
-              className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-white transition-colors"
+              className="absolute right-3 top-1/2 transform -translate-y-1/2 transition-colors"
+              style={{ color: 'var(--dt-text-muted)' }}
+              onMouseEnter={(e) => e.currentTarget.style.color = 'var(--dt-text)'}
+              onMouseLeave={(e) => e.currentTarget.style.color = 'var(--dt-text-muted)'}
             >
               <X className="w-4 h-4" />
             </button>
@@ -87,14 +98,29 @@ const AdvancedSearch = ({
 
         {/* Search Suggestions */}
         {showSuggestions && filteredSuggestions.length > 0 && (
-          <div className="absolute top-full left-0 right-0 mt-1 bg-gray-900 border border-gray-700 rounded-lg shadow-lg z-10">
+          <div
+            className="absolute top-full left-0 right-0 mt-1 rounded-lg shadow-lg z-10"
+            style={{
+              background: 'var(--dt-bg)',
+              border: '1px solid var(--dt-accent-border)',
+            }}
+          >
             {filteredSuggestions.map((suggestion, index) => (
               <button
                 key={index}
                 onClick={() => handleSuggestionClick(suggestion)}
-                className="w-full px-4 py-2 text-left text-gray-300 hover:bg-gray-800 hover:text-white transition-colors first:rounded-t-lg last:rounded-b-lg"
+                className="w-full px-4 py-2 text-left transition-colors first:rounded-t-lg last:rounded-b-lg"
+                style={{ color: 'var(--dt-text-muted)' }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.background = 'var(--dt-surface)';
+                  e.currentTarget.style.color = 'var(--dt-text)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.background = 'transparent';
+                  e.currentTarget.style.color = 'var(--dt-text-muted)';
+                }}
               >
-                <Search className="inline w-3 h-3 mr-2 text-gray-500" />
+                <Search className="inline w-3 h-3 mr-2" style={{ color: 'var(--dt-text-muted)' }} />
                 {suggestion}
               </button>
             ))}
@@ -108,16 +134,20 @@ const AdvancedSearch = ({
         <div className="relative" ref={filterRef}>
           <button
             onClick={() => setIsFilterOpen(!isFilterOpen)}
-            className={`inline-flex items-center px-4 py-2 bg-gray-900/50 border rounded-lg text-sm transition-colors ${
-              hasActiveFilters 
-                ? 'border-green-500 text-green-400' 
-                : 'border-gray-700 text-gray-300 hover:border-gray-600'
-            }`}
+            className="inline-flex items-center px-4 py-2 rounded-lg text-sm transition-colors"
+            style={{
+              background: 'var(--dt-surface)',
+              border: hasActiveFilters ? '1px solid var(--dt-accent)' : '1px solid var(--dt-accent-border)',
+              color: hasActiveFilters ? 'var(--dt-accent)' : 'var(--dt-text-muted)',
+            }}
           >
             <Filter className="w-4 h-4 mr-2" />
             Filters
             {hasActiveFilters && (
-              <span className="ml-2 px-1.5 py-0.5 bg-green-500 text-white text-xs rounded-full">
+              <span
+                className="ml-2 px-1.5 py-0.5 text-xs rounded-full"
+                style={{ background: 'var(--dt-accent)', color: 'var(--dt-text)' }}
+              >
                 {Object.values(filters).filter(v => v !== 'all').length}
               </span>
             )}
@@ -125,18 +155,29 @@ const AdvancedSearch = ({
           </button>
 
           {isFilterOpen && (
-            <div className="absolute top-full left-0 mt-1 w-64 bg-gray-900 border border-gray-700 rounded-lg shadow-lg z-10 p-4">
+            <div
+              className="absolute top-full left-0 mt-1 w-64 rounded-lg shadow-lg z-10 p-4"
+              style={{
+                background: 'var(--dt-bg)',
+                border: '1px solid var(--dt-accent-border)',
+              }}
+            >
               <div className="space-y-4">
                 {/* Category Filter */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">
+                  <label className="block text-sm font-medium mb-2" style={{ color: 'var(--dt-text-muted)' }}>
                     <Tag className="inline w-3 h-3 mr-1" />
                     Category
                   </label>
                   <select
                     value={filters.category}
                     onChange={(e) => onFilterChange({ ...filters, category: e.target.value })}
-                    className="w-full px-3 py-2 bg-gray-800 border border-gray-600 rounded text-white text-sm focus:outline-none focus:ring-2 focus:ring-green-500/50"
+                    className="w-full px-3 py-2 rounded text-sm focus:outline-none focus:ring-2 focus:ring-current/50"
+                    style={{
+                      background: 'var(--dt-surface)',
+                      border: '1px solid var(--dt-accent-border)',
+                      color: 'var(--dt-text)',
+                    }}
                   >
                     <option value="all">All Categories</option>
                     {type === 'projects' && (
@@ -160,13 +201,18 @@ const AdvancedSearch = ({
 
                 {/* Technology Filter */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">
+                  <label className="block text-sm font-medium mb-2" style={{ color: 'var(--dt-text-muted)' }}>
                     Technology
                   </label>
                   <select
                     value={filters.technology}
                     onChange={(e) => onFilterChange({ ...filters, technology: e.target.value })}
-                    className="w-full px-3 py-2 bg-gray-800 border border-gray-600 rounded text-white text-sm focus:outline-none focus:ring-2 focus:ring-green-500/50"
+                    className="w-full px-3 py-2 rounded text-sm focus:outline-none focus:ring-2 focus:ring-current/50"
+                    style={{
+                      background: 'var(--dt-surface)',
+                      border: '1px solid var(--dt-accent-border)',
+                      color: 'var(--dt-text)',
+                    }}
                   >
                     <option value="all">All Technologies</option>
                     <option value="react">React</option>
@@ -180,14 +226,19 @@ const AdvancedSearch = ({
 
                 {/* Year Filter */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">
+                  <label className="block text-sm font-medium mb-2" style={{ color: 'var(--dt-text-muted)' }}>
                     <Calendar className="inline w-3 h-3 mr-1" />
                     Year
                   </label>
                   <select
                     value={filters.year}
                     onChange={(e) => onFilterChange({ ...filters, year: e.target.value })}
-                    className="w-full px-3 py-2 bg-gray-800 border border-gray-600 rounded text-white text-sm focus:outline-none focus:ring-2 focus:ring-green-500/50"
+                    className="w-full px-3 py-2 rounded text-sm focus:outline-none focus:ring-2 focus:ring-current/50"
+                    style={{
+                      background: 'var(--dt-surface)',
+                      border: '1px solid var(--dt-accent-border)',
+                      color: 'var(--dt-text)',
+                    }}
                   >
                     <option value="all">All Years</option>
                     <option value="2024">2024</option>
@@ -200,19 +251,24 @@ const AdvancedSearch = ({
                 {/* Read Time Filter (for blogs) */}
                 {type === 'blogs' && (
                   <div>
-                    <label className="block text-sm font-medium text-gray-300 mb-2">
+                    <label className="block text-sm font-medium mb-2" style={{ color: 'var(--dt-text-muted)' }}>
                       <Clock className="inline w-3 h-3 mr-1" />
                       Read Time
                     </label>
                     <select
                       value={filters.readTime}
                       onChange={(e) => onFilterChange({ ...filters, readTime: e.target.value })}
-                      className="w-full px-3 py-2 bg-gray-800 border border-gray-600 rounded text-white text-sm focus:outline-none focus:ring-2 focus:ring-green-500/50"
+                      className="w-full px-3 py-2 rounded text-sm focus:outline-none focus:ring-2 focus:ring-current/50"
+                      style={{
+                        background: 'var(--dt-surface)',
+                        border: '1px solid var(--dt-accent-border)',
+                        color: 'var(--dt-text)',
+                      }}
                     >
                       <option value="all">Any Length</option>
-                      <option value="short">Short (< 5 min)</option>
+                      <option value="short">Short ({"<"} 5 min)</option>
                       <option value="medium">Medium (5-10 min)</option>
-                      <option value="long">Long (> 10 min)</option>
+                      <option value="long">Long ({">"} 10 min)</option>
                     </select>
                   </div>
                 )}
@@ -221,7 +277,7 @@ const AdvancedSearch = ({
                 {hasActiveFilters && (
                   <button
                     onClick={clearFilters}
-                    className="w-full px-3 py-2 bg-red-600 hover:bg-red-700 text-white text-sm rounded transition-colors"
+                    className="w-full px-3 py-2 text-sm rounded transition-colors bg-red-600 hover:bg-red-700 text-white"
                   >
                     Clear All Filters
                   </button>
@@ -239,12 +295,20 @@ const AdvancedSearch = ({
               return (
                 <span
                   key={key}
-                  className="inline-flex items-center px-2 py-1 bg-green-500/20 text-green-400 text-xs rounded-full border border-green-500/30"
+                  className="inline-flex items-center px-2 py-1 text-xs rounded-full"
+                  style={{
+                    background: 'var(--dt-accent-soft-2)',
+                    color: 'var(--dt-accent)',
+                    border: '1px solid var(--dt-accent-border)',
+                  }}
                 >
                   {key}: {value}
                   <button
                     onClick={() => onFilterChange({ ...filters, [key]: 'all' })}
-                    className="ml-1 hover:text-green-300"
+                    className="ml-1 transition-colors"
+                    style={{ color: 'var(--dt-accent)' }}
+                    onMouseEnter={(e) => e.currentTarget.style.color = 'var(--dt-accent-hover)'}
+                    onMouseLeave={(e) => e.currentTarget.style.color = 'var(--dt-accent)'}
                   >
                     <X className="w-3 h-3" />
                   </button>

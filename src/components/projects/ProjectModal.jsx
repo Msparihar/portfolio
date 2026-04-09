@@ -82,14 +82,15 @@ const ProjectModal = ({ isOpen, onClose, children }) => {
       {/* Modal Container */}
       <div
         ref={modalRef}
-        className="relative w-full max-w-4xl max-h-[90vh] bg-white dark:bg-gray-900 rounded-2xl shadow-2xl overflow-hidden"
-        style={{ opacity: 0, transform: 'scale(0.8)' }}
+        className="relative w-full max-w-4xl max-h-[90vh] rounded-2xl shadow-2xl overflow-hidden"
+        style={{ opacity: 0, transform: 'scale(0.8)', background: 'var(--dt-surface)' }}
         onClick={(e) => e.stopPropagation()}
       >
         {/* Close Button */}
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 z-10 p-2 rounded-full bg-black/20 hover:bg-black/40 text-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-500"
+          className="absolute top-4 right-4 z-10 p-2 rounded-full bg-black/20 hover:bg-black/40 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-current"
+          style={{ color: 'var(--dt-text)' }}
           aria-label="Close modal"
         >
           <X size={20} />
