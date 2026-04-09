@@ -1,9 +1,33 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { WORLDS, WORLD_STORAGE_KEY } from '@/config/worlds';
+
+function useWorldTitleFormat() {
+  const [titleFormat, setTitleFormat] = useState(null);
+  useEffect(() => {
+    const getFormat = () => {
+      const worldId = typeof window !== 'undefined' ? localStorage.getItem(WORLD_STORAGE_KEY) : null;
+      if (!worldId) return null;
+      const world = WORLDS.find(w => w.id === worldId);
+      return world?.titleFormat || null;
+    };
+    setTitleFormat(() => getFormat());
+    const handler = (e) => {
+      const id = e.detail?.worldId;
+      const world = id ? WORLDS.find(w => w.id === id) : null;
+      setTitleFormat(() => world?.titleFormat || null);
+    };
+    window.addEventListener('worldchange', handler);
+    return () => window.removeEventListener('worldchange', handler);
+  }, []);
+  return titleFormat;
+}
 
 export default function WindowTitlebar({ title, onClose, onMinimize, onMaximize, isMaximized }) {
   const [hovered, setHovered] = useState(false);
+  const titleFormat = useWorldTitleFormat();
+  const displayTitle = titleFormat ? titleFormat(title) : title;
 
   return (
     <div
@@ -21,22 +45,22 @@ export default function WindowTitlebar({ title, onClose, onMinimize, onMaximize,
         alignItems: 'center',
         padding: '0 14px',
         userSelect: 'none',
-        borderRadius: '12px 12px 0 0',
+        borderRadius: 'var(--dt-window-radius, 12px) var(--dt-window-radius, 12px) 0 0',
       }}
     >
       {/* Traffic lights */}
       <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
         {/* Red — close */}
         <button
+          className="window-titlebar traffic-close"
           onClick={(e) => { e.stopPropagation(); onClose?.(); }}
           style={{
             width: '14px',
             height: '14px',
             borderRadius: '50%',
-            background: 'radial-gradient(circle at 35% 35%, #ff8a80, #ff5f57 60%, #e5453c)',
-            border: '0.5px solid rgba(0,0,0,0.15)',
+            border: '0.5px solid var(--dt-accent-border-dim, rgba(0,0,0,0.15))',
             boxShadow: hovered
-              ? 'inset 0 1px 1px rgba(255,255,255,0.2), 0 0 6px rgba(255,95,87,0.5)'
+              ? 'inset 0 1px 1px rgba(255,255,255,0.2), 0 0 6px var(--dt-traffic-close-glow, rgba(255,95,87,0.5))'
               : 'inset 0 1px 1px rgba(255,255,255,0.2)',
             cursor: 'pointer',
             padding: 0,
@@ -44,7 +68,7 @@ export default function WindowTitlebar({ title, onClose, onMinimize, onMaximize,
             alignItems: 'center',
             justifyContent: 'center',
             fontSize: '8px',
-            color: 'rgba(0,0,0,0.6)',
+            color: 'var(--dt-traffic-icon, rgba(0,0,0,0.6))',
             fontWeight: 700,
             lineHeight: 1,
             flexShrink: 0,
@@ -57,15 +81,15 @@ export default function WindowTitlebar({ title, onClose, onMinimize, onMaximize,
 
         {/* Yellow — minimize */}
         <button
+          className="window-titlebar traffic-minimize"
           onClick={(e) => { e.stopPropagation(); onMinimize?.(); }}
           style={{
             width: '14px',
             height: '14px',
             borderRadius: '50%',
-            background: 'radial-gradient(circle at 35% 35%, #ffd76e, #febc2e 60%, #e5a820)',
-            border: '0.5px solid rgba(0,0,0,0.15)',
+            border: '0.5px solid var(--dt-accent-border-dim, rgba(0,0,0,0.15))',
             boxShadow: hovered
-              ? 'inset 0 1px 1px rgba(255,255,255,0.2), 0 0 6px rgba(254,188,46,0.5)'
+              ? 'inset 0 1px 1px rgba(255,255,255,0.2), 0 0 6px var(--dt-traffic-minimize-glow, rgba(254,188,46,0.5))'
               : 'inset 0 1px 1px rgba(255,255,255,0.2)',
             cursor: 'pointer',
             padding: 0,
@@ -73,7 +97,7 @@ export default function WindowTitlebar({ title, onClose, onMinimize, onMaximize,
             alignItems: 'center',
             justifyContent: 'center',
             fontSize: '8px',
-            color: 'rgba(0,0,0,0.6)',
+            color: 'var(--dt-traffic-icon, rgba(0,0,0,0.6))',
             fontWeight: 700,
             lineHeight: 1,
             flexShrink: 0,
@@ -86,15 +110,15 @@ export default function WindowTitlebar({ title, onClose, onMinimize, onMaximize,
 
         {/* Green — maximize / restore */}
         <button
+          className="window-titlebar traffic-maximize"
           onClick={(e) => { e.stopPropagation(); onMaximize?.(); }}
           style={{
             width: '14px',
             height: '14px',
             borderRadius: '50%',
-            background: 'radial-gradient(circle at 35% 35%, #5aed73, #28c840 60%, #1eb535)',
-            border: '0.5px solid rgba(0,0,0,0.15)',
+            border: '0.5px solid var(--dt-accent-border-dim, rgba(0,0,0,0.15))',
             boxShadow: hovered
-              ? 'inset 0 1px 1px rgba(255,255,255,0.2), 0 0 6px rgba(40,200,64,0.5)'
+              ? 'inset 0 1px 1px rgba(255,255,255,0.2), 0 0 6px var(--dt-traffic-maximize-glow, rgba(40,200,64,0.5))'
               : 'inset 0 1px 1px rgba(255,255,255,0.2)',
             cursor: 'pointer',
             padding: 0,
@@ -102,7 +126,7 @@ export default function WindowTitlebar({ title, onClose, onMinimize, onMaximize,
             alignItems: 'center',
             justifyContent: 'center',
             fontSize: '8px',
-            color: 'rgba(0,0,0,0.6)',
+            color: 'var(--dt-traffic-icon, rgba(0,0,0,0.6))',
             fontWeight: 700,
             lineHeight: 1,
             flexShrink: 0,
@@ -120,8 +144,9 @@ export default function WindowTitlebar({ title, onClose, onMinimize, onMaximize,
         style={{
           flex: 1,
           textAlign: 'center',
-          fontFamily: 'monospace',
+          fontFamily: 'var(--dt-font-heading, monospace)',
           fontSize: '12px',
+          letterSpacing: '0.5px',
           color: 'var(--dt-text-muted)',
           pointerEvents: 'none',
           overflow: 'hidden',
@@ -129,7 +154,7 @@ export default function WindowTitlebar({ title, onClose, onMinimize, onMaximize,
           whiteSpace: 'nowrap',
         }}
       >
-        {title}
+        {displayTitle}
       </span>
     </div>
   );

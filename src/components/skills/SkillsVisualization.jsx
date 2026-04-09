@@ -21,7 +21,7 @@ const SkillsVisualization = () => {
     frameworks: {
       icon: Zap,
       title: 'Frameworks & Libraries',
-      color: 'from-green-500 to-emerald-500',
+      color: 'from-[var(--dt-accent)] to-[var(--dt-accent-hover)]',
       skills: portfolioConfig.skills.frameworks || []
     },
     tools: {
@@ -138,9 +138,13 @@ const SkillsVisualization = () => {
           onClick={() => handleCategoryChange('all')}
           className={`px-4 py-2 rounded-lg font-medium transition-all duration-300 ${
             selectedCategory === 'all'
-              ? 'bg-green-500 text-white shadow-lg shadow-green-500/25'
-              : 'bg-gray-800 text-gray-300 hover:bg-gray-700'
+              ? 'shadow-lg shadow-current/25'
+              : 'hover:opacity-80'
           }`}
+          style={selectedCategory === 'all'
+            ? { background: 'var(--dt-accent)', color: 'var(--dt-text)' }
+            : { background: 'var(--dt-surface)', color: 'var(--dt-text-muted)' }
+          }
         >
           All Skills
         </button>
@@ -152,9 +156,13 @@ const SkillsVisualization = () => {
               onClick={() => handleCategoryChange(key)}
               className={`px-4 py-2 rounded-lg font-medium transition-all duration-300 flex items-center gap-2 ${
                 selectedCategory === key
-                  ? 'bg-green-500 text-white shadow-lg shadow-green-500/25'
-                  : 'bg-gray-800 text-gray-300 hover:bg-gray-700'
+                  ? 'shadow-lg shadow-current/25'
+                  : 'hover:opacity-80'
               }`}
+              style={selectedCategory === key
+                ? { background: 'var(--dt-accent)', color: 'var(--dt-text)' }
+                : { background: 'var(--dt-surface)', color: 'var(--dt-text-muted)' }
+              }
             >
               <Icon size={16} />
               {category.title}
@@ -172,16 +180,20 @@ const SkillsVisualization = () => {
             <div
               key={categoryKey}
               data-skill-category
-              className="bg-gray-900/50 rounded-xl p-6 border border-gray-800"
+              className="rounded-xl p-6"
+              style={{
+                background: 'var(--dt-surface)',
+                border: '1px solid var(--dt-accent-border)',
+              }}
             >
               {/* Category Header */}
               <div className="flex items-center gap-3 mb-6">
                 <div className={`p-3 rounded-lg bg-gradient-to-r ${category.color}`}>
-                  <Icon className="text-white" size={24} />
+                  <Icon style={{ color: 'var(--dt-text)' }} size={24} />
                 </div>
                 <div>
-                  <h3 className="text-xl font-bold text-white">{category.title}</h3>
-                  <p className="text-gray-400 text-sm">{category.skills.length} skills</p>
+                  <h3 className="text-xl font-bold" style={{ color: 'var(--dt-text)' }}>{category.title}</h3>
+                  <p className="text-sm" style={{ color: 'var(--dt-text-muted)' }}>{category.skills.length} skills</p>
                 </div>
               </div>
 
@@ -193,9 +205,9 @@ const SkillsVisualization = () => {
                   return (
                     <div key={skill} data-skill-item className="group">
                       <div className="flex items-center justify-between mb-2">
-                        <span className="text-gray-300 font-medium">{skill}</span>
+                        <span className="font-medium" style={{ color: 'var(--dt-text-muted)' }}>{skill}</span>
                         <div className="flex items-center gap-1">
-                          <span className="text-sm text-gray-400">{proficiency}%</span>
+                          <span className="text-sm" style={{ color: 'var(--dt-text-muted)' }}>{proficiency}%</span>
                           {proficiency >= 90 && (
                             <Star className="text-yellow-400" size={12} fill="currentColor" />
                           )}
@@ -203,7 +215,7 @@ const SkillsVisualization = () => {
                       </div>
 
                       {/* Progress Bar */}
-                      <div className="w-full bg-gray-800 rounded-full h-2 overflow-hidden">
+                      <div className="w-full rounded-full h-2 overflow-hidden" style={{ background: 'var(--dt-accent-soft)' }}>
                         <div
                           data-skill-bar
                           className={`h-full bg-gradient-to-r ${category.color} relative`}
@@ -215,7 +227,7 @@ const SkillsVisualization = () => {
 
                       {/* Hover Effect */}
                       <div className="mt-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                        <div className="text-xs text-gray-500">
+                        <div className="text-xs" style={{ color: 'var(--dt-text-muted)' }}>
                           {proficiency >= 90 && "Expert level"}
                           {proficiency >= 80 && proficiency < 90 && "Advanced"}
                           {proficiency >= 70 && proficiency < 80 && "Intermediate"}
@@ -228,8 +240,8 @@ const SkillsVisualization = () => {
               </div>
 
               {/* Category Stats */}
-              <div className="mt-6 pt-4 border-t border-gray-800">
-                <div className="flex justify-between text-sm text-gray-400">
+              <div className="mt-6 pt-4" style={{ borderTop: '1px solid var(--dt-accent-border)' }}>
+                <div className="flex justify-between text-sm" style={{ color: 'var(--dt-text-muted)' }}>
                   <span>Average Proficiency</span>
                   <span>
                     {Math.round(
@@ -245,15 +257,21 @@ const SkillsVisualization = () => {
       </div>
 
       {/* Overall Stats */}
-      <div className="bg-gradient-to-r from-green-500/10 to-blue-500/10 rounded-xl p-6 border border-green-500/20">
-        <h3 className="text-lg font-bold text-white mb-4">Skill Overview</h3>
+      <div
+        className="rounded-xl p-6"
+        style={{
+          background: 'var(--dt-accent-soft)',
+          border: '1px solid var(--dt-accent-border)',
+        }}
+      >
+        <h3 className="text-lg font-bold mb-4" style={{ color: 'var(--dt-text)' }}>Skill Overview</h3>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           {Object.entries(skillCategories).map(([key, category]) => (
             <div key={key} className="text-center">
-              <div className="text-2xl font-bold text-green-400">
+              <div className="text-2xl font-bold" style={{ color: 'var(--dt-accent)' }}>
                 {category.skills.length}
               </div>
-              <div className="text-sm text-gray-400">{category.title}</div>
+              <div className="text-sm" style={{ color: 'var(--dt-text-muted)' }}>{category.title}</div>
             </div>
           ))}
         </div>

@@ -30,7 +30,7 @@ const ExperienceTimeline = () => {
       ],
       technologies: ['Python', 'FastAPI', 'LangChain', 'PyTorch', 'Docker', 'AWS'],
       icon: Code,
-      color: 'from-green-500 to-emerald-500'
+      color: 'from-[var(--dt-accent)] to-[var(--dt-accent-hover)]'
     },
     {
       id: 'vit-graduation',
@@ -88,12 +88,12 @@ const ExperienceTimeline = () => {
     }
   ];
 
-  const getTypeColor = (type) => {
+  const getTypeDotStyle = (type) => {
     switch (type) {
-      case 'experience': return 'bg-green-500';
-      case 'education': return 'bg-blue-500';
-      case 'certification': return 'bg-orange-500';
-      default: return 'bg-gray-500';
+      case 'experience': return { background: 'var(--dt-accent)' };
+      case 'education': return { background: 'var(--dt-info-color, #3b82f6)' };
+      case 'certification': return { background: 'var(--dt-warn-color, #f97316)' };
+      default: return { background: 'var(--dt-text-muted)' };
     }
   };
 
@@ -148,7 +148,10 @@ const ExperienceTimeline = () => {
   return (
     <div ref={containerRef} className="relative">
       {/* Timeline Line */}
-      <div className="absolute left-8 top-0 bottom-0 w-0.5 bg-gradient-to-b from-green-500 via-blue-500 to-purple-500"></div>
+      <div
+        className="absolute left-8 top-0 bottom-0 w-0.5"
+        style={{ background: 'linear-gradient(to bottom, var(--dt-accent), var(--dt-accent-hover), var(--dt-accent-border))' }}
+      />
 
       {/* Timeline Items */}
       <div className="space-y-8">
@@ -162,22 +165,29 @@ const ExperienceTimeline = () => {
               className="relative flex items-start gap-6"
             >
               {/* Timeline Dot */}
-              <div className={`relative z-10 flex items-center justify-center w-16 h-16 rounded-full ${getTypeColor(item.type)} shadow-lg`}>
-                <Icon className="text-white" size={24} />
+              <div
+                className="relative z-10 flex items-center justify-center w-16 h-16 rounded-full shadow-lg"
+                style={getTypeDotStyle(item.type)}
+              >
+                <Icon style={{ color: 'var(--dt-text)' }} size={24} />
               </div>
 
               {/* Content Card */}
               <div
-                className="flex-1 bg-gray-900/50 rounded-xl p-6 border border-gray-800 hover:border-gray-700 hover:scale-[1.02] transition-all duration-300 cursor-pointer"
+                className="flex-1 rounded-xl p-6 hover:scale-[1.02] transition-all duration-300 cursor-pointer"
+                style={{
+                  background: 'var(--dt-surface)',
+                  border: '1px solid var(--dt-accent-border)',
+                }}
                 onClick={() => handleOpenModal(item)}
               >
                 {/* Header */}
                 <div className="flex items-start justify-between mb-4">
                   <div>
-                    <h3 className="text-xl font-bold text-white mb-1">{item.title}</h3>
-                    <p className="text-green-400 font-medium">{item.organization}</p>
+                    <h3 className="text-xl font-bold mb-1" style={{ color: 'var(--dt-text)' }}>{item.title}</h3>
+                    <p className="font-medium" style={{ color: 'var(--dt-accent)' }}>{item.organization}</p>
                   </div>
-                  <div className="text-right text-sm text-gray-400">
+                  <div className="text-right text-sm" style={{ color: 'var(--dt-text-muted)' }}>
                     <div className="flex items-center gap-1 mb-1">
                       <Calendar size={14} />
                       <span>{item.period}</span>
@@ -190,20 +200,20 @@ const ExperienceTimeline = () => {
                 </div>
 
                 {/* Description */}
-                <p className="text-gray-300 mb-4 leading-relaxed">{item.description}</p>
+                <p className="mb-4 leading-relaxed" style={{ color: 'var(--dt-text-muted)' }}>{item.description}</p>
 
                 {/* Key Achievements Preview */}
                 <div className="mb-4">
-                  <h4 className="text-sm font-medium text-gray-400 mb-2">Key Achievements:</h4>
+                  <h4 className="text-sm font-medium mb-2" style={{ color: 'var(--dt-text-muted)' }}>Key Achievements:</h4>
                   <ul className="space-y-1">
                     {item.achievements.slice(0, 2).map((achievement, i) => (
-                      <li key={i} className="text-sm text-gray-300 flex items-start gap-2">
-                        <span className="text-green-400 mt-1">•</span>
+                      <li key={i} className="text-sm flex items-start gap-2" style={{ color: 'var(--dt-text-muted)' }}>
+                        <span className="mt-1" style={{ color: 'var(--dt-accent)' }}>•</span>
                         <span>{achievement}</span>
                       </li>
                     ))}
                     {item.achievements.length > 2 && (
-                      <li className="text-sm text-green-400">
+                      <li className="text-sm" style={{ color: 'var(--dt-accent)' }}>
                         +{item.achievements.length - 2} more achievements...
                       </li>
                     )}
@@ -215,21 +225,37 @@ const ExperienceTimeline = () => {
                   {item.technologies.slice(0, 4).map((tech, i) => (
                     <span
                       key={i}
-                      className="px-2 py-1 text-xs rounded-md bg-gray-800 text-gray-300 border border-gray-700"
+                      className="px-2 py-1 text-xs rounded-md"
+                      style={{
+                        background: 'var(--dt-surface)',
+                        color: 'var(--dt-text-muted)',
+                        border: '1px solid var(--dt-accent-border)',
+                      }}
                     >
                       {tech}
                     </span>
                   ))}
                   {item.technologies.length > 4 && (
-                    <span className="px-2 py-1 text-xs rounded-md bg-green-500/20 text-green-400">
+                    <span
+                      className="px-2 py-1 text-xs rounded-md"
+                      style={{
+                        background: 'var(--dt-accent-soft-2)',
+                        color: 'var(--dt-accent)',
+                      }}
+                    >
                       +{item.technologies.length - 4} more
                     </span>
                   )}
                 </div>
 
                 {/* View Details Button */}
-                <div className="mt-4 pt-4 border-t border-gray-800">
-                  <button className="text-sm text-green-400 hover:text-green-300 transition-colors flex items-center gap-1">
+                <div className="mt-4 pt-4" style={{ borderTop: '1px solid var(--dt-accent-border)' }}>
+                  <button
+                    className="text-sm transition-colors flex items-center gap-1"
+                    style={{ color: 'var(--dt-accent)' }}
+                    onMouseEnter={(e) => e.currentTarget.style.color = 'var(--dt-accent-hover)'}
+                    onMouseLeave={(e) => e.currentTarget.style.color = 'var(--dt-accent)'}
+                  >
                     View Details
                     <ExternalLink size={12} />
                   </button>
@@ -251,16 +277,21 @@ const ExperienceTimeline = () => {
           />
           <div
             ref={modalContentRef}
-            className="relative bg-gray-900 rounded-2xl p-8 max-w-2xl w-full max-h-[80vh] overflow-y-auto border border-gray-700"
-            style={{ opacity: 0, transform: 'scale(0.8)' }}
+            className="relative rounded-2xl p-8 max-w-2xl w-full max-h-[80vh] overflow-y-auto"
+            style={{
+              background: 'var(--dt-bg)',
+              border: '1px solid var(--dt-accent-border)',
+              opacity: 0,
+              transform: 'scale(0.8)',
+            }}
             onClick={(e) => e.stopPropagation()}
           >
             {/* Modal Header */}
             <div className="flex items-start justify-between mb-6">
               <div>
-                <h2 className="text-2xl font-bold text-white mb-2">{selectedItem.title}</h2>
-                <p className="text-green-400 text-lg font-medium">{selectedItem.organization}</p>
-                <div className="flex items-center gap-4 mt-2 text-sm text-gray-400">
+                <h2 className="text-2xl font-bold mb-2" style={{ color: 'var(--dt-text)' }}>{selectedItem.title}</h2>
+                <p className="text-lg font-medium" style={{ color: 'var(--dt-accent)' }}>{selectedItem.organization}</p>
+                <div className="flex items-center gap-4 mt-2 text-sm" style={{ color: 'var(--dt-text-muted)' }}>
                   <div className="flex items-center gap-1">
                     <Calendar size={14} />
                     <span>{selectedItem.period}</span>
@@ -273,7 +304,10 @@ const ExperienceTimeline = () => {
               </div>
               <button
                 onClick={handleCloseModal}
-                className="text-gray-400 hover:text-white transition-colors"
+                className="transition-colors"
+                style={{ color: 'var(--dt-text-muted)' }}
+                onMouseEnter={(e) => e.currentTarget.style.color = 'var(--dt-text)'}
+                onMouseLeave={(e) => e.currentTarget.style.color = 'var(--dt-text-muted)'}
               >
                 &#10005;
               </button>
@@ -281,17 +315,17 @@ const ExperienceTimeline = () => {
 
             {/* Description */}
             <div className="mb-6">
-              <h3 className="text-lg font-semibold text-white mb-3">Overview</h3>
-              <p className="text-gray-300 leading-relaxed">{selectedItem.description}</p>
+              <h3 className="text-lg font-semibold mb-3" style={{ color: 'var(--dt-text)' }}>Overview</h3>
+              <p className="leading-relaxed" style={{ color: 'var(--dt-text-muted)' }}>{selectedItem.description}</p>
             </div>
 
             {/* All Achievements */}
             <div className="mb-6">
-              <h3 className="text-lg font-semibold text-white mb-3">Key Achievements</h3>
+              <h3 className="text-lg font-semibold mb-3" style={{ color: 'var(--dt-text)' }}>Key Achievements</h3>
               <ul className="space-y-2">
                 {selectedItem.achievements.map((achievement, i) => (
-                  <li key={i} className="text-gray-300 flex items-start gap-3">
-                    <span className="text-green-400 mt-1">&#10003;</span>
+                  <li key={i} className="flex items-start gap-3" style={{ color: 'var(--dt-text-muted)' }}>
+                    <span className="mt-1" style={{ color: 'var(--dt-accent)' }}>&#10003;</span>
                     <span>{achievement}</span>
                   </li>
                 ))}
@@ -300,12 +334,17 @@ const ExperienceTimeline = () => {
 
             {/* All Technologies */}
             <div>
-              <h3 className="text-lg font-semibold text-white mb-3">Technologies Used</h3>
+              <h3 className="text-lg font-semibold mb-3" style={{ color: 'var(--dt-text)' }}>Technologies Used</h3>
               <div className="flex flex-wrap gap-2">
                 {selectedItem.technologies.map((tech, i) => (
                   <span
                     key={i}
-                    className="px-3 py-1 text-sm rounded-lg bg-gray-800 text-gray-300 border border-gray-700"
+                    className="px-3 py-1 text-sm rounded-lg"
+                    style={{
+                      background: 'var(--dt-surface)',
+                      color: 'var(--dt-text-muted)',
+                      border: '1px solid var(--dt-accent-border)',
+                    }}
                   >
                     {tech}
                   </span>

@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import { useTheme } from "next-themes";
 import { Send, CheckCircle } from "lucide-react";
 import { ThemeToggle } from "@/components/theme-toggle";
+import portfolioData from "@/config/portfolio.json";
 
 // TypeWriter component for terminal-like typing animation
 const TypeWriter = ({ text, delay = 10, className = '' }) => {
@@ -100,40 +101,40 @@ const ContactInteractive = () => {
       {/* Left Column - Contact Info */}
       <div className="space-y-4 sm:space-y-6">
         <div className="border-[0.5px] border-border/30 rounded-lg terminal-container p-4 sm:p-6">
-          <h2 className="text-xl font-bold mb-4 text-green-500">
+          <h2 className="text-xl font-bold mb-4" style={{ color: 'var(--dt-accent)' }}>
             <span className="terminal-prompt">$</span>
             <span className="ml-2">whoami</span>
           </h2>
 
           <div className="space-y-4 text-sm">
             <div className="flex items-center">
-              <span className="terminal-prompt text-green-500 mr-2">$</span>
+              <span className="terminal-prompt mr-2" style={{ color: 'var(--dt-accent)' }}>$</span>
               <span className="text-muted-foreground">Name:</span>
-              <span className="ml-2 text-foreground">Manish Singh Parihar</span>
+              <span className="ml-2 text-foreground">{portfolioData.name}</span>
             </div>
 
             <div className="flex items-center">
-              <span className="terminal-prompt text-green-500 mr-2">$</span>
+              <span className="terminal-prompt mr-2" style={{ color: 'var(--dt-accent)' }}>$</span>
               <span className="text-muted-foreground">Email:</span>
-              <span className="ml-2 text-foreground">manishparihar2020@gmail.com</span>
+              <span className="ml-2 text-foreground">{portfolioData.contact.email}</span>
             </div>
 
             <div className="flex items-center">
-              <span className="terminal-prompt text-green-500 mr-2">$</span>
+              <span className="terminal-prompt mr-2" style={{ color: 'var(--dt-accent)' }}>$</span>
               <span className="text-muted-foreground">Location:</span>
               <span className="ml-2 text-foreground">India</span>
             </div>
 
             <div className="flex items-center">
-              <span className="terminal-prompt text-green-500 mr-2">$</span>
+              <span className="terminal-prompt mr-2" style={{ color: 'var(--dt-accent)' }}>$</span>
               <span className="text-muted-foreground">Status:</span>
-              <span className="ml-2 text-green-500">Available for work</span>
+              <span className="ml-2" style={{ color: 'var(--dt-accent)' }}>Available for work</span>
             </div>
           </div>
         </div>
 
         <div className="border-[0.5px] border-border/30 rounded-lg terminal-container p-4 sm:p-6">
-          <h3 className="text-base sm:text-lg font-bold mb-3 sm:mb-4 text-green-500">
+          <h3 className="text-base sm:text-lg font-bold mb-3 sm:mb-4" style={{ color: 'var(--dt-accent)' }}>
             <span className="terminal-prompt">$</span>
             <span className="ml-2">echo "Let's connect!"</span>
           </h3>
@@ -150,22 +151,22 @@ const ContactInteractive = () => {
 
       {/* Right Column - Contact Form */}
       <div className="border-[0.5px] border-border/30 rounded-lg terminal-container p-4 sm:p-6">
-        <h2 className="text-xl font-bold mb-4 text-green-500">
+        <h2 className="text-xl font-bold mb-4" style={{ color: 'var(--dt-accent)' }}>
           <span className="terminal-prompt">$</span>
           <span className="ml-2">send_message.sh</span>
         </h2>
 
         {isSubmitted ? (
           <div className="text-center py-8">
-            <CheckCircle className="w-16 h-16 text-green-500 mx-auto mb-4" />
-            <h3 className="text-lg font-bold text-green-500 mb-2">Message Sent!</h3>
+            <CheckCircle className="w-16 h-16 mx-auto mb-4" style={{ color: 'var(--dt-accent)' }} />
+            <h3 className="text-lg font-bold mb-2" style={{ color: 'var(--dt-accent)' }}>Message Sent!</h3>
             <p className="text-muted-foreground">Thank you for reaching out. I'll get back to you soon!</p>
           </div>
         ) : (
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
               <label htmlFor="name" className="block text-sm font-medium text-foreground mb-2">
-                <span className="terminal-prompt text-green-500 mr-2">$</span>
+                <span className="terminal-prompt mr-2" style={{ color: 'var(--dt-accent)' }}>$</span>
                 Name
               </label>
               <input
@@ -175,14 +176,14 @@ const ContactInteractive = () => {
                 value={formData.name}
                 onChange={handleInputChange}
                 required
-                className="w-full px-3 py-2 bg-background/50 border border-border/30 rounded-md text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-green-500/50 focus:border-green-500/50 transition-colors"
+                className="w-full px-3 py-2 bg-background/50 border border-border/30 rounded-md text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-current/50 focus:border-current/50 transition-colors"
                 placeholder="Your name"
               />
             </div>
 
             <div>
               <label htmlFor="email" className="block text-sm font-medium text-foreground mb-2">
-                <span className="terminal-prompt text-green-500 mr-2">$</span>
+                <span className="terminal-prompt mr-2" style={{ color: 'var(--dt-accent)' }}>$</span>
                 Email
               </label>
               <input
@@ -192,14 +193,14 @@ const ContactInteractive = () => {
                 value={formData.email}
                 onChange={handleInputChange}
                 required
-                className="w-full px-3 py-2 bg-background/50 border border-border/30 rounded-md text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-green-500/50 focus:border-green-500/50 transition-colors"
+                className="w-full px-3 py-2 bg-background/50 border border-border/30 rounded-md text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-current/50 focus:border-current/50 transition-colors"
                 placeholder="your.email@example.com"
               />
             </div>
 
             <div>
               <label htmlFor="subject" className="block text-sm font-medium text-foreground mb-2">
-                <span className="terminal-prompt text-green-500 mr-2">$</span>
+                <span className="terminal-prompt mr-2" style={{ color: 'var(--dt-accent)' }}>$</span>
                 Subject
               </label>
               <input
@@ -209,14 +210,14 @@ const ContactInteractive = () => {
                 value={formData.subject}
                 onChange={handleInputChange}
                 required
-                className="w-full px-3 py-2 bg-background/50 border border-border/30 rounded-md text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-green-500/50 focus:border-green-500/50 transition-colors"
+                className="w-full px-3 py-2 bg-background/50 border border-border/30 rounded-md text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-current/50 focus:border-current/50 transition-colors"
                 placeholder="What's this about?"
               />
             </div>
 
             <div>
               <label htmlFor="message" className="block text-sm font-medium text-foreground mb-2">
-                <span className="terminal-prompt text-green-500 mr-2">$</span>
+                <span className="terminal-prompt mr-2" style={{ color: 'var(--dt-accent)' }}>$</span>
                 Message
               </label>
               <textarea
@@ -226,7 +227,7 @@ const ContactInteractive = () => {
                 onChange={handleInputChange}
                 required
                 rows={5}
-                className="w-full px-3 py-2 bg-background/50 border border-border/30 rounded-md text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-green-500/50 focus:border-green-500/50 transition-colors resize-none"
+                className="w-full px-3 py-2 bg-background/50 border border-border/30 rounded-md text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-current/50 focus:border-current/50 transition-colors resize-none"
                 placeholder="Tell me about your project, idea, or just say hello!"
               />
             </div>
@@ -234,11 +235,12 @@ const ContactInteractive = () => {
             <button
               type="submit"
               disabled={isSubmitting}
-              className="w-full flex items-center justify-center px-4 py-3 sm:py-2 bg-green-500 hover:bg-green-600 disabled:bg-green-500/50 text-white font-medium rounded-md transition-colors text-base sm:text-sm min-h-[48px] sm:min-h-[44px]"
+              className="w-full flex items-center justify-center px-4 py-3 sm:py-2 font-medium rounded-md transition-colors text-base sm:text-sm min-h-[48px] sm:min-h-[44px] hover:opacity-90 disabled:opacity-50"
+              style={{ background: 'var(--dt-accent)', color: 'var(--dt-text)' }}
             >
               {isSubmitting ? (
                 <>
-                  <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin mr-2" />
+                  <div className="w-4 h-4 border-2 border-current/30 border-t-current rounded-full animate-spin mr-2" />
                   Sending...
                 </>
               ) : (

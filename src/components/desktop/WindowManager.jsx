@@ -1,9 +1,10 @@
 'use client';
 
 import dynamic from 'next/dynamic';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useWindowStore, APP_DEFAULTS } from '@/store/windowStore';
 import Window from './Window';
+import { getCurrentWorldId, getWorldAppTitle, createWorldChangeListener } from '@/config/worldContent';
 
 // Terminal requires its own context provider — lazy load both together
 const TerminalApp = dynamic(
@@ -50,7 +51,7 @@ function getAppContent(appId) {
       return <Gallery />;
     default:
       return (
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%', fontFamily: 'monospace', color: '#6b7a6e' }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%', fontFamily: 'var(--dt-font-mono)', color: 'var(--dt-text-muted)' }}>
           Unknown app: {appId}
         </div>
       );
@@ -60,6 +61,12 @@ function getAppContent(appId) {
 export default function WindowManager() {
   const windows = useWindowStore((s) => s.windows);
   const closeWindow = useWindowStore((s) => s.closeWindow);
+
+  const [worldId, setWorldId] = useState(() => getCurrentWorldId());
+
+  useEffect(() => {
+    return createWorldChangeListener((id) => setWorldId(id));
+  }, []);
 
   // Use ref so the keydown handler always sees latest windows without re-registering
   const windowsRef = useRef(windows);
@@ -79,9 +86,15 @@ export default function WindowManager() {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [closeWindow]);
 
-  return windows.map((win) => (
-    <Window key={win.id} windowData={win}>
-      {getAppContent(win.appId)}
-    </Window>
-  ));
+  return windows.map((win) => {
+    const resolvedTitle = getWorldAppTitle(worldId, win.appId, win.title);
+    const resolvedWindowData = resolvedTitle !== win.title
+      ? { ...win, title: resolvedTitle }
+      : win;
+    return (
+      <Window key={win.id} windowData={resolvedWindowData}>
+        {getAppContent(win.appId)}
+      </Window>
+    );
+  });
 }

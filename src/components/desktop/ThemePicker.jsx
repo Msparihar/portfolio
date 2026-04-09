@@ -70,7 +70,7 @@ export default function ThemePicker() {
           height: '12px',
           borderRadius: '50%',
           background: currentTheme.swatch,
-          border: '1.5px solid rgba(255,255,255,0.2)',
+          border: '1.5px solid var(--dt-accent-20)',
           transition: 'transform 0.15s ease',
           transform: isOpen ? 'scale(1.2)' : 'scale(1)',
         }} />
@@ -88,13 +88,13 @@ export default function ThemePicker() {
             right: '-4px',
             background: 'var(--dt-context-bg)',
             border: '1px solid var(--dt-accent-border)',
-            borderRadius: '8px',
+            borderRadius: 'var(--dt-window-radius, 8px)',
             padding: '8px 10px',
             display: 'flex',
             gap: '6px',
             flexWrap: 'wrap',
             maxWidth: '200px',
-            boxShadow: '0 4px 24px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.05)',
+            boxShadow: 'var(--dt-shadow-focused)',
             zIndex: 300,
           }}
         >
@@ -112,8 +112,8 @@ export default function ThemePicker() {
                 borderRadius: '50%',
                 background: theme.swatch,
                 border: activeTheme === theme.id
-                  ? '2px solid #fff'
-                  : '1.5px solid rgba(255,255,255,0.15)',
+                  ? '2px solid var(--dt-text)'
+                  : '1.5px solid var(--dt-accent-20)',
                 cursor: 'pointer',
                 padding: 0,
                 transition: 'transform 0.1s ease, border-color 0.1s ease',

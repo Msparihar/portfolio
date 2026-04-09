@@ -182,7 +182,7 @@ const ProjectModalContent = ({ project, isDark }) => {
           />
         )}
         <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
-        <div className="absolute bottom-6 left-6 text-white">
+        <div className="absolute bottom-6 left-6" style={{ color: 'var(--dt-text)' }}>
           <h1 className="text-3xl md:text-4xl font-bold mb-2 text-wrap-balance">{project.name}</h1>
           <div className="flex items-center gap-4 text-sm">
             {project.stats && (
@@ -209,7 +209,8 @@ const ProjectModalContent = ({ project, isDark }) => {
             href={project.live}
             target="_blank"
             rel="noopener noreferrer"
-            className="absolute bottom-6 right-6 z-30 inline-flex items-center gap-2 px-4 py-2 rounded-lg font-medium text-white bg-green-600 hover:bg-green-700 transition-colors duration-300 shadow-lg hover:shadow-xl motion-safe:hover:scale-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-500"
+            className="absolute bottom-6 right-6 z-30 inline-flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-colors duration-300 shadow-lg hover:shadow-xl motion-safe:hover:scale-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-current"
+            style={{ background: 'var(--dt-accent)', color: 'var(--dt-bg)' }}
             onClick={(e) => e.stopPropagation()}
           >
             <ExternalLink size={18} />
@@ -222,10 +223,10 @@ const ProjectModalContent = ({ project, isDark }) => {
       <div className="p-6 md:p-8">
         {/* Description */}
         <div className="mb-8">
-          <h2 className={`text-xl font-semibold mb-3 ${isDark ? 'text-white' : 'text-gray-900'}`}>
+          <h2 className="text-xl font-semibold mb-3" style={{ color: 'var(--dt-text)' }}>
             About this project
           </h2>
-          <p className={`text-base leading-relaxed ${isDark ? 'text-gray-300' : 'text-gray-600'}`}>
+          <p className="text-base leading-relaxed" style={{ color: 'var(--dt-text-muted)' }}>
             {project.description}
           </p>
         </div>
@@ -233,14 +234,14 @@ const ProjectModalContent = ({ project, isDark }) => {
         {/* Features */}
         {projectFeatures.length > 0 && (
           <div className="mb-8">
-            <h3 className={`text-lg font-semibold mb-3 ${isDark ? 'text-white' : 'text-gray-900'}`}>
+            <h3 className="text-lg font-semibold mb-3" style={{ color: 'var(--dt-text)' }}>
               Key Features
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
               {projectFeatures.map((feature, index) => (
                 <div key={index} className="flex items-center gap-2">
-                  <Zap size={16} className="text-green-500 flex-shrink-0" />
-                  <span className={`text-sm ${isDark ? 'text-gray-300' : 'text-gray-600'}`}>
+                  <Zap size={16} className="flex-shrink-0" style={{ color: 'var(--dt-accent)' }} />
+                  <span className="text-sm" style={{ color: 'var(--dt-text-muted)' }}>
                     {feature}
                   </span>
                 </div>
@@ -251,24 +252,25 @@ const ProjectModalContent = ({ project, isDark }) => {
 
         {/* Tech Stack */}
         <div className="mb-8">
-          <h3 className={`text-lg font-semibold mb-4 ${isDark ? 'text-white' : 'text-gray-900'}`}>
+          <h3 className="text-lg font-semibold mb-4" style={{ color: 'var(--dt-text)' }}>
             Technology Stack
           </h3>
           <div className="space-y-4">
             {Object.entries(groupedTechStack).map(([category, techs]) => (
               <div key={category}>
-                <h4 className={`text-sm font-medium mb-2 ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
+                <h4 className="text-sm font-medium mb-2" style={{ color: 'var(--dt-text-muted)' }}>
                   {category}
                 </h4>
                 <div className="flex flex-wrap gap-2">
                   {techs.map((tech, index) => (
                     <span
                       key={index}
-                      className={`px-3 py-1 text-xs rounded-full ${
-                        isDark
-                          ? 'bg-gray-800 text-gray-300 border border-gray-700'
-                          : 'bg-gray-100 text-gray-700 border border-gray-200'
-                      }`}
+                      className="px-3 py-1 text-xs rounded-full"
+                      style={{
+                        background: 'var(--dt-surface)',
+                        color: 'var(--dt-text-muted)',
+                        border: '1px solid var(--dt-accent-border)',
+                      }}
                     >
                       {tech}
                     </span>
@@ -287,26 +289,24 @@ const ProjectModalContent = ({ project, isDark }) => {
                 href={project.github}
                 target="_blank"
                 rel="noopener noreferrer"
-                className={`inline-flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-500 ${
-                  isDark
-                    ? 'bg-gray-800 hover:bg-gray-700 text-white border border-gray-700'
-                    : 'bg-gray-100 hover:bg-gray-200 text-gray-900 border border-gray-300'
-                }`}
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-current"
+                style={{
+                  background: 'var(--dt-surface)',
+                  color: 'var(--dt-text)',
+                  border: '1px solid var(--dt-accent-border)',
+                }}
               >
                 <Github size={18} />
                 View Source
               </a>
               <button
                 onClick={() => copyToClipboard(project.github, 'github')}
-                className={`p-2 rounded-lg transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-500 ${
-                  isDark
-                    ? 'hover:bg-gray-800 text-gray-400'
-                    : 'hover:bg-gray-100 text-gray-500'
-                }`}
+                className="p-2 rounded-lg transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-current"
+                style={{ color: 'var(--dt-text-muted)' }}
                 aria-label={`Copy GitHub URL for ${project.name}`}
               >
                 {copiedUrl === 'github' ? (
-                  <CheckCircle2 size={16} className="text-green-500" />
+                  <CheckCircle2 size={16} style={{ color: 'var(--dt-accent)' }} />
                 ) : (
                   <Copy size={16} />
                 )}
@@ -320,22 +320,20 @@ const ProjectModalContent = ({ project, isDark }) => {
                 href={project.live}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 px-4 py-2 rounded-lg font-medium text-white bg-green-600 hover:bg-green-700 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-500"
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-current"
+                style={{ background: 'var(--dt-accent)', color: 'var(--dt-bg)' }}
               >
                 <ExternalLink size={18} />
                 Live Demo
               </a>
               <button
                 onClick={() => copyToClipboard(project.live, 'live')}
-                className={`p-2 rounded-lg transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-500 ${
-                  isDark
-                    ? 'hover:bg-gray-800 text-gray-400'
-                    : 'hover:bg-gray-100 text-gray-500'
-                }`}
+                className="p-2 rounded-lg transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-current"
+                style={{ color: 'var(--dt-text-muted)' }}
                 aria-label={`Copy live URL for ${project.name}`}
               >
                 {copiedUrl === 'live' ? (
-                  <CheckCircle2 size={16} className="text-green-500" />
+                  <CheckCircle2 size={16} style={{ color: 'var(--dt-accent)' }} />
                 ) : (
                   <Copy size={16} />
                 )}

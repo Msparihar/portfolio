@@ -6,6 +6,23 @@ import TaskbarIcon from './TaskbarIcon';
 import ThemePicker from './ThemePicker';
 import WorldPicker from './WorldPicker';
 import { useUiStore } from '@/store/uiStore';
+import { WORLDS, WORLD_STORAGE_KEY } from '@/config/worlds';
+import { getWorldTaskbar } from '@/config/worldContent';
+
+function useCurrentWorld() {
+  const [world, setWorld] = useState(null);
+  useEffect(() => {
+    const saved = typeof window !== 'undefined' ? localStorage.getItem(WORLD_STORAGE_KEY) : null;
+    if (saved) setWorld(WORLDS.find((w) => w.id === saved) ?? null);
+    const handler = (e) => {
+      const id = e.detail?.worldId;
+      setWorld(id ? WORLDS.find((w) => w.id === id) ?? null : null);
+    };
+    window.addEventListener('worldchange', handler);
+    return () => window.removeEventListener('worldchange', handler);
+  }, []);
+  return world;
+}
 
 function useClock() {
   const [time, setTime] = useState('');
@@ -35,6 +52,7 @@ export default function Taskbar() {
   const focusWindow = useWindowStore((s) => s.focusWindow);
   const clock = useClock();
   const toggleWebsiteMode = useUiStore((s) => s.toggleWebsiteMode);
+  const currentWorld = useCurrentWorld();
 
   const nextZIndex = useWindowStore((s) => s.nextZIndex);
   const focusedId = windows.find((w) => w.zIndex >= nextZIndex - 1 && !w.isMinimized)?.id ?? null;
@@ -62,7 +80,7 @@ export default function Taskbar() {
         backdropFilter: 'var(--dt-window-blur)',
         WebkitBackdropFilter: 'var(--dt-window-blur)',
         borderTop: '1px solid var(--dt-accent-border)',
-        boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.04)',
+        boxShadow: 'var(--dt-titlebar-shadow, inset 0 1px 0 rgba(255,255,255,0.04))',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',
@@ -72,15 +90,16 @@ export default function Taskbar() {
       {/* Left — branding */}
       <span
         style={{
-          fontFamily: 'monospace',
-          fontSize: '14px',
+          fontFamily: currentWorld ? 'var(--dt-font-heading, monospace)' : 'var(--dt-font-mono, monospace)',
+          fontSize: currentWorld ? '13px' : '14px',
+          letterSpacing: currentWorld ? '1.5px' : '0',
           color: 'var(--dt-accent-70)',
           userSelect: 'none',
           whiteSpace: 'nowrap',
           textShadow: '0 0 8px var(--dt-accent-30)',
         }}
       >
-        {'>_ manish@portfolio'}
+        {currentWorld?.brandText || '>_ manish@portfolio'}
       </span>
 
       {/* Center — open window icons */}
@@ -108,7 +127,7 @@ export default function Taskbar() {
           display: 'flex',
           alignItems: 'center',
           gap: '8px',
-          fontFamily: 'monospace',
+          fontFamily: 'var(--dt-font-mono)',
           fontSize: '12px',
           color: 'var(--dt-text-muted)',
           whiteSpace: 'nowrap',
@@ -124,7 +143,7 @@ export default function Taskbar() {
             color: 'var(--dt-text-muted)',
             cursor: 'pointer',
             fontSize: '13px',
-            fontFamily: 'monospace',
+            fontFamily: 'var(--dt-font-mono)',
             padding: '2px 4px',
             transition: 'color 0.15s ease',
           }}
@@ -136,10 +155,10 @@ export default function Taskbar() {
         <WorldPicker />
         <ThemePicker />
         <span style={{ color: 'var(--dt-accent-70)', fontSize: '11px', letterSpacing: '1px' }} title="WiFi connected">
-          ●●● wifi
+          {getWorldTaskbar(currentWorld?.id ?? null).wifiLabel}
         </span>
-        <span style={{ color: 'var(--dt-accent-dim)', fontSize: '11px' }} title="Battery 87%">
-          [▮▮▮▮▯] 87%
+        <span style={{ color: 'var(--dt-accent-dim)', fontSize: '11px' }} title="Battery">
+          {getWorldTaskbar(currentWorld?.id ?? null).batteryLabel}
         </span>
         <span style={{ color: 'var(--dt-accent-dim)', fontSize: '13px' }}>{clock}</span>
       </div>

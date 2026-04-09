@@ -9,18 +9,20 @@ const LoadingDots = ({ size = 'default', color = 'green' }) => {
     large: 'w-2 h-2'
   };
 
-  const colorClasses = {
-    green: 'bg-green-500/80',
-    white: 'bg-white/80',
-    amber: 'bg-amber-500/80',
-    blue: 'bg-blue-500/80'
+  const colorStyles = {
+    green: { background: 'color-mix(in srgb, var(--dt-accent) 80%, transparent)' },
+    white: { background: 'rgba(255,255,255,0.8)' },
+    amber: { background: 'rgba(245,158,11,0.8)' },
+    blue: { background: 'rgba(59,130,246,0.8)' }
   };
+
+  const dotStyle = colorStyles[color] || colorStyles.green;
 
   return (
     <div className="flex items-center space-x-2 mt-1">
-      <div className={`${dotSizeClasses[size]} ${colorClasses[color]} rounded-full animate-[bounce_1s_infinite_0ms]`} />
-      <div className={`${dotSizeClasses[size]} ${colorClasses[color]} rounded-full animate-[bounce_1s_infinite_200ms]`} />
-      <div className={`${dotSizeClasses[size]} ${colorClasses[color]} rounded-full animate-[bounce_1s_infinite_400ms]`} />
+      <div className={`${dotSizeClasses[size]} rounded-full animate-[bounce_1s_infinite_0ms]`} style={dotStyle} />
+      <div className={`${dotSizeClasses[size]} rounded-full animate-[bounce_1s_infinite_200ms]`} style={dotStyle} />
+      <div className={`${dotSizeClasses[size]} rounded-full animate-[bounce_1s_infinite_400ms]`} style={dotStyle} />
     </div>
   );
 };
@@ -28,7 +30,7 @@ const LoadingDots = ({ size = 'default', color = 'green' }) => {
 const LoadingDotsCommand = ({ text = "loading" }) => {
   return (
     <div className="flex items-center gap-2 text-muted-foreground terminal-line">
-      <span className="text-green-500/80">$</span>
+      <span style={{ color: 'color-mix(in srgb, var(--dt-accent) 80%, transparent)' }}>$</span>
       <div className="flex items-center">
         <span>{text}</span>
         <LoadingDots />
@@ -45,14 +47,16 @@ const TerminalLoader = ({ size = 'default', color = 'green' }) => {
     large: 'w-[160px] h-8'
   };
 
-  const colorClasses = {
-    green: 'text-green-500',
-    white: 'text-white',
-    amber: 'text-amber-500'
+  const terminalColorStyles = {
+    green: { color: 'var(--dt-accent)' },
+    white: { color: 'white' },
+    amber: { color: '#f59e0b' }
   };
 
+  const terminalStyle = terminalColorStyles[color] || terminalColorStyles.green;
+
   return (
-    <div className={`font-mono flex items-center ${colorClasses[color]}`}>
+    <div className="font-mono flex items-center" style={terminalStyle}>
       <div className={`flex items-center space-x-1 ${sizeClasses[size]}`}>
         <span className="inline-block w-2 h-2 animate-[terminal-blink_0.5s_step-end_infinite]">█</span>
         <span className="inline-block w-2 h-2 animate-[terminal-blink_0.5s_step-end_infinite_150ms]">█</span>

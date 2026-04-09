@@ -29,7 +29,7 @@ function BootLine({ line, okColor }) {
     return (
       <div>
         <span>{before}</span>
-        <span style={{ color: okColor || "#4ade80" }}>OK</span>
+        <span style={{ color: okColor || "var(--dt-accent)" }}>OK</span>
       </div>
     );
   }
@@ -107,11 +107,11 @@ export default function BootOverlay({ onBootComplete, bootLines: customBootLines
         position: "fixed",
         inset: 0,
         zIndex: 9999,
-        backgroundColor: "#000000",
+        backgroundColor: 'var(--dt-bg)',
         padding: "40px",
-        fontFamily: "monospace",
+        fontFamily: "var(--dt-font-mono, monospace)",
         fontSize: "0.875rem",
-        color: bootAccentColor?.text || "#22c55e",
+        color: bootAccentColor?.text || "var(--dt-accent)",
         opacity: fading ? 0 : 1,
         transition: "opacity 0.8s ease",
         pointerEvents: fading ? "none" : "auto",
@@ -119,8 +119,9 @@ export default function BootOverlay({ onBootComplete, bootLines: customBootLines
     >
       {visibleLines.map((line, i) => {
         const isLast = i === visibleLines.length - 1;
+        const isFirstLine = i === 0;
         return (
-          <div key={i} style={{ display: "flex", alignItems: "center" }}>
+          <div key={i} style={{ display: "flex", alignItems: "center", fontFamily: isFirstLine ? "var(--dt-font-heading, var(--dt-font-mono, monospace))" : undefined }}>
             <BootLine line={line} okColor={bootAccentColor?.ok} />
             {isLast && !fading && (
               <span
@@ -128,7 +129,7 @@ export default function BootOverlay({ onBootComplete, bootLines: customBootLines
                   display: "inline-block",
                   width: "0.6em",
                   height: "1.1em",
-                  backgroundColor: bootAccentColor?.text || "#22c55e",
+                  backgroundColor: bootAccentColor?.text || "var(--dt-accent)",
                   marginLeft: "2px",
                   verticalAlign: "text-bottom",
                   animation: "boot-cursor-blink 1s step-end infinite",

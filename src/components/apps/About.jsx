@@ -44,10 +44,10 @@ function Tag({ children }) {
     <span style={{
       padding: '2px 8px',
       border: `1px solid ${GREEN_BORDER}`,
-      borderRadius: '4px',
+      borderRadius: 'var(--dt-radius-sm, 4px)',
       fontSize: '11px',
       color: GREEN_DIM,
-      fontFamily: 'monospace',
+      fontFamily: 'var(--dt-font-mono, monospace)',
       whiteSpace: 'nowrap',
     }}>
       {children}
@@ -58,7 +58,7 @@ function Tag({ children }) {
 export default function About() {
   return (
     <div style={{
-      fontFamily: 'monospace',
+      fontFamily: 'var(--dt-font-mono, monospace)',
       color: TEXT_PRIMARY,
       padding: '20px 24px',
       overflowY: 'auto',
@@ -73,7 +73,7 @@ export default function About() {
           fontSize: '9px',
           lineHeight: '1.2',
           margin: 0,
-          fontFamily: 'monospace',
+          fontFamily: 'var(--dt-font-mono, monospace)',
           flexShrink: 0,
           textShadow: `0 0 8px var(--dt-accent-border-dim)`,
         }}>
@@ -99,7 +99,7 @@ export default function About() {
 
           {/* Color palette dots */}
           <div style={{ display: 'flex', gap: '6px', marginTop: '8px', paddingLeft: '98px' }}>
-            {['#22c55e', '#16a34a', '#15803d', '#166534', '#1a2e1c', '#0f1a0f', '#e8f5e9', '#6b7a6e'].map((c) => (
+            {['var(--dt-accent)', 'var(--dt-accent-hover)', 'var(--dt-accent-dim)', 'var(--dt-accent-70)', 'var(--dt-accent-45)', 'var(--dt-accent-30)', 'var(--dt-accent-20)', 'var(--dt-text-muted)'].map((c) => (
               <div key={c} style={{
                 width: '14px',
                 height: '14px',

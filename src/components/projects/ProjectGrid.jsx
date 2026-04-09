@@ -20,7 +20,7 @@ const placeholderImages = [
   'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAwIiBoZWlnaHQ9IjQwMCIgdmlld0JveD0iMCAwIDYwMCA0MDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI2MDAiIGhlaWdodD0iNDAwIiBmaWxsPSIjMTEyNTMzIi8+Cjxwb2x5Z29uIHBvaW50cz0iMzAwLDE1MCAzNTAsMjUwIDI1MCwyNTAiIGZpbGw9IiMzMzU0NjQiLz4KPHR5cGVUIHg9IjMwMCIgeT0iMzAwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSIjNzAz%29YzQiIGZvbnQtc2l6ZT0iMTYiIGZvbnQtZmFtaWx5PSJtb25vc3BhY2UiPlByb2plY3QgSW1hZ2U8L3RleHQ+Cjwvc3ZnPgo='
 ];
 
-const ProjectCard = ({ project, isDark, isPriority = false, onExpand }) => {
+const ProjectCard = ({ project, isPriority = false, onExpand }) => {
   // Get a placeholder image based on project name hash
   const getPlaceholderImage = (name) => {
     const hash = name.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
@@ -41,9 +41,11 @@ const ProjectCard = ({ project, isDark, isPriority = false, onExpand }) => {
     <div
       role="button"
       tabIndex={0}
-      className={`project-card group relative overflow-hidden rounded-xl transition-colors transition-shadow duration-300 cursor-pointer touch-manipulation ${
-        isDark ? 'bg-gray-900 hover:bg-gray-800' : 'bg-white hover:bg-gray-50'
-      } border ${isDark ? 'border-gray-800' : 'border-gray-200'} shadow-sm hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-500 focus-visible:ring-offset-2 ${isDark ? 'focus-visible:ring-offset-gray-900' : 'focus-visible:ring-offset-white'}`}
+      className="project-card group relative overflow-hidden rounded-xl transition-colors transition-shadow duration-300 cursor-pointer touch-manipulation shadow-sm hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-current focus-visible:ring-offset-2"
+      style={{
+        background: 'var(--dt-surface)',
+        border: '1px solid var(--dt-accent-border)',
+      }}
       onClick={() => onExpand(project)}
       onKeyDown={handleKeyDown}
       aria-label={`View details for ${project.name}`}
@@ -75,11 +77,11 @@ const ProjectCard = ({ project, isDark, isPriority = false, onExpand }) => {
         )}
         <div className="absolute bottom-0 left-0 right-0 p-3 sm:p-4 z-20">
           <div className="flex items-center justify-between">
-            <h3 className="text-base sm:text-lg font-bold text-white mb-1 group-hover:text-green-400 transition-colors truncate pr-2">
+            <h3 className="text-base sm:text-lg font-bold mb-1 transition-colors truncate pr-2" style={{ color: 'var(--dt-text)' }}>
               {project.name}
             </h3>
             <div className="opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0">
-              <Expand size={18} className="text-white sm:w-5 sm:h-5" />
+              <Expand size={18} className="sm:w-5 sm:h-5" style={{ color: 'var(--dt-text)' }} />
             </div>
           </div>
         </div>
@@ -87,7 +89,7 @@ const ProjectCard = ({ project, isDark, isPriority = false, onExpand }) => {
 
       {/* Project Body */}
       <div className="p-3 sm:p-4">
-        <p className={`text-xs sm:text-sm ${isDark ? 'text-gray-300' : 'text-gray-600'} mb-3 sm:mb-4 line-clamp-2 sm:line-clamp-3`}>
+        <p className="text-xs sm:text-sm mb-3 sm:mb-4 line-clamp-2 sm:line-clamp-3" style={{ color: 'var(--dt-text-muted)' }}>
           {project.description}
         </p>
 
@@ -96,35 +98,32 @@ const ProjectCard = ({ project, isDark, isPriority = false, onExpand }) => {
           {project.techStack.slice(0, 5).map((tech, i) => (
             <span
               key={i}
-              className={`text-xs px-2 py-0.5 sm:py-1 rounded-full ${
-                isDark
-                  ? 'bg-gray-800 text-gray-300'
-                  : 'bg-gray-100 text-gray-700'
-              }`}
+              className="text-xs px-2 py-0.5 sm:py-1 rounded-full"
+              style={{
+                background: 'var(--dt-surface)',
+                color: 'var(--dt-text-muted)',
+              }}
             >
               {tech}
             </span>
           ))}
           {project.techStack.length > 5 && (
-            <span className={`text-xs px-2 py-0.5 sm:py-1 rounded-full ${
-              isDark ? 'bg-gray-800 text-gray-400' : 'bg-gray-100 text-gray-600'
-            }`}>
+            <span className="text-xs px-2 py-0.5 sm:py-1 rounded-full" style={{ background: 'var(--dt-surface)', color: 'var(--dt-text-muted)' }}>
               +{project.techStack.length - 5}
             </span>
           )}
         </div>
 
         {/* Project Links & Stats */}
-        <div className="flex items-center justify-between mt-auto pt-3 border-t border-gray-200 dark:border-gray-800">
+        <div className="flex items-center justify-between mt-auto pt-3" style={{ borderTop: '1px solid var(--dt-accent-border)' }}>
           <div className="flex space-x-3">
             {project.github && (
               <a
                 href={project.github}
                 target="_blank"
                 rel="noopener noreferrer"
-                className={`inline-flex items-center transition-colors rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-500 ${
-                  isDark ? 'text-gray-400 hover:text-white' : 'text-gray-500 hover:text-gray-900'
-                }`}
+                className="inline-flex items-center transition-colors rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-current"
+                style={{ color: 'var(--dt-text-muted)' }}
                 aria-label={`View source code for ${project.name}`}
                 onClick={(e) => e.stopPropagation()}
               >
@@ -136,9 +135,8 @@ const ProjectCard = ({ project, isDark, isPriority = false, onExpand }) => {
                 href={project.live}
                 target="_blank"
                 rel="noopener noreferrer"
-                className={`inline-flex items-center transition-colors rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-500 ${
-                  isDark ? 'text-gray-400 hover:text-white' : 'text-gray-500 hover:text-gray-900'
-                }`}
+                className="inline-flex items-center transition-colors rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-current"
+                style={{ color: 'var(--dt-text-muted)' }}
                 aria-label={`View live demo of ${project.name}`}
                 onClick={(e) => e.stopPropagation()}
               >
@@ -149,11 +147,11 @@ const ProjectCard = ({ project, isDark, isPriority = false, onExpand }) => {
 
           {project.stats && (
             <div className="flex items-center space-x-3">
-              <div className="flex items-center text-xs text-gray-500">
+              <div className="flex items-center text-xs" style={{ color: 'var(--dt-text-muted)' }}>
                 <Star size={14} className="mr-1" />
                 <span>{project.stats.stars}</span>
               </div>
-              <div className="flex items-center text-xs text-gray-500">
+              <div className="flex items-center text-xs" style={{ color: 'var(--dt-text-muted)' }}>
                 <GitFork size={14} className="mr-1" />
                 <span>{project.stats.forks}</span>
               </div>
@@ -210,7 +208,7 @@ const ProjectGrid = ({ searchQuery = '', activeFilter = 'all' }) => {
 
   if (filteredProjects.length === 0) {
     return (
-      <div className={`flex flex-col items-center justify-center py-16 ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
+      <div className="flex flex-col items-center justify-center py-16" style={{ color: 'var(--dt-text-muted)' }}>
         {searchQuery || activeFilter !== 'all' ? (
           <>
             <div className="text-center mb-4">
@@ -221,7 +219,8 @@ const ProjectGrid = ({ searchQuery = '', activeFilter = 'all' }) => {
               {activeFilter !== 'all' && (
                 <button
                   onClick={() => setActiveFilter('all')}
-                  className="px-3 py-1 bg-green-500 text-white text-sm rounded-md hover:bg-green-600 transition-colors"
+                  className="px-3 py-1 text-sm rounded-md transition-colors"
+                  style={{ background: 'var(--dt-accent)', color: 'var(--dt-bg)' }}
                 >
                   Clear Filters
                 </button>
@@ -242,7 +241,7 @@ const ProjectGrid = ({ searchQuery = '', activeFilter = 'all' }) => {
     <>
       {/* Results summary if filtering is active */}
       {(searchQuery || activeFilter !== 'all') && (
-        <div className={`mb-6 text-sm ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
+        <div className="mb-6 text-sm" style={{ color: 'var(--dt-text-muted)' }}>
           Found {filteredProjects.length} project{filteredProjects.length !== 1 ? 's' : ''}
           {activeFilter !== 'all' && ` with ${activeFilter}`}
           {searchQuery && ` matching "${searchQuery}"`}
@@ -254,7 +253,6 @@ const ProjectGrid = ({ searchQuery = '', activeFilter = 'all' }) => {
           <ProjectCard
             key={index}
             project={project}
-            isDark={isDark}
             isPriority={index < 3} // Priority load first 3 images
             onExpand={handleProjectExpand}
           />

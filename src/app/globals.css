@@ -433,24 +433,37 @@
 }
 
 /* ══════════════════════════════════════════════════
-   World: Dark Fantasy (Elden Ring / Souls aesthetic)
-   Active when .world-dark-fantasy is on .desktop-canvas
+   Default Traffic Light Buttons (macOS style)
+   World CSS classes override these
+   ══════════════════════════════════════════════════ */
+.traffic-close { background: radial-gradient(circle at 35% 35%, #ff8a80, #ff5f57 60%, #e5453c); }
+.traffic-minimize { background: radial-gradient(circle at 35% 35%, #ffd76e, #febc2e 60%, #e5a820); }
+.traffic-maximize { background: radial-gradient(circle at 35% 35%, #5aed73, #28c840 60%, #1eb535); }
+
+/* Elden Ring traffic lights — gold/amber tones */
+.world-elden-ring .traffic-close { background: radial-gradient(circle at 35% 35%, #c9684c, #a84c2c 60%, #8b3520); }
+.world-elden-ring .traffic-minimize { background: radial-gradient(circle at 35% 35%, #f9d06e, #c9a84c 60%, #a88a3c); }
+.world-elden-ring .traffic-maximize { background: radial-gradient(circle at 35% 35%, #c9b84c, #a89838 60%, #8b7a28); }
+
+/* ══════════════════════════════════════════════════
+   World: Elden Ring (Souls aesthetic)
+   Active when .world-elden-ring is on .desktop-canvas
    ══════════════════════════════════════════════════ */
 
 /* Typography — activate Cinzel / Crimson Text */
-.desktop-canvas.world-dark-fantasy {
+.desktop-canvas.world-elden-ring {
   font-family: var(--font-crimson-text), Georgia, serif;
   font-size: 1.05rem;
 }
 
-.desktop-canvas.world-dark-fantasy .window-drag-handle,
-.desktop-canvas.world-dark-fantasy [data-world-heading] {
+.desktop-canvas.world-elden-ring .window-drag-handle,
+.desktop-canvas.world-elden-ring [data-world-heading] {
   font-family: var(--font-cinzel), Georgia, serif;
   letter-spacing: 0.05em;
 }
 
 /* Stone grain texture overlay */
-.desktop-canvas.world-dark-fantasy::before {
+.desktop-canvas.world-elden-ring::before {
   content: "";
   position: fixed;
   inset: 0;
@@ -463,7 +476,7 @@
 }
 
 /* Fog / mist vignette on desktop wallpaper */
-.desktop-canvas.world-dark-fantasy .desktop-wallpaper-layer::after {
+.desktop-canvas.world-elden-ring .desktop-wallpaper-layer::after {
   content: "";
   position: absolute;
   inset: 0;
@@ -472,7 +485,7 @@
 }
 
 /* Chamfered window panels */
-.desktop-canvas.world-dark-fantasy .window-panel {
+.desktop-canvas.world-elden-ring .window-panel {
   clip-path: polygon(
     10px 0%, calc(100% - 10px) 0%, 100% 10px,
     100% calc(100% - 10px), calc(100% - 10px) 100%,
@@ -487,12 +500,12 @@
   50%       { text-shadow: 0 0 12px rgba(201,168,76,0.9), 0 0 32px rgba(238,138,5,0.4), 0 0 48px rgba(139,105,20,0.2); }
 }
 
-.desktop-canvas.world-dark-fantasy [data-world-accent] {
+.desktop-canvas.world-elden-ring [data-world-accent] {
   animation: runeGlow 3s ease-in-out infinite;
 }
 
 /* Gold ornamental divider */
-.desktop-canvas.world-dark-fantasy .world-divider {
+.desktop-canvas.world-elden-ring .world-divider {
   height: 1px;
   background: linear-gradient(
     to right,
@@ -508,7 +521,7 @@
   margin: 12px 0;
 }
 
-.desktop-canvas.world-dark-fantasy .world-divider::before {
+.desktop-canvas.world-elden-ring .world-divider::before {
   content: "\2726";
   position: absolute;
   left: 50%;
@@ -520,3 +533,21 @@
   background: var(--dt-bg);
   padding: 0 0.4rem;
 }
+
+/* ══════════════════════════════════════════════════
+   World: Studio Ghibli (Warm nature aesthetic)
+   Active when .world-ghibli is on .desktop-canvas
+   ══════════════════════════════════════════════════ */
+
+.world-ghibli .window-titlebar .traffic-close { background: #e8826a; }
+.world-ghibli .window-titlebar .traffic-minimize { background: #e8c170; }
+.world-ghibli .window-titlebar .traffic-maximize { background: #8bc49e; }
+
+/* ══════════════════════════════════════════════════
+   World: Game of Thrones (Westeros — Four houses)
+   Active when .world-got is on .desktop-canvas
+   ══════════════════════════════════════════════════ */
+
+.world-got .window-titlebar .traffic-close { background: #e85a5a; }
+.world-got .window-titlebar .traffic-minimize { background: #4a9eda; }
+.world-got .window-titlebar .traffic-maximize { background: #8ba4b8; }

@@ -41,8 +41,8 @@ export default function Window({ windowData, children }) {
   const windowStyle = {
     position: 'relative',
     background: 'var(--dt-surface)',
-    border: '1px solid var(--dt-accent-border-strong)',
-    borderRadius: '12px',
+    border: 'var(--dt-window-border, 1px solid var(--dt-accent-border-strong))',
+    borderRadius: 'var(--dt-window-radius, 12px)',
     boxShadow: isFocused
       ? 'var(--dt-shadow-focused)'
       : 'var(--dt-shadow-unfocused)',
@@ -82,7 +82,7 @@ export default function Window({ windowData, children }) {
       minHeight={200}
     >
       {/* Full-height inner wrapper — Rnd doesn't pass height to children */}
-      <div className="window-panel" style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', overflow: 'hidden', borderRadius: '12px' }}>
+      <div className="window-panel" style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', overflow: 'hidden', borderRadius: 'var(--dt-window-radius, 12px)' }}>
         <WindowTitlebar
           title={title}
           isMaximized={isMaximized}

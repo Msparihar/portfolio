@@ -3,23 +3,29 @@
 import { useEffect, useRef, useState } from 'react';
 import { useWindowStore } from '@/store/windowStore';
 import { useUiStore } from '@/store/uiStore';
+import { getCurrentWorldId, getWorldIcon, getWorldMenuPrefix, createWorldChangeListener } from '@/config/worldContent';
 
 export default function ContextMenu({ x, y, onClose }) {
   const openWindow = useWindowStore((s) => s.openWindow);
   const toggleWebsiteMode = useUiStore((s) => s.toggleWebsiteMode);
   const menuRef = useRef(null);
   const [focusedIndex, setFocusedIndex] = useState(-1);
+  const [worldId, setWorldId] = useState(() => getCurrentWorldId());
+
+  useEffect(() => {
+    return createWorldChangeListener((id) => setWorldId(id));
+  }, []);
 
   const MENU_ITEMS = [
-    { label: 'Open Terminal', action: () => openWindow('terminal'), icon: '🖥️' },
-    { label: 'Open File Manager', action: () => openWindow('filemanager'), icon: '📁' },
+    { label: 'Open Terminal', action: () => openWindow('terminal'), icon: getWorldIcon(worldId, 'terminal', '🖥️', 'Terminal').icon },
+    { label: 'Open File Manager', action: () => openWindow('filemanager'), icon: getWorldIcon(worldId, 'filemanager', '📁', 'File Manager').icon },
     { type: 'divider' },
     { label: 'Refresh Desktop', action: () => window.location.reload(), icon: '🔄' },
-    { label: 'neofetch', action: () => openWindow('about'), icon: 'ℹ️' },
+    { label: 'neofetch', action: () => openWindow('about'), icon: getWorldIcon(worldId, 'about', 'ℹ️', 'About').icon },
     { type: 'divider' },
     { label: 'Switch to Website Mode', action: () => toggleWebsiteMode(), icon: '🌐' },
     { type: 'divider' },
-    { label: 'View Source', action: () => window.open('https://github.com/Msparihar', '_blank'), icon: '📄' },
+    { label: 'View Source', action: () => window.open('https://github.com/Msparihar', '_blank'), icon: getWorldIcon(worldId, 'resume', '📄', 'Resume').icon },
   ];
 
   // Navigable items (non-dividers) with their original indices
@@ -79,11 +85,11 @@ export default function ContextMenu({ x, y, onClose }) {
         top: y,
         minWidth: '220px',
         background: 'var(--dt-context-bg)',
-        backdropFilter: 'blur(16px)',
-        WebkitBackdropFilter: 'blur(16px)',
+        backdropFilter: 'var(--dt-window-blur)',
+        WebkitBackdropFilter: 'var(--dt-window-blur)',
         border: '1px solid var(--dt-accent-border)',
-        borderRadius: '8px',
-        boxShadow: '0 8px 32px rgba(0, 0, 0, 0.6)',
+        borderRadius: 'var(--dt-window-radius, 8px)',
+        boxShadow: 'var(--dt-shadow-focused)',
         padding: '4px 0',
         zIndex: 200,
       }}
@@ -121,7 +127,7 @@ export default function ContextMenu({ x, y, onClose }) {
               gap: '10px',
               width: '100%',
               padding: '6px 16px',
-              fontFamily: 'monospace',
+              fontFamily: 'var(--dt-font-mono)',
               fontSize: '13px',
               color: isKeyFocused ? 'var(--dt-accent)' : 'var(--dt-text)',
               background: isKeyFocused ? 'var(--dt-accent-border)' : 'transparent',
@@ -132,7 +138,7 @@ export default function ContextMenu({ x, y, onClose }) {
             }}
           >
             <span style={{ fontSize: '14px' }}>{item.icon}</span>
-            <span>$ {item.label}</span>
+            <span>{getWorldMenuPrefix(worldId)} {item.label}</span>
           </button>
         );
       })}

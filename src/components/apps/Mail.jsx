@@ -14,10 +14,10 @@ const contact = portfolioData.contact || {};
 const today = new Date().toDateString();
 
 const MAILBOXES = [
-  { id: 'inbox', label: '📥 Inbox', count: 1 },
-  { id: 'sent', label: '📤 Sent', count: 0 },
-  { id: 'drafts', label: '📝 Drafts', count: 0 },
-  { id: 'compose', label: '✏️ Compose', count: null },
+  { id: 'inbox', icon: '📥', label: 'Inbox', count: 1 },
+  { id: 'sent', icon: '📤', label: 'Sent', count: 0 },
+  { id: 'drafts', icon: '📝', label: 'Drafts', count: 0 },
+  { id: 'compose', icon: '✏️', label: 'Compose', count: null },
 ];
 
 function inputStyle(focused) {
@@ -25,10 +25,10 @@ function inputStyle(focused) {
     width: '100%',
     background: focused ? 'var(--dt-accent-border-dim)' : 'var(--dt-surface-input)',
     border: `1px solid ${focused ? 'var(--dt-accent-dim)' : GREEN_BORDER}`,
-    borderRadius: '4px',
+    borderRadius: 'var(--dt-radius-sm, 4px)',
     padding: '7px 10px',
     color: TEXT_PRIMARY,
-    fontFamily: 'monospace',
+    fontFamily: 'var(--dt-font-mono, monospace)',
     fontSize: '13px',
     outline: 'none',
     boxSizing: 'border-box',
@@ -79,7 +79,7 @@ export default function Mail() {
   }
 
   return (
-    <div style={{ display: 'flex', height: '100%', fontFamily: 'monospace', color: TEXT_PRIMARY }}>
+    <div style={{ display: 'flex', height: '100%', fontFamily: 'var(--dt-font-mono, monospace)', color: TEXT_PRIMARY }}>
       {/* Sidebar */}
       <div style={{
         width: '180px',
@@ -110,12 +110,12 @@ export default function Mail() {
               transition: 'all 0.15s ease',
             }}
           >
-            <span>{mb.label}</span>
+            <span>{mb.icon} {mb.label}</span>
             {mb.count !== null && mb.count > 0 && (
               <span style={{
                 background: 'var(--dt-accent-20)',
                 color: GREEN,
-                borderRadius: '10px',
+                borderRadius: 'var(--dt-window-radius, 10px)',
                 padding: '1px 6px',
                 fontSize: '11px',
               }}>
@@ -140,7 +140,7 @@ export default function Mail() {
                 Welcome! Let&apos;s connect
               </div>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', fontSize: '12px', color: TEXT_MUTED }}>
-                <div><span style={{ color: GREEN }}>From:</span> manish@portfolio.os</div>
+                <div><span style={{ color: GREEN }}>From:</span> {portfolioData.contact?.email || 'manishsparihar@gmail.com'}</div>
                 <div><span style={{ color: GREEN }}>To:</span> visitor@portfolio.os</div>
                 <div><span style={{ color: GREEN }}>Date:</span> {today}</div>
               </div>
@@ -151,8 +151,7 @@ export default function Mail() {
               <p>Hey there!</p>
               <br />
               <p>
-                Thanks for checking out my portfolio. I&apos;m Manish — a Full Stack &amp; AI Engineer
-                based in India. I build things with Next.js, FastAPI, and a healthy dose of LLMs.
+                {portfolioData.bio}
               </p>
               <br />
               <p>
@@ -170,7 +169,7 @@ export default function Mail() {
                 </span>
               </p>
               <br />
-              <p style={{ color: TEXT_MUTED }}>— Manish</p>
+              <p style={{ color: TEXT_MUTED }}>— {portfolioData.name}</p>
             </div>
           </div>
         )}
@@ -275,10 +274,10 @@ export default function Mail() {
                     style={{
                       padding: '8px 20px',
                       background: status === 'sending' ? 'var(--dt-accent-dim)' : GREEN,
-                      color: '#000',
+                      color: 'var(--dt-on-accent, #000)',
                       border: 'none',
-                      borderRadius: '5px',
-                      fontFamily: 'monospace',
+                      borderRadius: 'var(--dt-radius-sm, 4px)',
+                      fontFamily: 'var(--dt-font-mono, monospace)',
                       fontSize: '13px',
                       fontWeight: 'bold',
                       cursor: status === 'sending' ? 'not-allowed' : 'pointer',

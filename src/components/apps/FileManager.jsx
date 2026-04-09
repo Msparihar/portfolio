@@ -1,7 +1,8 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import portfolioData from '@/config/portfolio.json';
+import { getCurrentWorldId, getWorldFileIcon, createWorldChangeListener } from '@/config/worldContent';
 
 const GREEN = 'var(--dt-accent)';
 const GREEN_DIM = 'var(--dt-accent-dim)';
@@ -33,11 +34,17 @@ const dirs = [
 export default function FileManager() {
   const [selectedDir, setSelectedDir] = useState('all');
   const [hoveredRow, setHoveredRow] = useState(null);
+  const [worldId, setWorldId] = useState(null);
+
+  useEffect(() => {
+    setWorldId(getCurrentWorldId());
+    return createWorldChangeListener((id) => setWorldId(id));
+  }, []);
 
   const projects = useMemo(() => filterProjects(selectedDir), [selectedDir]);
 
   return (
-    <div style={{ display: 'flex', height: '100%', fontFamily: 'monospace', fontSize: '13px', color: TEXT_PRIMARY }}>
+    <div style={{ display: 'flex', height: '100%', fontFamily: 'var(--dt-font-mono, monospace)', fontSize: '13px', color: TEXT_PRIMARY }}>
       {/* Left sidebar */}
       <div style={{
         width: '200px',
@@ -66,7 +73,7 @@ export default function FileManager() {
               transition: 'all 0.15s ease',
             }}
           >
-            <span style={{ fontSize: '12px' }}>📂</span>
+            <span style={{ fontSize: '12px' }}>{getWorldFileIcon(worldId, 'folder')}</span>
             <span style={{ flex: 1 }}>{dir.label}</span>
             <span style={{ color: TEXT_MUTED, fontSize: '11px' }}>{dir.count}</span>
           </div>
@@ -125,7 +132,7 @@ export default function FileManager() {
                   transition: 'background 0.1s ease',
                 }}
               >
-                <span style={{ fontSize: '14px' }}>📄</span>
+                <span style={{ fontSize: '14px' }}>{getWorldFileIcon(worldId, 'document')}</span>
                 <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                   {project.name}
                 </span>

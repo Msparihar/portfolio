@@ -7,10 +7,11 @@ import WindowManager from './WindowManager';
 import Taskbar from './Taskbar';
 import ContextMenu from './ContextMenu';
 import { THEME_STORAGE_KEY, DEFAULT_THEME_ID, applyTheme } from '@/config/themes';
-import { WORLD_STORAGE_KEY, applyWorld } from '@/config/worlds';
+import { WORLD_STORAGE_KEY, WORLDS, applyWorld } from '@/config/worlds';
 import Sidebar from './Sidebar';
 import { useSidebarStore } from '@/store/sidebarStore';
 import { useUiStore } from '@/store/uiStore';
+import { useSeasonStore } from '@/store/seasonStore';
 
 function MobileFallback() {
   return (
@@ -34,10 +35,14 @@ export default function Desktop({ githubData, initialApp }) {
   const openWindow = useWindowStore((s) => s.openWindow);
   const sidebarOpen = useSidebarStore((s) => s.sidebarOpen);
   const toggleWebsiteMode = useUiStore((s) => s.toggleWebsiteMode);
+  const startCycle = useSeasonStore((s) => s.startCycle);
+  const stopCycle = useSeasonStore((s) => s.stopCycle);
+  const currentRegion = useSeasonStore((s) => s.currentRegion);
 
   const [isMobile, setIsMobile] = useState(false);
   const [selectedIcon, setSelectedIcon] = useState(null);
   const [contextMenu, setContextMenu] = useState(null);
+  const [currentWorldId, setCurrentWorldId] = useState(null);
 
   // Mobile detection on mount + resize
   useEffect(() => {
@@ -56,19 +61,58 @@ export default function Desktop({ githubData, initialApp }) {
     }
   }, [initialApp, openWindow]);
 
-  // Apply saved theme on mount
+  // Apply saved theme/world on mount and keep currentWorldId in sync
   useEffect(() => {
     const canvas = document.querySelector('.desktop-canvas');
     if (!canvas) return;
 
+    // Migrate old world id
+    const savedRaw = localStorage.getItem(WORLD_STORAGE_KEY);
+    if (savedRaw === '"dark-fantasy"' || savedRaw === 'dark-fantasy') {
+      localStorage.setItem(WORLD_STORAGE_KEY, savedRaw.replace('dark-fantasy', 'elden-ring'));
+    }
+
     const savedWorld = localStorage.getItem(WORLD_STORAGE_KEY);
     if (savedWorld) {
       applyWorld(canvas, savedWorld);
+      setCurrentWorldId(savedWorld);
     } else {
       const saved = localStorage.getItem(THEME_STORAGE_KEY) ?? DEFAULT_THEME_ID;
       applyTheme(canvas, saved);
+      setCurrentWorldId(null);
     }
-  }, []);
+
+    // Start seasonal cycle if the saved world is GoT
+    if (savedWorld === 'got') {
+      const gotWorld = WORLDS.find((w) => w.id === 'got');
+      if (gotWorld) startCycle(gotWorld);
+    }
+
+    // Listen for world changes dispatched by WorldPicker
+    const handleWorldChange = (e) => {
+      const newWorldId = e.detail?.worldId ?? null;
+      setCurrentWorldId(newWorldId);
+      if (newWorldId === 'got') {
+        const gotWorld = WORLDS.find((w) => w.id === 'got');
+        if (gotWorld) startCycle(gotWorld);
+      } else {
+        stopCycle();
+      }
+    };
+    window.addEventListener('worldchange', handleWorldChange);
+    return () => {
+      window.removeEventListener('worldchange', handleWorldChange);
+      stopCycle();
+    };
+  }, [startCycle, stopCycle]);
+
+  // When the seasonal region changes (GoT world), re-apply world vars + update wallpaper
+  useEffect(() => {
+    if (!currentRegion || currentWorldId !== 'got') return;
+    const canvas = document.querySelector('.desktop-canvas');
+    if (!canvas) return;
+    applyWorld(canvas, 'got', currentRegion);
+  }, [currentRegion, currentWorldId]);
 
   // Ctrl+Shift+W toggles Website Mode (skip if typing in input)
   useEffect(() => {
@@ -116,6 +160,12 @@ export default function Desktop({ githubData, initialApp }) {
     return <MobileFallback />;
   }
 
+  const currentWorldConfig = currentWorldId ? WORLDS.find((w) => w.id === currentWorldId) : null;
+  // For worlds with regions (GoT), use the active region's wallpaper
+  const activeWallpaper = currentWorldConfig?.regions && currentRegion
+    ? (currentWorldConfig.regions[currentRegion]?.wallpaper ?? currentWorldConfig.wallpaper)
+    : currentWorldConfig?.wallpaper;
+
   return (
     <div
       className="desktop-canvas dark"
@@ -123,13 +173,43 @@ export default function Desktop({ githubData, initialApp }) {
       onClick={handleDesktopClick}
       onContextMenu={handleContextMenu}
     >
-      {/* Gradient wallpaper layer */}
+      {/* Wallpaper image layer — rendered below gradient tint */}
+      {activeWallpaper && (
+        <img
+          src={activeWallpaper}
+          alt=""
+          className="absolute inset-0 w-full h-full object-cover pointer-events-none"
+          style={{ zIndex: 0 }}
+        />
+      )}
+
+      {/* Gradient wallpaper layer — tints the image (or standalone gradient) */}
       <div
         className="desktop-bg-layer desktop-wallpaper-layer absolute inset-0"
         style={{
           backgroundImage: 'var(--dt-wallpaper-gradient)',
           backgroundSize: 'var(--dt-wallpaper-gradient-size)',
-          zIndex: 0,
+          zIndex: 1,
+        }}
+      />
+
+      {/* Fog vignette overlay — atmospheric edges per world */}
+      <div
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          background: 'var(--dt-overlay-vignette, none)',
+          zIndex: 2,
+        }}
+      />
+
+      {/* Grain texture overlay — subtle noise per world */}
+      <div
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          opacity: 'var(--dt-overlay-grain, 0)',
+          backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E")`,
+          backgroundSize: '200px 200px',
+          zIndex: 3,
         }}
       />
 
@@ -139,9 +219,30 @@ export default function Desktop({ githubData, initialApp }) {
         style={{
           backgroundImage:
             `repeating-linear-gradient(0deg, var(--dt-scanline-color), var(--dt-scanline-color) 1px, transparent 1px, transparent 3px)`,
-          zIndex: 1,
+          zIndex: 4,
         }}
       />
+
+      {/* Desktop watermark — world-specific large faded text */}
+      {currentWorldConfig?.desktopWatermark && (
+        <div
+          className="absolute pointer-events-none select-none"
+          style={{
+            bottom: '80px',
+            left: '50%',
+            transform: 'translateX(-50%)',
+            fontFamily: 'var(--dt-font-heading)',
+            fontSize: '120px',
+            fontWeight: 700,
+            letterSpacing: '20px',
+            color: 'var(--dt-accent-03)',
+            zIndex: 5,
+            whiteSpace: 'nowrap',
+          }}
+        >
+          {currentWorldConfig.desktopWatermark}
+        </div>
+      )}
 
       {/* Desktop icons */}
       <div className="absolute inset-0 p-4" style={{ zIndex: 10, paddingBottom: '60px', paddingRight: sidebarOpen ? '216px' : '56px' }}>

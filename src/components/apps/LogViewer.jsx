@@ -33,7 +33,7 @@ export default function LogViewer() {
   }, []);
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', height: '100%', fontFamily: 'monospace', color: TEXT_PRIMARY }}>
+    <div style={{ display: 'flex', flexDirection: 'column', height: '100%', fontFamily: 'var(--dt-font-mono, monospace)', color: TEXT_PRIMARY }}>
       {/* Filter bar */}
       <div style={{
         display: 'flex',
@@ -51,10 +51,10 @@ export default function LogViewer() {
             style={{
               padding: '3px 10px',
               fontSize: '12px',
-              fontFamily: 'monospace',
+              fontFamily: 'var(--dt-font-mono, monospace)',
               cursor: 'pointer',
               border: `1px solid ${activeFilter === f ? GREEN : GREEN_BORDER}`,
-              borderRadius: '4px',
+              borderRadius: 'var(--dt-radius-sm, 4px)',
               background: activeFilter === f ? GREEN_BG : 'transparent',
               color: activeFilter === f ? GREEN : TEXT_MUTED,
               transition: 'all 0.15s ease',
@@ -71,12 +71,12 @@ export default function LogViewer() {
       {/* Log entries */}
       <div style={{ flex: 1, overflowY: 'auto', padding: '8px 0' }}>
         {activeFilter === 'WARN' ? (
-          <div style={{ padding: '24px 16px', color: '#facc15', fontSize: '13px' }}>
-            <span style={{ color: '#facc15' }}>[WARN]</span> No warnings. All systems operational.
+          <div style={{ padding: '24px 16px', color: 'var(--dt-warn-color, #facc15)', fontSize: '13px' }}>
+            <span style={{ color: 'var(--dt-warn-color, #facc15)' }}>[WARN]</span> No warnings. All systems operational.
           </div>
         ) : activeFilter === 'DEBUG' ? (
           <div style={{ padding: '24px 16px', color: TEXT_MUTED, fontSize: '13px' }}>
-            <span style={{ color: '#60a5fa' }}>[DEBUG]</span> Debug mode disabled in production.
+            <span style={{ color: 'var(--dt-info-color, #60a5fa)' }}>[DEBUG]</span> Debug mode disabled in production.
           </div>
         ) : (
           blogs.map((blog) => (

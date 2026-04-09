@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { WORLDS, WORLD_STORAGE_KEY, applyWorld } from '@/config/worlds';
 import { THEME_STORAGE_KEY, applyTheme, DEFAULT_THEME_ID } from '@/config/themes';
+import { useSeasonStore } from '@/store/seasonStore';
 
 export default function WorldPicker() {
   const [isOpen, setIsOpen] = useState(false);
@@ -11,6 +12,11 @@ export default function WorldPicker() {
   );
   const popoverRef = useRef(null);
   const buttonRef = useRef(null);
+
+  const currentRegion = useSeasonStore((s) => s.currentRegion);
+  const isPinned = useSeasonStore((s) => s.isPinned);
+  const setRegion = useSeasonStore((s) => s.setRegion);
+  const togglePin = useSeasonStore((s) => s.togglePin);
 
   // Close on outside click or Escape
   useEffect(() => {
@@ -57,6 +63,24 @@ export default function WorldPicker() {
     setActiveWorld(worldId);
     applyWorldWithTransition(worldId);
     setIsOpen(false);
+    window.dispatchEvent(new CustomEvent('worldchange', { detail: { worldId } }));
+  };
+
+  const handleRegionSelect = (regionId) => {
+    setRegion(regionId);
+    // If not already pinned, pin to this region
+    if (!isPinned) togglePin();
+    else if (currentRegion === regionId) {
+      // Clicking the currently pinned region unpins (resumes cycling)
+      togglePin();
+      return;
+    }
+    const canvas = document.querySelector('.desktop-canvas');
+    if (canvas) applyWorld(canvas, 'got', regionId);
+  };
+
+  const handleUnpin = () => {
+    togglePin();
   };
 
   return (
@@ -73,7 +97,7 @@ export default function WorldPicker() {
           cursor: 'pointer',
           padding: '2px 4px',
           fontSize: '13px',
-          fontFamily: 'monospace',
+          fontFamily: 'var(--dt-font-mono)',
           color: activeWorld ? 'var(--dt-accent)' : 'var(--dt-text-muted)',
           transition: 'color 0.15s ease',
         }}
@@ -95,10 +119,10 @@ export default function WorldPicker() {
             right: '-4px',
             background: 'var(--dt-context-bg)',
             border: '1px solid var(--dt-accent-border-strong)',
-            borderRadius: '8px',
+            borderRadius: 'var(--dt-window-radius, 8px)',
             padding: '10px 12px',
             minWidth: '200px',
-            boxShadow: '0 4px 24px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.05)',
+            boxShadow: 'var(--dt-shadow-focused)',
             zIndex: 300,
           }}
         >
@@ -119,9 +143,9 @@ export default function WorldPicker() {
               padding: '6px 8px',
               background: activeWorld === null ? 'var(--dt-accent-soft)' : 'transparent',
               border: 'none',
-              borderRadius: '4px',
+              borderRadius: 'var(--dt-radius-sm, 4px)',
               cursor: 'pointer',
-              fontFamily: 'monospace',
+              fontFamily: 'var(--dt-font-mono)',
               fontSize: '12px',
               color: activeWorld === null ? 'var(--dt-accent)' : 'var(--dt-text)',
               transition: 'background 0.1s ease',
@@ -135,7 +159,7 @@ export default function WorldPicker() {
               height: '14px',
               borderRadius: '50%',
               background: 'var(--dt-text-muted)',
-              border: activeWorld === null ? '2px solid #fff' : '1.5px solid rgba(255,255,255,0.15)',
+              border: activeWorld === null ? '2px solid var(--dt-text)' : '1.5px solid var(--dt-accent-20)',
               flexShrink: 0,
             }} />
             <span>None (use theme)</span>
@@ -143,46 +167,135 @@ export default function WorldPicker() {
 
           {/* World options */}
           {WORLDS.map((world) => (
-            <button
-              key={world.id}
-              role="option"
-              aria-selected={activeWorld === world.id}
-              onClick={() => handleSelect(world.id)}
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '8px',
-                width: '100%',
-                padding: '6px 8px',
-                background: activeWorld === world.id ? 'var(--dt-accent-soft)' : 'transparent',
-                border: 'none',
-                borderRadius: '4px',
-                cursor: 'pointer',
-                fontFamily: 'monospace',
-                fontSize: '12px',
-                color: activeWorld === world.id ? 'var(--dt-accent)' : 'var(--dt-text)',
-                transition: 'background 0.1s ease',
-                textAlign: 'left',
-                marginTop: '2px',
-              }}
-              onMouseEnter={(e) => { if (activeWorld !== world.id) e.currentTarget.style.background = 'var(--dt-accent-soft)'; }}
-              onMouseLeave={(e) => { if (activeWorld !== world.id) e.currentTarget.style.background = 'transparent'; }}
-            >
-              <span style={{
-                width: '14px',
-                height: '14px',
-                borderRadius: '50%',
-                background: world.swatch,
-                border: activeWorld === world.id ? '2px solid #fff' : '1.5px solid rgba(255,255,255,0.15)',
-                flexShrink: 0,
-              }} />
-              <span>{world.name}</span>
-              {world.description && (
-                <span style={{ color: 'var(--dt-text-muted)', fontSize: '10px', marginLeft: 'auto' }}>
-                  {world.description}
-                </span>
+            <div key={world.id}>
+              <button
+                role="option"
+                aria-selected={activeWorld === world.id}
+                onClick={() => handleSelect(world.id)}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                  width: '100%',
+                  padding: '6px 8px',
+                  background: activeWorld === world.id ? 'var(--dt-accent-soft)' : 'transparent',
+                  border: 'none',
+                  borderRadius: 'var(--dt-radius-sm, 4px)',
+                  cursor: 'pointer',
+                  fontFamily: 'var(--dt-font-mono)',
+                  fontSize: '12px',
+                  color: activeWorld === world.id ? 'var(--dt-accent)' : 'var(--dt-text)',
+                  transition: 'background 0.1s ease',
+                  textAlign: 'left',
+                  marginTop: '2px',
+                }}
+                onMouseEnter={(e) => { if (activeWorld !== world.id) e.currentTarget.style.background = 'var(--dt-accent-soft)'; }}
+                onMouseLeave={(e) => { if (activeWorld !== world.id) e.currentTarget.style.background = 'transparent'; }}
+              >
+                <span style={{
+                  width: '14px',
+                  height: '14px',
+                  borderRadius: '50%',
+                  background: world.swatch,
+                  border: activeWorld === world.id ? '2px solid var(--dt-text)' : '1.5px solid var(--dt-accent-20)',
+                  flexShrink: 0,
+                }} />
+                <span>{world.name}</span>
+                {world.description && (
+                  <span style={{ color: 'var(--dt-text-muted)', fontSize: '10px', marginLeft: 'auto' }}>
+                    {world.description}
+                  </span>
+                )}
+              </button>
+
+              {/* Region sub-options — only shown when this world is active and has regions */}
+              {activeWorld === world.id && world.regions && (
+                <div style={{ marginLeft: '22px', marginTop: '4px', marginBottom: '2px' }}>
+                  {/* Cycling indicator / unpin button */}
+                  {isPinned ? (
+                    <button
+                      onClick={handleUnpin}
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '4px',
+                        background: 'transparent',
+                        border: 'none',
+                        cursor: 'pointer',
+                        fontFamily: 'var(--dt-font-mono)',
+                        fontSize: '10px',
+                        color: 'var(--dt-accent)',
+                        padding: '2px 4px',
+                        marginBottom: '4px',
+                        borderRadius: '3px',
+                      }}
+                      title="Unpin — resume seasonal cycling"
+                    >
+                      <span>📌</span>
+                      <span>Pinned — click to resume cycling</span>
+                    </button>
+                  ) : (
+                    <div style={{
+                      fontFamily: 'var(--dt-font-mono)',
+                      fontSize: '10px',
+                      color: 'var(--dt-text-muted)',
+                      padding: '2px 4px',
+                      marginBottom: '4px',
+                    }}>
+                      Cycling regions every 5m
+                    </div>
+                  )}
+
+                  {/* Region buttons */}
+                  {Object.entries(world.regions).map(([regionId, region]) => {
+                    const isActive = currentRegion === regionId;
+                    const isPinnedToThis = isPinned && isActive;
+                    return (
+                      <button
+                        key={regionId}
+                        onClick={() => handleRegionSelect(regionId)}
+                        style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '6px',
+                          width: '100%',
+                          padding: '4px 6px',
+                          background: isActive ? 'var(--dt-accent-soft)' : 'transparent',
+                          border: 'none',
+                          borderRadius: '3px',
+                          cursor: 'pointer',
+                          fontFamily: 'var(--dt-font-mono)',
+                          fontSize: '11px',
+                          color: isActive ? 'var(--dt-accent)' : 'var(--dt-text-muted)',
+                          transition: 'background 0.1s ease',
+                          textAlign: 'left',
+                          marginTop: '1px',
+                        }}
+                        onMouseEnter={(e) => { if (!isActive) e.currentTarget.style.background = 'var(--dt-accent-soft)'; }}
+                        onMouseLeave={(e) => { if (!isActive) e.currentTarget.style.background = 'transparent'; }}
+                        title={isPinnedToThis ? 'Click to unpin and resume cycling' : `Pin to ${region.name}`}
+                      >
+                        <span style={{
+                          width: '8px',
+                          height: '8px',
+                          borderRadius: '50%',
+                          background: region.swatch,
+                          border: isActive ? '1.5px solid var(--dt-text)' : '1px solid var(--dt-accent-20)',
+                          flexShrink: 0,
+                        }} />
+                        <span>{region.name}</span>
+                        <span style={{ color: 'var(--dt-text-muted)', fontSize: '9px', marginLeft: 'auto', opacity: 0.7 }}>
+                          {region.house}
+                        </span>
+                        {isPinnedToThis && (
+                          <span style={{ fontSize: '9px', marginLeft: '2px' }}>📌</span>
+                        )}
+                      </button>
+                    );
+                  })}
+                </div>
               )}
-            </button>
+            </div>
           ))}
         </div>
       )}

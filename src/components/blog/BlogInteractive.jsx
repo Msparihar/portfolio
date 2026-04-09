@@ -73,7 +73,7 @@ const BlogInteractive = () => {
             placeholder="Search blog posts..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-10 pr-10 py-3 sm:py-2 bg-background/50 border border-border/30 rounded-md text-base sm:text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-green-500/50 focus:border-green-500/50 transition-colors min-h-[48px] sm:min-h-[44px]"
+            className="w-full pl-10 pr-10 py-3 sm:py-2 bg-background/50 border border-border/30 rounded-md text-base sm:text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-current focus:border-current transition-colors min-h-[48px] sm:min-h-[44px]"
           />
           {searchQuery && (
             <button
@@ -92,7 +92,7 @@ const BlogInteractive = () => {
           <select
             value={activeFilter}
             onChange={(e) => setActiveFilter(e.target.value)}
-            className="w-full sm:w-auto pl-10 pr-8 py-3 sm:py-2 bg-background/50 border border-border/30 rounded-md text-base sm:text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-green-500/50 focus:border-green-500/50 transition-colors appearance-none cursor-pointer min-h-[48px] sm:min-h-[44px]"
+            className="w-full sm:w-auto pl-10 pr-8 py-3 sm:py-2 bg-background/50 border border-border/30 rounded-md text-base sm:text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-current focus:border-current transition-colors appearance-none cursor-pointer min-h-[48px] sm:min-h-[44px]"
           >
             {filterOptions.map((option) => (
               <option key={option.id} value={option.id}>

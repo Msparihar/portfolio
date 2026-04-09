@@ -25,7 +25,7 @@ const ProjectCard = ({ project }) => {
       <div className="relative p-6 h-full flex flex-col">
         {/* Header */}
         <div className="flex items-start justify-between mb-4">
-          <h3 className="text-xl font-semibold text-green-500/80">
+          <h3 className="text-xl font-semibold" style={{ color: 'var(--dt-accent)', opacity: 0.8 }}>
             <span className="text-sm mr-2">$</span>
             {name}
           </h3>
@@ -52,7 +52,12 @@ const ProjectCard = ({ project }) => {
             {techStack.map((tech, index) => (
               <span
                 key={index}
-                className="px-2 py-1 text-xs rounded-md bg-green-500/10 text-green-500/80"
+                className="px-2 py-1 text-xs rounded-md"
+                style={{
+                  background: 'var(--dt-accent-soft)',
+                  color: 'var(--dt-accent)',
+                  opacity: 0.8,
+                }}
               >
                 {tech}
               </span>
@@ -66,7 +71,8 @@ const ProjectCard = ({ project }) => {
             href={github}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-muted-foreground hover:text-green-500 transition-colors flex items-center gap-2"
+            className="text-muted-foreground transition-colors flex items-center gap-2"
+            style={{ '--hover-color': 'var(--dt-accent)' }}
           >
             <Github className="w-4 h-4" />
             <span className="text-sm">View Source</span>
@@ -76,7 +82,7 @@ const ProjectCard = ({ project }) => {
               href={live}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-muted-foreground hover:text-green-500 transition-colors flex items-center gap-2"
+              className="text-muted-foreground transition-colors flex items-center gap-2"
             >
               <ExternalLink className="w-4 h-4" />
               <span className="text-sm">Live Demo</span>
@@ -85,7 +91,7 @@ const ProjectCard = ({ project }) => {
         </div>
 
         {/* Hover effect */}
-        <div className="absolute inset-0 bg-green-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+        <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" style={{ background: 'var(--dt-accent-soft)' }} />
       </div>
     </div>
   );

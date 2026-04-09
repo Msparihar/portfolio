@@ -81,7 +81,7 @@ export default function Browser({ url: urlProp }) {
   }
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', height: '100%', fontFamily: 'monospace' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', height: '100%', fontFamily: 'var(--dt-font-mono, monospace)' }}>
       {/* Address bar */}
       <div style={{
         display: 'flex',
@@ -102,12 +102,12 @@ export default function Browser({ url: urlProp }) {
           style={{
             background: 'transparent',
             border: `1px solid ${GREEN_BORDER}`,
-            borderRadius: '4px',
+            borderRadius: 'var(--dt-radius-sm, 4px)',
             color: url ? GREEN : TEXT_MUTED,
             cursor: url ? 'pointer' : 'not-allowed',
             padding: '4px 8px',
             fontSize: '13px',
-            fontFamily: 'monospace',
+            fontFamily: 'var(--dt-font-mono, monospace)',
             flexShrink: 0,
           }}
         >
@@ -123,12 +123,12 @@ export default function Browser({ url: urlProp }) {
           placeholder="https://..."
           style={{
             flex: 1,
-            background: 'rgba(255,255,255,0.04)',
+            background: 'var(--dt-surface-input)',
             border: `1px solid ${GREEN_BORDER}`,
-            borderRadius: '4px',
+            borderRadius: 'var(--dt-radius-sm, 4px)',
             padding: '5px 10px',
             color: TEXT_PRIMARY,
-            fontFamily: 'monospace',
+            fontFamily: 'var(--dt-font-mono, monospace)',
             fontSize: '12px',
             outline: 'none',
           }}
@@ -147,12 +147,12 @@ export default function Browser({ url: urlProp }) {
           style={{
             background: 'transparent',
             border: `1px solid ${GREEN_BORDER}`,
-            borderRadius: '4px',
+            borderRadius: 'var(--dt-radius-sm, 4px)',
             color: url ? GREEN : TEXT_MUTED,
             cursor: url ? 'pointer' : 'not-allowed',
             padding: '4px 8px',
             fontSize: '12px',
-            fontFamily: 'monospace',
+            fontFamily: 'var(--dt-font-mono, monospace)',
             flexShrink: 0,
           }}
         >
@@ -185,7 +185,7 @@ export default function Browser({ url: urlProp }) {
                   style={{
                     padding: '14px 16px',
                     border: `1px solid ${GREEN_BORDER}`,
-                    borderRadius: '6px',
+                    borderRadius: 'var(--dt-radius-sm, 6px)',
                     cursor: 'pointer',
                     background: 'var(--dt-accent-03)',
                     transition: 'background 0.15s ease, border-color 0.15s ease',
@@ -237,7 +237,7 @@ export default function Browser({ url: urlProp }) {
             justifyContent: 'center',
             background: 'var(--dt-surface)',
             color: GREEN,
-            fontFamily: 'monospace',
+            fontFamily: 'var(--dt-font-mono, monospace)',
             fontSize: '13px',
             zIndex: 2,
             pointerEvents: 'none',
@@ -259,10 +259,10 @@ export default function Browser({ url: urlProp }) {
             flexDirection: 'column',
             gap: '12px',
             color: TEXT_PRIMARY,
-            fontFamily: 'monospace',
+            fontFamily: 'var(--dt-font-mono, monospace)',
           }}>
             <div style={{ fontSize: '36px' }}>🚫</div>
-            <div style={{ fontSize: '14px', color: TEXT_PRIMARY }}>This site cannot be displayed inside Portfolio OS.</div>
+            <div style={{ fontSize: '14px', color: TEXT_PRIMARY }}>This site cannot be displayed in the current environment.</div>
             <div style={{ fontSize: '12px', color: TEXT_MUTED }}>Most sites block embedding via X-Frame-Options or CSP headers.</div>
             <button
               onClick={openExternal}
@@ -271,9 +271,9 @@ export default function Browser({ url: urlProp }) {
                 padding: '8px 18px',
                 background: 'transparent',
                 border: `1px solid ${GREEN}`,
-                borderRadius: '5px',
+                borderRadius: 'var(--dt-radius-sm, 4px)',
                 color: GREEN,
-                fontFamily: 'monospace',
+                fontFamily: 'var(--dt-font-mono, monospace)',
                 fontSize: '13px',
                 cursor: 'pointer',
               }}
@@ -296,7 +296,7 @@ export default function Browser({ url: urlProp }) {
               height: '100%',
               border: 'none',
               display: loadState === 'error' ? 'none' : 'block',
-              background: '#fff',
+              background: 'var(--dt-bg)',
             }}
             sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-popups-to-escape-sandbox"
           />

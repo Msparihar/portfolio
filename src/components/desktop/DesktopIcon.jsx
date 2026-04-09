@@ -34,7 +34,7 @@ export default function DesktopIcon({ icon, label, appId, isSelected, onSelect, 
       role="button"
       tabIndex={0}
       aria-label={label}
-      className="flex flex-col items-center gap-1 cursor-default select-none outline-none focus-visible:ring-2 focus-visible:ring-green-500 rounded-lg"
+      className="flex flex-col items-center gap-1 cursor-pointer select-none outline-none rounded-lg"
       style={{ width: '80px' }}
       onClick={handleClick}
       onDoubleClick={handleDoubleClick}
@@ -42,17 +42,18 @@ export default function DesktopIcon({ icon, label, appId, isSelected, onSelect, 
     >
       {/* Icon container */}
       <div
-        className="flex items-center justify-center rounded-lg transition-colors duration-100"
+        className="flex items-center justify-center transition-colors duration-100"
         style={{
-          width: '56px',
-          height: '56px',
-          fontSize: '36px',
+          width: '48px',
+          height: '48px',
+          fontSize: '24px',
+          borderRadius: 'var(--dt-radius-sm, 8px)',
           backgroundColor: isSelected
-            ? 'var(--dt-accent-soft)'
-            : 'transparent',
+            ? 'var(--dt-accent-soft-2)'
+            : 'var(--dt-accent-soft)',
           border: isSelected
             ? '1px solid var(--dt-accent-glow)'
-            : '1px solid transparent',
+            : '1px solid var(--dt-accent-border-dim)',
           boxShadow: isSelected
             ? '0 0 12px var(--dt-accent-border), inset 0 0 8px var(--dt-accent-border-dim)'
             : 'none',
@@ -77,8 +78,13 @@ export default function DesktopIcon({ icon, label, appId, isSelected, onSelect, 
 
       {/* Label */}
       <span
-        className="text-xs font-mono text-center w-full truncate leading-tight"
-        style={{ color: 'var(--dt-text)', textShadow: '0 1px 3px rgba(0,0,0,0.8)' }}
+        className="text-center w-full truncate leading-tight"
+        style={{
+          fontFamily: 'var(--dt-font-mono, monospace)',
+          fontSize: '9px',
+          color: 'var(--dt-text)',
+          textShadow: '0 1px 3px rgba(0,0,0,0.8)',
+        }}
       >
         {label}
       </span>

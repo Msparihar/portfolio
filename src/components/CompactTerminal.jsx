@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { useTerminal } from '@/components/TerminalContext';
 import { Terminal as TerminalIcon, X, Minimize2 } from 'lucide-react';
+import { getWorldAppTitle } from '@/config/worldContent';
 
 export const CompactTerminal = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -15,7 +16,8 @@ export const CompactTerminal = () => {
     isNavigating,
     handleSubmit,
     handleKeyDown,
-    inputRef
+    inputRef,
+    worldId
   } = useTerminal();
 
   if (!isOpen) {
@@ -23,7 +25,8 @@ export const CompactTerminal = () => {
       <div className="fixed bottom-4 right-4 z-50">
         <button
           onClick={() => setIsOpen(true)}
-          className="bg-green-600 hover:bg-green-700 dark:bg-green-500 dark:hover:bg-green-600 text-white p-3 rounded-full shadow-lg transition-colors"
+          className="bg-current hover:bg-current/90 p-3 rounded-full shadow-lg transition-colors"
+          style={{ color: 'var(--dt-text)' }}
           title="Open Terminal"
         >
           <TerminalIcon className="w-5 h-5" />
@@ -39,10 +42,10 @@ export const CompactTerminal = () => {
       {/* Terminal Header */}
       <div className="flex items-center justify-between p-2 border-b border-border/30 bg-muted/20">
         <div className="flex items-center space-x-2">
-          <div className="w-3 h-3 bg-red-500 rounded-full"></div>
-          <div className="w-3 h-3 bg-yellow-500 rounded-full"></div>
-          <div className="w-3 h-3 bg-green-500 rounded-full"></div>
-          <span className="text-xs text-muted-foreground font-mono ml-2">Terminal</span>
+          <div className="traffic-close w-3 h-3 rounded-full"></div>
+          <div className="traffic-minimize w-3 h-3 rounded-full"></div>
+          <div className="w-3 h-3 rounded-full" style={{background:'var(--dt-accent)'}}></div>
+          <span className="text-xs text-muted-foreground font-mono ml-2">{getWorldAppTitle(worldId, 'terminal', 'Terminal')}</span>
         </div>
         <div className="flex items-center space-x-1">
           <button
@@ -70,7 +73,7 @@ export const CompactTerminal = () => {
             {history.slice(-8).map((entry, index) => (
               <div key={index} className="terminal-line">
                 <div className="flex items-start">
-                  <span className="terminal-prompt text-green-700 dark:text-green-500 mr-2 flex-shrink-0">$</span>
+                  <span className="terminal-prompt mr-2 flex-shrink-0" style={{color:'var(--dt-accent)'}}>$</span>
                   <span className="text-foreground font-mono">{entry.command}</span>
                 </div>
                 {entry.output && (
@@ -83,7 +86,7 @@ export const CompactTerminal = () => {
 
             {/* Terminal Input - positioned right after the last output */}
             <form onSubmit={handleSubmit} className="flex items-center py-2">
-              <span className="terminal-prompt text-green-700 dark:text-green-500 mr-2 text-sm">$</span>
+              <span className="terminal-prompt mr-2 text-sm" style={{color:'var(--dt-accent)'}}>$</span>
               <input
                 ref={inputRef}
                 type="text"
