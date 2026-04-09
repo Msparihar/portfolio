@@ -583,6 +583,9 @@
 .world-got .window-titlebar .traffic-minimize { background: #4a9eda; }
 .world-got .window-titlebar .traffic-maximize { background: #8ba4b8; }
 
+/* World switcher carousel — hide scrollbar */
+.world-switcher-scroll::-webkit-scrollbar { display: none; }
+
 /* Typography — activate IM Fell English heading font */
 .desktop-canvas.world-got {
   font-family: var(--font-geist), 'Segoe UI', system-ui, sans-serif;

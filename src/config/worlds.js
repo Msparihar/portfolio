@@ -473,3 +473,32 @@ export function applyWorld(canvasEl, worldId, regionId = null) {
     canvasEl.classList.add(world.worldClass);
   }
 }
+
+/**
+ * Apply a world with a fade transition on the desktop canvas.
+ * Shared utility used by WorldPicker and WorldSwitcherPopup.
+ *
+ * @param {string} worldId - The world id to apply
+ * @param {Function|null} onComplete - Optional callback after transition completes
+ */
+export function applyWorldWithTransition(worldId, onComplete = null) {
+  const canvas = document.querySelector('.desktop-canvas');
+  if (!canvas) return;
+
+  canvas.style.transition = 'opacity 200ms ease';
+  canvas.style.opacity = '0';
+
+  setTimeout(() => {
+    if (worldId) {
+      applyWorld(canvas, worldId);
+      localStorage.setItem(WORLD_STORAGE_KEY, worldId);
+      localStorage.removeItem('portfolio_theme');
+    } else {
+      applyWorld(canvas, null);
+      localStorage.removeItem(WORLD_STORAGE_KEY);
+    }
+    canvas.style.opacity = '1';
+    window.dispatchEvent(new CustomEvent('worldchange', { detail: { worldId } }));
+    if (onComplete) onComplete();
+  }, 200);
+}

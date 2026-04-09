@@ -1,47 +1,88 @@
 'use client';
 
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { WORLDS, WORLD_STORAGE_KEY, applyWorld } from '@/config/worlds';
-import { THEME_STORAGE_KEY, applyTheme, DEFAULT_THEME_ID } from '@/config/themes';
-import { getCurrentWorldId } from '@/config/worldContent';
+import { WORLDS, applyWorldWithTransition } from '@/config/worlds';
+import { getCurrentWorldId, getWorldCta, getWorldEmoji, createWorldChangeListener } from '@/config/worldContent';
 
-// World-specific CTA button text
-const WORLD_CTA = {
-  'elden-ring': 'Arise, Tarnished →',
-  'ghibli': 'Enter the Forest →',
-  'got': 'Claim the Throne →',
-};
+const CARD_WIDTH = 280; // px including gap
 
-// World emoji icons for card headers
-const WORLD_EMOJI = {
-  'elden-ring': '🌑',
-  'ghibli': '🌿',
-  'got': '⚔️',
-};
+function CarouselArrow({ direction, onClick }) {
+  const isLeft = direction === 'left';
+  return (
+    <button
+      aria-label={`Scroll ${direction}`}
+      onClick={onClick}
+      style={{
+        position: 'absolute',
+        [isLeft ? 'left' : 'right']: '12px',
+        top: '50%',
+        transform: 'translateY(-50%)',
+        zIndex: 10,
+        width: '36px',
+        height: '36px',
+        borderRadius: '50%',
+        background: 'var(--dt-surface)',
+        border: '1px solid var(--dt-accent-border-strong)',
+        color: 'var(--dt-accent)',
+        cursor: 'pointer',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        fontSize: '16px',
+        fontFamily: 'var(--dt-font-mono)',
+        transition: 'background 0.15s ease, box-shadow 0.15s ease',
+        boxShadow: '0 2px 8px rgba(0,0,0,0.2)',
+      }}
+      onMouseEnter={(e) => {
+        e.currentTarget.style.background = 'var(--dt-accent-soft)';
+        e.currentTarget.style.boxShadow = '0 2px 12px rgba(0,0,0,0.3)';
+      }}
+      onMouseLeave={(e) => {
+        e.currentTarget.style.background = 'var(--dt-surface)';
+        e.currentTarget.style.boxShadow = '0 2px 8px rgba(0,0,0,0.2)';
+      }}
+    >
+      {isLeft ? '‹' : '›'}
+    </button>
+  );
+}
+
+function KbdHint({ children }) {
+  return (
+    <kbd
+      style={{
+        padding: '2px 5px',
+        borderRadius: '3px',
+        background: 'var(--dt-accent-soft)',
+        border: '1px solid var(--dt-accent-border)',
+        fontSize: '10px',
+        fontFamily: 'var(--dt-font-mono)',
+        color: 'var(--dt-text-muted)',
+      }}
+    >
+      {children}
+    </kbd>
+  );
+}
 
 export default function WorldSwitcherPopup({ isOpen, onClose, onDontShowAgain }) {
   const [isVisible, setIsVisible] = useState(false);
   const [currentWorldId, setCurrentWorldId] = useState(null);
-  const [hoveredCard, setHoveredCard] = useState(null);
   const scrollRef = useRef(null);
   const modalRef = useRef(null);
   const firstFocusableRef = useRef(null);
+  const closeTimerRef = useRef(null);
 
-  // Sync current world
+  // Sync current world using shared listener
   useEffect(() => {
     setCurrentWorldId(getCurrentWorldId());
-    const handleWorldChange = (e) => {
-      setCurrentWorldId(e.detail?.worldId ?? getCurrentWorldId());
-    };
-    window.addEventListener('worldchange', handleWorldChange);
-    return () => window.removeEventListener('worldchange', handleWorldChange);
+    return createWorldChangeListener(setCurrentWorldId);
   }, []);
 
-  // Animate in/out
+  // Animate in/out + focus
   useEffect(() => {
     if (isOpen) {
       setIsVisible(true);
-      // Focus the modal after it opens
       requestAnimationFrame(() => {
         if (firstFocusableRef.current) firstFocusableRef.current.focus();
       });
@@ -50,7 +91,35 @@ export default function WorldSwitcherPopup({ isOpen, onClose, onDontShowAgain })
     }
   }, [isOpen]);
 
-  // Keyboard handling: Escape + arrow keys
+  // Clean up any pending close timers on unmount
+  useEffect(() => {
+    return () => {
+      if (closeTimerRef.current) clearTimeout(closeTimerRef.current);
+    };
+  }, []);
+
+  const scrollCarousel = useCallback((direction) => {
+    if (!scrollRef.current) return;
+    scrollRef.current.scrollBy({ left: direction * CARD_WIDTH, behavior: 'smooth' });
+  }, []);
+
+  const handleClose = useCallback(() => {
+    setIsVisible(false);
+    closeTimerRef.current = setTimeout(() => {
+      closeTimerRef.current = null;
+      onClose();
+    }, 150);
+  }, [onClose]);
+
+  const handleDontShowAgain = useCallback(() => {
+    setIsVisible(false);
+    closeTimerRef.current = setTimeout(() => {
+      closeTimerRef.current = null;
+      onDontShowAgain();
+    }, 150);
+  }, [onDontShowAgain]);
+
+  // Keyboard: Escape + arrow keys + focus trap
   useEffect(() => {
     if (!isOpen) return;
 
@@ -63,47 +132,26 @@ export default function WorldSwitcherPopup({ isOpen, onClose, onDontShowAgain })
       } else if (e.key === 'ArrowLeft') {
         e.preventDefault();
         scrollCarousel(-1);
-      }
-    };
-
-    document.addEventListener('keydown', handleKeyDown);
-    return () => document.removeEventListener('keydown', handleKeyDown);
-  }, [isOpen]); // eslint-disable-line react-hooks/exhaustive-deps
-
-  // Focus trap
-  useEffect(() => {
-    if (!isOpen || !modalRef.current) return;
-
-    const modal = modalRef.current;
-    const focusableSelectors = [
-      'button:not([disabled])',
-      '[href]',
-      'input:not([disabled])',
-      '[tabindex]:not([tabindex="-1"])',
-    ].join(', ');
-
-    const handleTabTrap = (e) => {
-      if (e.key !== 'Tab') return;
-      const focusable = [...modal.querySelectorAll(focusableSelectors)];
-      if (focusable.length === 0) return;
-      const first = focusable[0];
-      const last = focusable[focusable.length - 1];
-      if (e.shiftKey) {
-        if (document.activeElement === first) {
+      } else if (e.key === 'Tab' && modalRef.current) {
+        const focusable = [...modalRef.current.querySelectorAll(
+          'button:not([disabled]), [href], input:not([disabled]), [tabindex]:not([tabindex="-1"])'
+        )];
+        if (focusable.length === 0) return;
+        const first = focusable[0];
+        const last = focusable[focusable.length - 1];
+        if (e.shiftKey && document.activeElement === first) {
           e.preventDefault();
           last.focus();
-        }
-      } else {
-        if (document.activeElement === last) {
+        } else if (!e.shiftKey && document.activeElement === last) {
           e.preventDefault();
           first.focus();
         }
       }
     };
 
-    document.addEventListener('keydown', handleTabTrap);
-    return () => document.removeEventListener('keydown', handleTabTrap);
-  }, [isOpen]);
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [isOpen, handleClose, scrollCarousel]);
 
   // Scroll to current world on open
   useEffect(() => {
@@ -112,59 +160,25 @@ export default function WorldSwitcherPopup({ isOpen, onClose, onDontShowAgain })
     const cards = container.querySelectorAll('[data-world-card]');
     if (!cards.length) return;
 
-    // Find current world index
     const currentIdx = WORLDS.findIndex((w) => w.id === currentWorldId);
-    const targetIdx = currentIdx >= 0 ? currentIdx : 0;
-    const targetCard = cards[targetIdx];
+    const targetCard = cards[currentIdx >= 0 ? currentIdx : 0];
     if (!targetCard) return;
 
     requestAnimationFrame(() => {
       const containerRect = container.getBoundingClientRect();
       const cardRect = targetCard.getBoundingClientRect();
-      const scrollLeft =
-        targetCard.offsetLeft - containerRect.width / 2 + cardRect.width / 2;
-      container.scrollLeft = scrollLeft;
+      container.scrollLeft = targetCard.offsetLeft - containerRect.width / 2 + cardRect.width / 2;
     });
-  }, [isOpen, currentWorldId]);
-
-  const handleClose = useCallback(() => {
-    setIsVisible(false);
-    setTimeout(() => {
-      onClose();
-    }, 150);
-  }, [onClose]);
-
-  const handleDontShowAgain = useCallback(() => {
-    setIsVisible(false);
-    setTimeout(() => {
-      onDontShowAgain();
-    }, 150);
-  }, [onDontShowAgain]);
+  }, [isOpen]); // only on open, not on currentWorldId change during close
 
   const handleSwitchWorld = useCallback((worldId) => {
-    const canvas = document.querySelector('.desktop-canvas');
-    if (!canvas) return;
-    canvas.style.transition = 'opacity 200ms ease';
-    canvas.style.opacity = '0';
-    setTimeout(() => {
-      applyWorld(canvas, worldId);
-      localStorage.setItem(WORLD_STORAGE_KEY, worldId);
-      localStorage.removeItem(THEME_STORAGE_KEY);
-      canvas.style.opacity = '1';
-    }, 200);
-    window.dispatchEvent(new CustomEvent('worldchange', { detail: { worldId } }));
+    applyWorldWithTransition(worldId);
     setIsVisible(false);
-    setTimeout(() => {
+    closeTimerRef.current = setTimeout(() => {
+      closeTimerRef.current = null;
       onClose();
     }, 150);
   }, [onClose]);
-
-  const scrollCarousel = useCallback((direction) => {
-    if (!scrollRef.current) return;
-    const container = scrollRef.current;
-    const cardWidth = 260 + 20; // card width + gap
-    container.scrollBy({ left: direction * cardWidth, behavior: 'smooth' });
-  }, []);
 
   if (!isOpen && !isVisible) return null;
 
@@ -191,7 +205,6 @@ export default function WorldSwitcherPopup({ isOpen, onClose, onDontShowAgain })
       }}
       aria-hidden={!isOpen}
     >
-      {/* Modal container */}
       <div
         ref={modalRef}
         role="dialog"
@@ -252,9 +265,8 @@ export default function WorldSwitcherPopup({ isOpen, onClose, onDontShowAgain })
           ✕
         </button>
 
-        {/* Inner padding */}
+        {/* Header */}
         <div style={{ padding: '32px 32px 0' }}>
-          {/* Timer badge */}
           <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '20px' }}>
             <div
               style={{
@@ -276,7 +288,6 @@ export default function WorldSwitcherPopup({ isOpen, onClose, onDontShowAgain })
             </div>
           </div>
 
-          {/* Title */}
           <h2
             style={{
               textAlign: 'center',
@@ -291,7 +302,6 @@ export default function WorldSwitcherPopup({ isOpen, onClose, onDontShowAgain })
             Choose Your World
           </h2>
 
-          {/* Subtitle */}
           <p
             style={{
               textAlign: 'center',
@@ -306,89 +316,13 @@ export default function WorldSwitcherPopup({ isOpen, onClose, onDontShowAgain })
           </p>
         </div>
 
-        {/* Carousel area */}
+        {/* Carousel */}
         <div style={{ position: 'relative', paddingBottom: '8px' }}>
-          {/* Left arrow */}
-          <button
-            aria-label="Scroll left"
-            onClick={() => scrollCarousel(-1)}
-            style={{
-              position: 'absolute',
-              left: '12px',
-              top: '50%',
-              transform: 'translateY(-50%)',
-              zIndex: 10,
-              width: '36px',
-              height: '36px',
-              borderRadius: '50%',
-              background: 'var(--dt-surface)',
-              border: '1px solid var(--dt-accent-border-strong)',
-              color: 'var(--dt-accent)',
-              cursor: 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              fontSize: '16px',
-              fontFamily: 'var(--dt-font-mono)',
-              transition: 'background 0.15s ease, box-shadow 0.15s ease',
-              boxShadow: '0 2px 8px rgba(0,0,0,0.2)',
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.background = 'var(--dt-accent-soft)';
-              e.currentTarget.style.boxShadow = '0 2px 12px rgba(0,0,0,0.3)';
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.background = 'var(--dt-surface)';
-              e.currentTarget.style.boxShadow = '0 2px 8px rgba(0,0,0,0.2)';
-            }}
-          >
-            ‹
-          </button>
+          <CarouselArrow direction="left" onClick={() => scrollCarousel(-1)} />
+          <CarouselArrow direction="right" onClick={() => scrollCarousel(1)} />
 
-          {/* Right arrow */}
-          <button
-            aria-label="Scroll right"
-            onClick={() => scrollCarousel(1)}
-            style={{
-              position: 'absolute',
-              right: '12px',
-              top: '50%',
-              transform: 'translateY(-50%)',
-              zIndex: 10,
-              width: '36px',
-              height: '36px',
-              borderRadius: '50%',
-              background: 'var(--dt-surface)',
-              border: '1px solid var(--dt-accent-border-strong)',
-              color: 'var(--dt-accent)',
-              cursor: 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              fontSize: '16px',
-              fontFamily: 'var(--dt-font-mono)',
-              transition: 'background 0.15s ease, box-shadow 0.15s ease',
-              boxShadow: '0 2px 8px rgba(0,0,0,0.2)',
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.background = 'var(--dt-accent-soft)';
-              e.currentTarget.style.boxShadow = '0 2px 12px rgba(0,0,0,0.3)';
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.background = 'var(--dt-surface)';
-              e.currentTarget.style.boxShadow = '0 2px 8px rgba(0,0,0,0.2)';
-            }}
-          >
-            ›
-          </button>
-
-          {/* Scrollable carousel */}
-          <style>{`
-            .world-switcher-scroll::-webkit-scrollbar { display: none; }
-          `}</style>
           <div
             ref={scrollRef}
-            className="world-switcher-scroll"
             style={{
               display: 'flex',
               flexDirection: 'row',
@@ -401,15 +335,16 @@ export default function WorldSwitcherPopup({ isOpen, onClose, onDontShowAgain })
               maskImage: 'linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%)',
               WebkitMaskImage: 'linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%)',
             }}
+            className="world-switcher-scroll"
           >
             {WORLDS.map((world) => {
               const isCurrent = world.id === currentWorldId;
-              const isHovered = hoveredCard === world.id;
 
               return (
                 <div
                   key={world.id}
                   data-world-card={world.id}
+                  data-current={isCurrent || undefined}
                   style={{
                     minWidth: '260px',
                     maxWidth: '260px',
@@ -418,18 +353,28 @@ export default function WorldSwitcherPopup({ isOpen, onClose, onDontShowAgain })
                     borderRadius: 'calc(var(--dt-window-radius) - 2px)',
                     border: isCurrent
                       ? '1px solid var(--dt-accent)'
-                      : `1px solid var(--dt-accent-border${isHovered ? '-strong' : ''})`,
+                      : '1px solid var(--dt-accent-border)',
                     background: isCurrent ? 'var(--dt-accent-soft-2)' : 'var(--dt-surface-deep)',
                     overflow: 'hidden',
                     transition: 'transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease',
-                    transform: isHovered && !isCurrent ? 'translateY(-2px)' : 'translateY(0)',
-                    boxShadow: isHovered && !isCurrent ? 'var(--dt-shadow-focused)' : 'none',
                     cursor: isCurrent ? 'default' : 'pointer',
                   }}
-                  onMouseEnter={() => setHoveredCard(world.id)}
-                  onMouseLeave={() => setHoveredCard(null)}
+                  onMouseEnter={(e) => {
+                    if (!isCurrent) {
+                      e.currentTarget.style.transform = 'translateY(-2px)';
+                      e.currentTarget.style.boxShadow = 'var(--dt-shadow-focused)';
+                      e.currentTarget.style.borderColor = 'var(--dt-accent-border-strong)';
+                    }
+                  }}
+                  onMouseLeave={(e) => {
+                    if (!isCurrent) {
+                      e.currentTarget.style.transform = 'translateY(0)';
+                      e.currentTarget.style.boxShadow = 'none';
+                      e.currentTarget.style.borderColor = 'var(--dt-accent-border)';
+                    }
+                  }}
                 >
-                  {/* Card gradient header */}
+                  {/* Card header */}
                   <div
                     style={{
                       height: '80px',
@@ -441,7 +386,6 @@ export default function WorldSwitcherPopup({ isOpen, onClose, onDontShowAgain })
                       position: 'relative',
                     }}
                   >
-                    {/* Swatch accent dot */}
                     <div
                       style={{
                         position: 'absolute',
@@ -454,15 +398,13 @@ export default function WorldSwitcherPopup({ isOpen, onClose, onDontShowAgain })
                         boxShadow: `0 0 8px ${world.swatch}88`,
                       }}
                     />
-                    {/* World emoji */}
                     <span style={{ fontSize: '32px', lineHeight: 1 }}>
-                      {WORLD_EMOJI[world.id] ?? '🌍'}
+                      {getWorldEmoji(world.id)}
                     </span>
                   </div>
 
                   {/* Card body */}
                   <div style={{ padding: '16px' }}>
-                    {/* World name */}
                     <div
                       style={{
                         fontFamily: 'var(--dt-font-heading)',
@@ -476,7 +418,6 @@ export default function WorldSwitcherPopup({ isOpen, onClose, onDontShowAgain })
                       {world.name}
                     </div>
 
-                    {/* Description */}
                     <p
                       style={{
                         fontFamily: 'var(--dt-font-body)',
@@ -490,7 +431,6 @@ export default function WorldSwitcherPopup({ isOpen, onClose, onDontShowAgain })
                       {world.description}
                     </p>
 
-                    {/* CTA or current badge */}
                     {isCurrent ? (
                       <div
                         style={{
@@ -547,7 +487,7 @@ export default function WorldSwitcherPopup({ isOpen, onClose, onDontShowAgain })
                           e.currentTarget.style.color = 'var(--dt-accent)';
                         }}
                       >
-                        {WORLD_CTA[world.id] ?? 'Switch World →'}
+                        {getWorldCta(world.id)}
                       </button>
                     )}
                   </div>
@@ -576,7 +516,6 @@ export default function WorldSwitcherPopup({ isOpen, onClose, onDontShowAgain })
             gap: '12px',
           }}
         >
-          {/* Keyboard hint */}
           <div
             style={{
               fontFamily: 'var(--dt-font-mono)',
@@ -588,36 +527,11 @@ export default function WorldSwitcherPopup({ isOpen, onClose, onDontShowAgain })
               gap: '4px',
             }}
           >
-            <kbd
-              style={{
-                padding: '2px 5px',
-                borderRadius: '3px',
-                background: 'var(--dt-accent-soft)',
-                border: '1px solid var(--dt-accent-border)',
-                fontSize: '10px',
-                fontFamily: 'var(--dt-font-mono)',
-                color: 'var(--dt-text-muted)',
-              }}
-            >
-              ←
-            </kbd>
-            <kbd
-              style={{
-                padding: '2px 5px',
-                borderRadius: '3px',
-                background: 'var(--dt-accent-soft)',
-                border: '1px solid var(--dt-accent-border)',
-                fontSize: '10px',
-                fontFamily: 'var(--dt-font-mono)',
-                color: 'var(--dt-text-muted)',
-              }}
-            >
-              →
-            </kbd>
+            <KbdHint>←</KbdHint>
+            <KbdHint>→</KbdHint>
             <span style={{ marginLeft: '4px' }}>to browse</span>
           </div>
 
-          {/* Action buttons */}
           <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
             <button
               onClick={handleDontShowAgain}

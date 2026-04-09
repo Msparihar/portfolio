@@ -233,6 +233,26 @@ const WORLD_TASKBAR: WorldTaskbarMap = {
   },
 };
 
+// ─── World switcher CTA labels ────────────────────────────────────────────
+
+const WORLD_CTA: Record<WorldId, string> = {
+  'elden-ring': 'Arise, Tarnished →',
+  'ghibli': 'Enter the Forest →',
+  'got': 'Claim the Throne →',
+};
+
+const DEFAULT_CTA = 'Switch World →';
+
+// ─── World switcher emoji icons ───────────────────────────────────────────
+
+const WORLD_EMOJI: Record<WorldId, string> = {
+  'elden-ring': '🌑',
+  'ghibli': '🌿',
+  'got': '⚔️',
+};
+
+const DEFAULT_EMOJI = '🌍';
+
 // ─── Default terminal content (when no world is active) ────────────────────
 
 const DEFAULT_TERMINAL: TerminalContent = {
@@ -357,4 +377,20 @@ export function createWorldChangeListener(callback: (worldId: WorldId | null) =>
   };
   window.addEventListener('worldchange', handler);
   return () => window.removeEventListener('worldchange', handler);
+}
+
+/**
+ * Get world-specific CTA button label for world switcher.
+ */
+export function getWorldCta(worldId: string | null): string {
+  if (worldId && isWorldId(worldId)) return WORLD_CTA[worldId];
+  return DEFAULT_CTA;
+}
+
+/**
+ * Get world-specific emoji icon for world switcher cards.
+ */
+export function getWorldEmoji(worldId: string | null): string {
+  if (worldId && isWorldId(worldId)) return WORLD_EMOJI[worldId];
+  return DEFAULT_EMOJI;
 }
