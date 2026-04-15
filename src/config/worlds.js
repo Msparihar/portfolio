@@ -99,7 +99,7 @@ export const WORLDS = [
       heading: 'var(--font-newsreader)',
       body: 'var(--font-geist)',
     },
-    brandText: 'ghibli@portfolio',
+    brandText: 'GHIBLI OS',
     desktopWatermark: null,
     titleFormat: (title) => `✿ ${title}`,
     bootAccentColor: { text: '#4a7c59', ok: '#8bc49e' },

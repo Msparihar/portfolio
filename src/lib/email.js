@@ -33,7 +33,7 @@ export async function sendVisitorAlert(source, data) {
     console.log("[Email] Attempting to send email...");
     const result = await transporter.sendMail({
       from: process.env.EMAIL,
-      to: "manishsparihar2020@gmail.com",
+      to: process.env.EMAIL_RECIPIENT || "manishsparihar2020@gmail.com",
       subject: `Portfolio Visit from ${source}`,
       text: `Someone visited your portfolio from ${source}!\n\nDetails:\n- Device: ${data.device || "Unknown"}\n- Browser: ${data.browser || "Unknown"}\n- Country: ${data.country || "Unknown"}\n- Path: ${data.path || "/"}\n- Time: ${new Date().toISOString()}`,
       html: `
@@ -68,7 +68,7 @@ export async function sendContactMessage({ name, email, subject, message }) {
     const result = await transporter.sendMail({
       from: process.env.EMAIL,
       replyTo: email,
-      to: 'manishsparihar2020@gmail.com',
+      to: process.env.EMAIL_RECIPIENT || 'manishsparihar2020@gmail.com',
       subject: `Portfolio Contact: ${subject || '(no subject)'}`,
       text: `New contact form submission:\n\nFrom: ${name || 'Anonymous'} <${email}>\nSubject: ${subject || '(no subject)'}\n\nMessage:\n${message}\n\nSent at: ${new Date().toISOString()}`,
       html: `
