@@ -2,6 +2,41 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## Workflow (READ FIRST — critical)
+
+This repo uses a lightweight three-file workflow. Claude MUST follow this.
+
+### At session start
+1. Read `STATUS.md` (repo root) — current shipped version, in-progress work, known issues, next on deck. **Gitignored**, may not exist on fresh clones; if missing, ask the user.
+2. Read `docs/IDEAS.md` — future version ideas, backlog, rough thoughts. **Gitignored**, also personal.
+3. Skim `docs/prd/` for any **active** (non-archived) PRD files — these are what we're building right now.
+
+### Where things live
+- **`STATUS.md`** (gitignored) — single source of truth for "what's happening right now." Update at end of every session. One file, ~50-100 lines max.
+- **`docs/IDEAS.md`** (gitignored) — one big append-only markdown file with dated sections. All future version ideas, backlog notes, brainstorms. Newest on top. No per-idea files.
+- **`docs/prd/`** — contains ONLY the PRD for work actively being planned or built. Shipped PRDs move to `docs/prd/archive/`. No "future version" PRDs live here.
+- **`docs/prd/archive/`** — shipped/completed PRDs, kept for reference.
+- **`docs/prd/design/`** + **`docs/design/worlds.pen`** — design source files.
+
+### The flow
+1. **Ideas phase** — new thought? Append a dated section to `docs/IDEAS.md`. Do NOT create a new PRD.
+2. **Planning phase** — when an idea matures to "we're building this next," run `prd-writer` → `prd-reviewer` on it, creating `docs/prd/vX.Y.Z-name.md`.
+3. **Build phase** — implement per PRD (subagents for multi-file work per global CLAUDE.md rules). Run `/simplify` after.
+4. **Ship phase** — commit + push. Move the PRD to `docs/prd/archive/`. Update `STATUS.md`: bump "Current shipped version," clear "In progress," adjust "Next on deck."
+
+### Do NOT
+- Create per-idea markdown files. Everything goes into the single `docs/IDEAS.md`.
+- Write full PRDs for "someday" ideas. PRDs are for work being actively built, not for backlog.
+- Forget to update `STATUS.md` at end of session — that's the discipline that makes the whole system work.
+- Commit `STATUS.md` or `docs/IDEAS.md`. They're gitignored on purpose (personal notes; repo is public).
+
+### Version numbering
+- Patch bumps (v0.6.2, v0.6.3) for bug fixes and small focused changes.
+- Minor bumps (v0.7.0, v0.8.0) for new feature systems.
+- Major bumps (v1.0.0, v2.0.0) for architecture-level shifts (landing page, 3D world).
+
+---
+
 ## Package Manager
 
 This project uses **bun** as the package manager. Always use `bun` commands instead of `npm` or `pnpm`.
