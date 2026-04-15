@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState, useCallback } from 'react';
+import Image from 'next/image';
 import { useWindowStore } from '@/store/windowStore';
 import DesktopIconGrid from './DesktopIconGrid';
 import WindowManager from './WindowManager';
@@ -14,7 +15,7 @@ import { useSidebarStore } from '@/store/sidebarStore';
 import { useUiStore } from '@/store/uiStore';
 import { useSeasonStore } from '@/store/seasonStore';
 
-const SWITCHER_DISMISSED_KEY = SWITCHER_DISMISSED_KEY;
+const SWITCHER_DISMISSED_KEY = 'dt-world-switcher-dismissed';
 
 function MobileFallback() {
   return (
@@ -212,10 +213,14 @@ export default function Desktop({ githubData, initialApp }) {
     >
       {/* Wallpaper image layer — rendered below gradient tint */}
       {activeWallpaper && (
-        <img
+        <Image
+          key={activeWallpaper}
           src={activeWallpaper}
           alt=""
-          className="absolute inset-0 w-full h-full object-cover pointer-events-none"
+          fill
+          priority
+          sizes="100vw"
+          className="object-cover pointer-events-none"
           style={{ zIndex: 0 }}
         />
       )}
