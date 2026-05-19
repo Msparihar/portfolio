@@ -34,7 +34,7 @@ export default function DesktopIcon({ icon, label, appId, isSelected, onSelect, 
       role="button"
       tabIndex={0}
       aria-label={label}
-      className="flex flex-col items-center gap-1 cursor-pointer select-none outline-none rounded-lg"
+      className="desktop-icon flex flex-col items-center gap-1 cursor-pointer select-none outline-none rounded-lg"
       style={{ width: '88px' }}
       onClick={handleClick}
       onDoubleClick={handleDoubleClick}
@@ -64,7 +64,7 @@ export default function DesktopIcon({ icon, label, appId, isSelected, onSelect, 
 
       {/* Label */}
       <span
-        className="text-center w-full truncate leading-tight"
+        className="icon-label text-center w-full truncate leading-tight"
         style={{
           fontFamily: 'var(--dt-font-mono, monospace)',
           fontSize: '11px',

@@ -122,6 +122,10 @@
 
   /* Window backdrop blur (overridden by Glass theme) */
   --dt-window-blur:         blur(20px) saturate(1.2);
+
+  /* Icon label legibility (overridden by prefsStore at runtime) */
+  --dt-icon-blur:           6px;
+  --dt-icon-bg:             0.55;
 }
 
 /* Desktop OS Scrollbar — scoped to desktop canvas */
@@ -358,6 +362,69 @@
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(4px); }
   to { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Ken Burns wallpaper layers ──────────────────────────────────────────── */
+/* Two alternating layers crossfade so adjacent wallpapers swap smoothly.     */
+/* Scale drifts 1.0 → 1.06 over 90s; translate adds a slow pan offset.       */
+
+@keyframes kenburns-a {
+  0%   { transform: scale(1.0)    translate(0%, 0%); }
+  50%  { transform: scale(1.06)   translate(-1.2%, -0.8%); }
+  100% { transform: scale(1.0)    translate(0%, 0%); }
+}
+
+@keyframes kenburns-b {
+  0%   { transform: scale(1.06)   translate(1.0%, 0.6%); }
+  50%  { transform: scale(1.0)    translate(0%, 0%); }
+  100% { transform: scale(1.06)   translate(1.0%, 0.6%); }
+}
+
+.wallpaper-layer {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  will-change: transform;
+  transform-origin: center center;
+  /* Slight over-size prevents black edges during scale animation */
+  width: 108%;
+  height: 108%;
+  top: -4%;
+  left: -4%;
+}
+
+.wallpaper-layer-a {
+  animation: kenburns-a 90s ease-in-out infinite;
+}
+
+.wallpaper-layer-b {
+  animation: kenburns-b 90s ease-in-out infinite;
+}
+
+/* When animation is disabled, remove the drift */
+.wallpaper-layer-a.kb-paused,
+.wallpaper-layer-b.kb-paused {
+  animation: none;
+  transform: none;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+}
+
+@keyframes settingsPanelIn {
+  from { opacity: 0; transform: translateY(4px) scale(0.98); }
+  to   { opacity: 1; transform: translateY(0)   scale(1);    }
+}
+
+/* Icon label legibility — backdrop behind icon text */
+.desktop-icon .icon-label {
+  backdrop-filter: blur(var(--dt-icon-blur));
+  -webkit-backdrop-filter: blur(var(--dt-icon-blur));
+  background: rgba(0, 0, 0, var(--dt-icon-bg));
+  border-radius: 3px;
+  padding: 1px 3px;
 }
 
 /* GSAP animation: hide elements before GSAP initializes (prevents FOUC) */
