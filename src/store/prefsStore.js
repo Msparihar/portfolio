@@ -33,6 +33,7 @@ const DEFAULTS = {
   iconBlur: 6,
   iconBg: 0.55,
   pinnedWallpaperId: 'auto',
+  animateWallpaper: true,
 };
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
@@ -61,6 +62,7 @@ export const usePrefsStore = create(
       iconBlur: DEFAULTS.iconBlur,
       iconBg: DEFAULTS.iconBg,
       pinnedWallpaperId: DEFAULTS.pinnedWallpaperId,
+      animateWallpaper: DEFAULTS.animateWallpaper,
 
       setHeadingFont: (font) => {
         if (!HEADING_FONTS.includes(font)) return;
@@ -94,6 +96,10 @@ export const usePrefsStore = create(
 
       setPinnedWallpaper: (id) => {
         set({ pinnedWallpaperId: id });
+      },
+
+      setAnimateWallpaper: (enabled) => {
+        set({ animateWallpaper: Boolean(enabled) });
       },
 
       // Call once on mount to rehydrate CSS vars from persisted state.
