@@ -161,6 +161,12 @@ export default function RootLayout({ children }) {
         <link rel="dns-prefetch" href="//res.cloudinary.com" />
       </head>
       <body suppressHydrationWarning>
+        {/* FOUC prevention — apply saved world vars to :root before React mounts */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){try{var w=localStorage.getItem('portfolio_world')||'ghibli';var m={'elden-ring':{'--dt-bg':'#0d0b07','--dt-surface':'rgba(26,21,16,0.97)','--dt-surface-deep':'rgba(13,11,7,0.98)','--dt-text':'#e8d5a3','--dt-text-muted':'#b2a66c','--dt-accent':'#c9a84c','--dt-accent-hover':'#f9c043','--dt-accent-soft':'rgba(201,168,76,0.08)','--dt-accent-border':'rgba(75,61,42,0.8)','--dt-accent-border-strong':'rgba(201,168,76,0.25)','--dt-taskbar-bg':'linear-gradient(180deg,rgba(18,14,8,0.95) 0%,rgba(10,8,4,0.98) 100%)','--dt-taskbar-border':'rgba(201,168,76,0.2)'},'ghibli':{'--dt-bg':'#f5f0e8','--dt-surface':'rgba(250,246,237,0.80)','--dt-surface-deep':'rgba(240,232,216,0.90)','--dt-text':'#4a6b52','--dt-text-muted':'#636e72','--dt-accent':'#4a7c59','--dt-accent-hover':'#3a6a49','--dt-accent-soft':'rgba(74,124,89,0.08)','--dt-accent-border':'rgba(224,212,192,0.8)','--dt-accent-border-strong':'rgba(224,212,192,1.0)','--dt-taskbar-bg':'linear-gradient(180deg,rgba(255,255,255,0.75) 0%,rgba(255,255,255,0.65) 100%)','--dt-taskbar-border':'rgba(200,191,176,0.8)'},'got':{'--dt-bg':'#0d1b2a','--dt-surface':'rgba(26,58,92,0.85)','--dt-surface-deep':'rgba(13,27,42,0.95)','--dt-text':'#e8edf2','--dt-text-muted':'#8ba4b8','--dt-accent':'#4a9eda','--dt-accent-hover':'#6bb8e8','--dt-accent-soft':'rgba(74,158,218,0.08)','--dt-accent-border':'rgba(74,158,218,0.2)','--dt-accent-border-strong':'rgba(74,158,218,0.35)','--dt-taskbar-bg':'linear-gradient(180deg,rgba(13,27,42,0.92) 0%,rgba(8,16,28,0.96) 100%)','--dt-taskbar-border':'rgba(74,158,218,0.15)'}};var v=m[w]||m['ghibli'];var r=document.documentElement;for(var k in v)r.style.setProperty(k,v[k]);}catch(e){}})();`,
+          }}
+        />
         {/* Google Analytics */}
         <Script
           src="https://www.googletagmanager.com/gtag/js?id=G-5J2M5HE773"

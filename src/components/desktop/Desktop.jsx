@@ -1,19 +1,21 @@
 'use client';
 
 import { useEffect, useState, useCallback } from 'react';
-import Image from 'next/image';
 import { useWindowStore } from '@/store/windowStore';
 import DesktopIconGrid from './DesktopIconGrid';
 import WindowManager from './WindowManager';
 import Taskbar from './Taskbar';
 import ContextMenu from './ContextMenu';
 import { THEME_STORAGE_KEY, DEFAULT_THEME_ID, applyTheme } from '@/config/themes';
-import { WORLD_STORAGE_KEY, WORLDS, applyWorld } from '@/config/worlds';
+import { WORLD_STORAGE_KEY, WORLDS, applyWorld, normalizeWallpaper } from '@/config/worlds';
 import Sidebar from './Sidebar';
 import WorldSwitcherPopup from './WorldSwitcherPopup';
+import SettingsPanel from './SettingsPanel';
+import ParticleCanvas from './ParticleCanvas';
 import { useSidebarStore } from '@/store/sidebarStore';
 import { useUiStore } from '@/store/uiStore';
 import { useSeasonStore } from '@/store/seasonStore';
+import { usePrefsStore } from '@/store/prefsStore';
 
 const SWITCHER_DISMISSED_KEY = 'dt-world-switcher-dismissed';
 
@@ -42,6 +44,8 @@ export default function Desktop({ githubData, initialApp }) {
   const startCycle = useSeasonStore((s) => s.startCycle);
   const stopCycle = useSeasonStore((s) => s.stopCycle);
   const currentRegion = useSeasonStore((s) => s.currentRegion);
+  const pinnedWallpaperId  = usePrefsStore((s) => s.pinnedWallpaperId);
+  const animateWallpaper   = usePrefsStore((s) => s.animateWallpaper);
 
   const [isMobile, setIsMobile] = useState(false);
   const [selectedIcon, setSelectedIcon] = useState(null);
@@ -199,10 +203,22 @@ export default function Desktop({ githubData, initialApp }) {
   }
 
   const currentWorldConfig = currentWorldId ? WORLDS.find((w) => w.id === currentWorldId) : null;
-  // For worlds with regions (GoT), use the active region's wallpaper
-  const activeWallpaper = currentWorldConfig?.regions && currentRegion
+
+  // Derive active wallpaper entry (may be string or object); normalizeWallpaper handles both.
+  // For worlds with regions (GoT), use the active region's wallpaper; prefsStore pin overrides src.
+  const rawWallpaperEntry = currentWorldConfig?.regions && currentRegion
     ? (currentWorldConfig.regions[currentRegion]?.wallpaper ?? currentWorldConfig.wallpaper)
     : currentWorldConfig?.wallpaper;
+
+  const normalizedWallpaper = normalizeWallpaper(rawWallpaperEntry);
+
+  // When a wallpaper is pinned by src path, keep that src but inherit particle config from the
+  // matched region/world entry for the current world context.
+  const activeWallpaperSrc = pinnedWallpaperId !== 'auto'
+    ? pinnedWallpaperId
+    : normalizedWallpaper.src;
+
+  const activeParticleConfig = normalizedWallpaper.particles;
 
   return (
     <div
@@ -211,19 +227,22 @@ export default function Desktop({ githubData, initialApp }) {
       onClick={handleDesktopClick}
       onContextMenu={handleContextMenu}
     >
-      {/* Wallpaper image layer — rendered below gradient tint */}
-      {activeWallpaper && (
-        <Image
-          key={activeWallpaper}
-          src={activeWallpaper}
-          alt=""
-          fill
-          priority
-          sizes="100vw"
-          className="object-cover pointer-events-none"
-          style={{ zIndex: 0 }}
-        />
+      {/* Wallpaper Ken Burns layers — two divs crossfade via CSS phase offset */}
+      {activeWallpaperSrc && (
+        <>
+          <div
+            className={`wallpaper-layer wallpaper-layer-a${animateWallpaper ? '' : ' kb-paused'}`}
+            style={{ backgroundImage: `url(${activeWallpaperSrc})`, zIndex: 0 }}
+          />
+          <div
+            className={`wallpaper-layer wallpaper-layer-b${animateWallpaper ? '' : ' kb-paused'}`}
+            style={{ backgroundImage: `url(${activeWallpaperSrc})`, zIndex: 0 }}
+          />
+        </>
       )}
+
+      {/* Particle canvas overlay — single rAF loop, gated by animateWallpaper */}
+      <ParticleCanvas config={activeParticleConfig} enabled={animateWallpaper} />
 
       {/* Gradient wallpaper layer — tints the image (or standalone gradient) */}
       <div
@@ -319,6 +338,9 @@ export default function Desktop({ githubData, initialApp }) {
         onClose={handleWorldSwitcherClose}
         onDontShowAgain={handleWorldSwitcherDontShow}
       />
+
+      {/* Settings Panel */}
+      <SettingsPanel />
 
     </div>
   );
