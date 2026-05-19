@@ -10,6 +10,7 @@ export const WORLD_STORAGE_KEY = 'portfolio_world';
 export const WORLDS = [
   {
     id: 'elden-ring',
+    active: true,
     name: 'Elden Ring',
     description: 'Arise, Tarnished — Souls-inspired dark fantasy',
     swatch: '#c9a84c',
@@ -90,6 +91,7 @@ export const WORLDS = [
   },
   {
     id: 'ghibli',
+    active: true,
     name: 'Studio Ghibli',
     description: 'Warm, nature-inspired, Miyazaki aesthetic',
     swatch: '#4a7c59',
@@ -170,6 +172,7 @@ export const WORLDS = [
   },
   {
     id: 'got',
+    active: true,
     name: 'Game of Thrones',
     description: 'Westeros — Four houses, one realm',
     swatch: '#1a3a5c',

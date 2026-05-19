@@ -11,9 +11,11 @@ import { THEME_STORAGE_KEY, DEFAULT_THEME_ID, applyTheme } from '@/config/themes
 import { WORLD_STORAGE_KEY, WORLDS, applyWorld } from '@/config/worlds';
 import Sidebar from './Sidebar';
 import WorldSwitcherPopup from './WorldSwitcherPopup';
+import SettingsPanel from './SettingsPanel';
 import { useSidebarStore } from '@/store/sidebarStore';
 import { useUiStore } from '@/store/uiStore';
 import { useSeasonStore } from '@/store/seasonStore';
+import { usePrefsStore } from '@/store/prefsStore';
 
 const SWITCHER_DISMISSED_KEY = 'dt-world-switcher-dismissed';
 
@@ -42,6 +44,7 @@ export default function Desktop({ githubData, initialApp }) {
   const startCycle = useSeasonStore((s) => s.startCycle);
   const stopCycle = useSeasonStore((s) => s.stopCycle);
   const currentRegion = useSeasonStore((s) => s.currentRegion);
+  const pinnedWallpaperId = usePrefsStore((s) => s.pinnedWallpaperId);
 
   const [isMobile, setIsMobile] = useState(false);
   const [selectedIcon, setSelectedIcon] = useState(null);
@@ -199,10 +202,11 @@ export default function Desktop({ githubData, initialApp }) {
   }
 
   const currentWorldConfig = currentWorldId ? WORLDS.find((w) => w.id === currentWorldId) : null;
-  // For worlds with regions (GoT), use the active region's wallpaper
-  const activeWallpaper = currentWorldConfig?.regions && currentRegion
+  // For worlds with regions (GoT), use the active region's wallpaper; prefsStore pin overrides all
+  const derivedWallpaper = currentWorldConfig?.regions && currentRegion
     ? (currentWorldConfig.regions[currentRegion]?.wallpaper ?? currentWorldConfig.wallpaper)
     : currentWorldConfig?.wallpaper;
+  const activeWallpaper = pinnedWallpaperId !== 'auto' ? pinnedWallpaperId : derivedWallpaper;
 
   return (
     <div
@@ -319,6 +323,9 @@ export default function Desktop({ githubData, initialApp }) {
         onClose={handleWorldSwitcherClose}
         onDontShowAgain={handleWorldSwitcherDontShow}
       />
+
+      {/* Settings Panel */}
+      <SettingsPanel />
 
     </div>
   );

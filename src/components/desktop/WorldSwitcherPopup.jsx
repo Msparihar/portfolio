@@ -339,6 +339,7 @@ export default function WorldSwitcherPopup({ isOpen, onClose, onDontShowAgain })
           >
             {WORLDS.map((world) => {
               const isCurrent = world.id === currentWorldId;
+              const isActive = world.active !== false;
 
               return (
                 <div
@@ -357,17 +358,18 @@ export default function WorldSwitcherPopup({ isOpen, onClose, onDontShowAgain })
                     background: isCurrent ? 'var(--dt-accent-soft-2)' : 'var(--dt-surface-deep)',
                     overflow: 'hidden',
                     transition: 'transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease',
-                    cursor: isCurrent ? 'default' : 'pointer',
+                    cursor: isCurrent || !isActive ? 'default' : 'pointer',
+                    opacity: isActive ? 1 : 0.6,
                   }}
                   onMouseEnter={(e) => {
-                    if (!isCurrent) {
+                    if (!isCurrent && isActive) {
                       e.currentTarget.style.transform = 'translateY(-2px)';
                       e.currentTarget.style.boxShadow = 'var(--dt-shadow-focused)';
                       e.currentTarget.style.borderColor = 'var(--dt-accent-border-strong)';
                     }
                   }}
                   onMouseLeave={(e) => {
-                    if (!isCurrent) {
+                    if (!isCurrent && isActive) {
                       e.currentTarget.style.transform = 'translateY(0)';
                       e.currentTarget.style.boxShadow = 'none';
                       e.currentTarget.style.borderColor = 'var(--dt-accent-border)';
@@ -458,6 +460,25 @@ export default function WorldSwitcherPopup({ isOpen, onClose, onDontShowAgain })
                           }}
                         />
                         <span>Current World</span>
+                      </div>
+                    ) : !isActive ? (
+                      <div
+                        style={{
+                          display: 'inline-flex',
+                          alignItems: 'center',
+                          gap: '5px',
+                          padding: '5px 10px',
+                          borderRadius: '999px',
+                          background: 'var(--dt-accent-soft)',
+                          border: '1px solid var(--dt-accent-border)',
+                          color: 'var(--dt-text-muted)',
+                          fontSize: '11px',
+                          fontFamily: 'var(--dt-font-mono)',
+                          letterSpacing: '0.08em',
+                          textTransform: 'uppercase',
+                        }}
+                      >
+                        <span>Coming Soon</span>
                       </div>
                     ) : (
                       <button

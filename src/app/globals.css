@@ -122,6 +122,10 @@
 
   /* Window backdrop blur (overridden by Glass theme) */
   --dt-window-blur:         blur(20px) saturate(1.2);
+
+  /* Icon label legibility (overridden by prefsStore at runtime) */
+  --dt-icon-blur:           6px;
+  --dt-icon-bg:             0.55;
 }
 
 /* Desktop OS Scrollbar — scoped to desktop canvas */
@@ -358,6 +362,20 @@
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(4px); }
   to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes settingsPanelIn {
+  from { opacity: 0; transform: translateY(4px) scale(0.98); }
+  to   { opacity: 1; transform: translateY(0)   scale(1);    }
+}
+
+/* Icon label legibility — backdrop behind icon text */
+.desktop-icon .icon-label {
+  backdrop-filter: blur(var(--dt-icon-blur));
+  -webkit-backdrop-filter: blur(var(--dt-icon-blur));
+  background: rgba(0, 0, 0, var(--dt-icon-bg));
+  border-radius: 3px;
+  padding: 1px 3px;
 }
 
 /* GSAP animation: hide elements before GSAP initializes (prevents FOUC) */
