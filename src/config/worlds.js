@@ -7,6 +7,23 @@ import { BASE_THEME_VARS } from './themes';
 
 export const WORLD_STORAGE_KEY = 'portfolio_world';
 
+/**
+ * Normalize a wallpaper entry to a full object shape.
+ * Supports plain strings for backward compat.
+ * @param {string|{src:string, vibe?:string, particles?:object}|null|undefined} entry
+ * @returns {{src:string|null, vibe:string, particles:{type:string,count:number,speed:number,windX:number}}}
+ */
+export function normalizeWallpaper(entry) {
+  const defaults = { type: 'dust', count: 30, speed: 0.4, windX: 0.1 };
+  if (!entry) return { src: null, vibe: 'neutral', particles: defaults };
+  if (typeof entry === 'string') return { src: entry, vibe: 'neutral', particles: defaults };
+  return {
+    src: entry.src ?? null,
+    vibe: entry.vibe ?? 'neutral',
+    particles: { ...defaults, ...(entry.particles ?? {}) },
+  };
+}
+
 export const WORLDS = [
   {
     id: 'elden-ring',
@@ -15,7 +32,11 @@ export const WORLDS = [
     description: 'Arise, Tarnished — Souls-inspired dark fantasy',
     swatch: '#c9a84c',
     worldClass: 'world-elden-ring',
-    wallpaper: '/images/worlds/elden-ring/wallpaper.webp',
+    wallpaper: {
+      src: '/images/worlds/elden-ring/wallpaper.webp',
+      vibe: 'dark-fantasy',
+      particles: { type: 'dust', count: 40, speed: 0.3, windX: 0.05 },
+    },
     fonts: {
       heading: 'var(--font-cinzel)',
       body: 'var(--font-crimson-text)',
@@ -96,7 +117,11 @@ export const WORLDS = [
     description: 'Warm, nature-inspired, Miyazaki aesthetic',
     swatch: '#4a7c59',
     worldClass: 'world-ghibli',
-    wallpaper: '/images/worlds/ghibli/wallpaper.webp',
+    wallpaper: {
+      src: '/images/worlds/ghibli/wallpaper.webp',
+      vibe: 'nature',
+      particles: { type: 'pollen', count: 50, speed: 0.25, windX: 0.12 },
+    },
     fonts: {
       heading: 'var(--font-newsreader)',
       body: 'var(--font-geist)',
@@ -178,7 +203,11 @@ export const WORLDS = [
     swatch: '#1a3a5c',
     worldClass: 'world-got',
     fonts: { heading: 'var(--font-im-fell-english)', body: 'var(--font-geist)' },
-    wallpaper: '/images/worlds/got/north/wallpaper.webp',
+    wallpaper: {
+      src: '/images/worlds/got/north/wallpaper.webp',
+      vibe: 'winter',
+      particles: { type: 'snow', count: 60, speed: 0.5, windX: 0.08 },
+    },
     brandText: 'WinterfellOS',
     desktopWatermark: null,
     titleFormat: null,
@@ -207,7 +236,11 @@ export const WORLDS = [
         name: 'The North',
         house: 'Stark',
         swatch: '#4a9eda',
-        wallpaper: '/images/worlds/got/north/wallpaper.webp',
+        wallpaper: {
+          src: '/images/worlds/got/north/wallpaper.webp',
+          vibe: 'winter',
+          particles: { type: 'snow', count: 60, speed: 0.5, windX: 0.08 },
+        },
         bootAccentColor: { text: '#4a9eda', ok: '#6bb8e8' },
         vars: {
           '--dt-bg': '#0d1b2a',
@@ -254,7 +287,11 @@ export const WORLDS = [
         name: "King's Landing",
         house: 'Lannister',
         swatch: '#c9a84c',
-        wallpaper: '/images/worlds/got/kings-landing/wallpaper.webp',
+        wallpaper: {
+          src: '/images/worlds/got/kings-landing/wallpaper.webp',
+          vibe: 'warm',
+          particles: { type: 'petal', count: 30, speed: 0.35, windX: 0.15 },
+        },
         bootAccentColor: { text: '#c9a84c', ok: '#d4a574' },
         vars: {
           '--dt-bg': '#2a1008',
@@ -301,7 +338,11 @@ export const WORLDS = [
         name: "The Night's Watch",
         house: 'The Watch',
         swatch: '#4a9eda',
-        wallpaper: '/images/worlds/got/nights-watch/wallpaper.webp',
+        wallpaper: {
+          src: '/images/worlds/got/nights-watch/wallpaper.webp',
+          vibe: 'blizzard',
+          particles: { type: 'snow', count: 80, speed: 0.7, windX: 0.2 },
+        },
         bootAccentColor: { text: '#4a9eda', ok: '#c8dce8' },
         vars: {
           '--dt-bg': '#0a0a0a',
@@ -348,7 +389,11 @@ export const WORLDS = [
         name: 'Dragonstone',
         house: 'Targaryen',
         swatch: '#c43c2c',
-        wallpaper: '/images/worlds/got/dragonstone/wallpaper.webp',
+        wallpaper: {
+          src: '/images/worlds/got/dragonstone/wallpaper.webp',
+          vibe: 'volcanic',
+          particles: { type: 'dust', count: 45, speed: 0.45, windX: 0.1 },
+        },
         bootAccentColor: { text: '#c43c2c', ok: '#e8651a' },
         vars: {
           '--dt-bg': '#1a1012',

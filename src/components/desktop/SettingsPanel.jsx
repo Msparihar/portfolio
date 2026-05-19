@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { usePrefsStore, HEADING_FONTS, BODY_FONTS, MONO_FONTS } from '@/store/prefsStore';
-import { WORLDS, WORLD_STORAGE_KEY } from '@/config/worlds';
+import { WORLDS, WORLD_STORAGE_KEY, normalizeWallpaper } from '@/config/worlds';
 
 // ─── Tiny primitives ─────────────────────────────────────────────────────────
 
@@ -171,6 +171,7 @@ export default function SettingsPanel() {
   const iconBlur = usePrefsStore((s) => s.iconBlur);
   const iconBg = usePrefsStore((s) => s.iconBg);
   const pinnedWallpaperId = usePrefsStore((s) => s.pinnedWallpaperId);
+  const animateWallpaper = usePrefsStore((s) => s.animateWallpaper);
 
   const setHeadingFont = usePrefsStore((s) => s.setHeadingFont);
   const setBodyFont = usePrefsStore((s) => s.setBodyFont);
@@ -178,6 +179,7 @@ export default function SettingsPanel() {
   const setIconBlur = usePrefsStore((s) => s.setIconBlur);
   const setIconBg = usePrefsStore((s) => s.setIconBg);
   const setPinnedWallpaper = usePrefsStore((s) => s.setPinnedWallpaper);
+  const setAnimateWallpaper = usePrefsStore((s) => s.setAnimateWallpaper);
   const hydrate = usePrefsStore((s) => s.hydrate);
 
   // Hydrate CSS vars from persisted state on first mount
@@ -232,10 +234,12 @@ export default function SettingsPanel() {
     const opts = [{ id: 'auto', label: 'Auto' }];
     if (world.regions) {
       Object.entries(world.regions).forEach(([regionId, region]) => {
-        opts.push({ id: region.wallpaper, label: region.name ?? regionId });
+        const src = normalizeWallpaper(region.wallpaper).src;
+        if (src) opts.push({ id: src, label: region.name ?? regionId });
       });
     } else if (world.wallpaper) {
-      opts.push({ id: world.wallpaper, label: world.name });
+      const src = normalizeWallpaper(world.wallpaper).src;
+      if (src) opts.push({ id: src, label: world.name });
     }
     return opts;
   })();
@@ -335,6 +339,53 @@ export default function SettingsPanel() {
             value={pinnedWallpaperId}
             onChange={setPinnedWallpaper}
           />
+
+          <Divider />
+
+          {/* Wallpaper animation toggle */}
+          <SectionLabel>Wallpaper Animation</SectionLabel>
+          <div
+            style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}
+          >
+            <span
+              style={{
+                fontFamily: 'var(--dt-font-mono)',
+                fontSize: '11px',
+                color: 'var(--dt-text-muted)',
+              }}
+            >
+              Animate wallpaper
+            </span>
+            <button
+              role="switch"
+              aria-checked={animateWallpaper}
+              onClick={() => setAnimateWallpaper(!animateWallpaper)}
+              style={{
+                width: '36px',
+                height: '20px',
+                borderRadius: '10px',
+                border: 'none',
+                cursor: 'pointer',
+                position: 'relative',
+                background: animateWallpaper ? 'var(--dt-accent)' : 'var(--dt-accent-border-strong)',
+                transition: 'background 0.2s ease',
+                flexShrink: 0,
+              }}
+            >
+              <span
+                style={{
+                  position: 'absolute',
+                  top: '2px',
+                  left: animateWallpaper ? '18px' : '2px',
+                  width: '16px',
+                  height: '16px',
+                  borderRadius: '50%',
+                  background: '#fff',
+                  transition: 'left 0.2s ease',
+                }}
+              />
+            </button>
+          </div>
         </div>
       )}
 
