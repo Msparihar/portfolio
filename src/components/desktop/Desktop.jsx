@@ -10,7 +10,7 @@ import { THEME_STORAGE_KEY, DEFAULT_THEME_ID, applyTheme } from '@/config/themes
 import { WORLD_STORAGE_KEY, WORLDS, applyWorld, normalizeWallpaper } from '@/config/worlds';
 import Sidebar from './Sidebar';
 import WorldSwitcherPopup from './WorldSwitcherPopup';
-import SettingsPanel from './SettingsPanel';
+// SettingsPanel removed 2026-05-20 — defaults locked in per user request
 import ParticleCanvas from './ParticleCanvas';
 import { useSidebarStore } from '@/store/sidebarStore';
 import { useUiStore } from '@/store/uiStore';
@@ -339,8 +339,7 @@ export default function Desktop({ githubData, initialApp }) {
         onDontShowAgain={handleWorldSwitcherDontShow}
       />
 
-      {/* Settings Panel */}
-      <SettingsPanel />
+      {/* SettingsPanel removed 2026-05-20 */}
 
     </div>
   );
