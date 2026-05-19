@@ -418,13 +418,12 @@
   to   { opacity: 1; transform: translateY(0)   scale(1);    }
 }
 
-/* Icon label legibility — backdrop behind icon text */
+/* Icon label legibility — themed pill backdrop, theme-aware text */
 .desktop-icon .icon-label {
-  backdrop-filter: blur(var(--dt-icon-blur));
-  -webkit-backdrop-filter: blur(var(--dt-icon-blur));
-  background: rgba(0, 0, 0, var(--dt-icon-bg));
-  border-radius: 3px;
-  padding: 1px 3px;
+  background: var(--dt-surface-deep, rgba(0, 0, 0, 0.65));
+  border-radius: 4px;
+  padding: 2px 6px;
+  font-weight: 500;
 }
 
 /* GSAP animation: hide elements before GSAP initializes (prevents FOUC) */
