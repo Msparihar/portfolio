@@ -33,6 +33,7 @@ export default function WindowTitlebar({ title, onClose, onMinimize, onMaximize,
   return (
     <div
       className="window-drag-handle"
+      data-kitsune-platform="window-titlebar"
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
       style={{

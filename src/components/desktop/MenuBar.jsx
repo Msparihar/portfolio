@@ -110,6 +110,7 @@ export default function MenuBar() {
   return (
     <div
       role="banner"
+      data-kitsune-platform="menubar"
       style={{
         position: 'fixed',
         top: 0,
