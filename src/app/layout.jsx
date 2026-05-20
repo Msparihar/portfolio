@@ -131,9 +131,13 @@ export const metadata = {
     }
   },
   icons: {
-    icon: '/icons/terminal-favicon.svg',
-    shortcut: '/icons/terminal-favicon.svg',
-    apple: '/icons/terminal-favicon.svg'
+    icon: [
+      { url: '/icons/kitsune-favicon-32.png', sizes: '32x32', type: 'image/png' },
+      { url: '/icons/kitsune-favicon-16.png', sizes: '16x16', type: 'image/png' },
+      { url: '/icons/kitsune-favicon-512.png', sizes: '512x512', type: 'image/png' }
+    ],
+    shortcut: '/icons/kitsune-favicon-32.png',
+    apple: '/icons/kitsune-favicon-180.png'
   },
   manifest: '/manifest.json',
   verification: {

@@ -2,20 +2,19 @@
 
 import { useEffect, useState, useCallback } from 'react';
 import { useWindowStore } from '@/store/windowStore';
-import DesktopIconGrid from './DesktopIconGrid';
 import WindowManager from './WindowManager';
-import Taskbar from './Taskbar';
+import MenuBar from './MenuBar';
+import IconStrip from './IconStrip';
 import ContextMenu from './ContextMenu';
-import { THEME_STORAGE_KEY, DEFAULT_THEME_ID, applyTheme } from '@/config/themes';
 import { WORLD_STORAGE_KEY, WORLDS, applyWorld, normalizeWallpaper } from '@/config/worlds';
-import Sidebar from './Sidebar';
 import WorldSwitcherPopup from './WorldSwitcherPopup';
-// SettingsPanel removed 2026-05-20 — defaults locked in per user request
 import ParticleCanvas from './ParticleCanvas';
-import { useSidebarStore } from '@/store/sidebarStore';
+import TintOverlay from './TintOverlay';
+import Mascot from './Mascot';
 import { useUiStore } from '@/store/uiStore';
 import { useSeasonStore } from '@/store/seasonStore';
 import { usePrefsStore } from '@/store/prefsStore';
+import { TooltipProvider } from '@/components/ui/Tooltip';
 
 const SWITCHER_DISMISSED_KEY = 'dt-world-switcher-dismissed';
 
@@ -39,16 +38,15 @@ function MobileFallback() {
 
 export default function Desktop({ githubData, initialApp }) {
   const openWindow = useWindowStore((s) => s.openWindow);
-  const sidebarOpen = useSidebarStore((s) => s.sidebarOpen);
   const toggleWebsiteMode = useUiStore((s) => s.toggleWebsiteMode);
   const startCycle = useSeasonStore((s) => s.startCycle);
   const stopCycle = useSeasonStore((s) => s.stopCycle);
   const currentRegion = useSeasonStore((s) => s.currentRegion);
   const pinnedWallpaperId  = usePrefsStore((s) => s.pinnedWallpaperId);
   const animateWallpaper   = usePrefsStore((s) => s.animateWallpaper);
+  const mascotVisible      = usePrefsStore((s) => s.mascotVisible);
 
   const [isMobile, setIsMobile] = useState(false);
-  const [selectedIcon, setSelectedIcon] = useState(null);
   const [contextMenu, setContextMenu] = useState(null);
   const [currentWorldId, setCurrentWorldId] = useState(null);
   const [showWorldSwitcher, setShowWorldSwitcher] = useState(false);
@@ -170,19 +168,7 @@ export default function Desktop({ githubData, initialApp }) {
     localStorage.setItem(SWITCHER_DISMISSED_KEY, 'true');
   }, []);
 
-  const handleOpenApp = useCallback(
-    (appId) => {
-      if (appId === 'resume') {
-        window.open('/resume.pdf', '_blank');
-        return;
-      }
-      openWindow(appId);
-    },
-    [openWindow]
-  );
-
   const handleDesktopClick = useCallback(() => {
-    setSelectedIcon(null);
     setContextMenu(null);
   }, []);
 
@@ -220,7 +206,13 @@ export default function Desktop({ githubData, initialApp }) {
 
   const activeParticleConfig = normalizedWallpaper.particles;
 
+  // Resolve mascot: region override (GoT) wins; falls back to world-level mascot.
+  const activeMascot = (currentWorldConfig?.regions && currentRegion
+    ? (currentWorldConfig.regions[currentRegion]?.mascot ?? currentWorldConfig.mascot)
+    : currentWorldConfig?.mascot) || null;
+
   return (
+    <TooltipProvider>
     <div
       className="desktop-canvas dark"
       style={{ position: 'fixed', inset: 0, overflow: 'hidden', background: 'var(--dt-bg)' }}
@@ -243,6 +235,9 @@ export default function Desktop({ githubData, initialApp }) {
 
       {/* Particle canvas overlay — single rAF loop, gated by animateWallpaper */}
       <ParticleCanvas config={activeParticleConfig} enabled={animateWallpaper} />
+
+      {/* World tint overlay — subtle mood layer above wallpaper, below windows */}
+      <TintOverlay />
 
       {/* Gradient wallpaper layer — tints the image (or standalone gradient) */}
       <div
@@ -305,23 +300,17 @@ export default function Desktop({ githubData, initialApp }) {
         </div>
       )}
 
-      {/* Desktop icons */}
-      <div className="absolute inset-0 p-4" style={{ zIndex: 10, paddingBottom: '60px', paddingRight: sidebarOpen ? '216px' : '56px' }}>
-        <DesktopIconGrid
-          onOpenApp={handleOpenApp}
-          selectedIcon={selectedIcon}
-          onSelectIcon={setSelectedIcon}
-        />
-      </div>
-
       {/* Window Manager */}
       <WindowManager />
 
-      {/* Taskbar */}
-      <Taskbar />
+      {/* Top horizontal MenuBar (PostHog-style) */}
+      <MenuBar />
 
-      {/* Right sidebar */}
-      <Sidebar />
+      {/* Slim right-side icon strip */}
+      <IconStrip />
+
+      {/* Themed kitsune mascot — bottom-right, idle bob, decorative */}
+      {activeMascot && mascotVisible && <Mascot src={activeMascot.src} alt={activeMascot.alt} />}
 
       {/* Context menu */}
       {contextMenu && (
@@ -342,5 +331,6 @@ export default function Desktop({ githubData, initialApp }) {
       {/* SettingsPanel removed 2026-05-20 */}
 
     </div>
+    </TooltipProvider>
   );
 }

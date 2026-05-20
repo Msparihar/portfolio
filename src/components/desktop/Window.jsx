@@ -4,7 +4,10 @@ import { Rnd } from 'react-rnd';
 import { useWindowStore } from '@/store/windowStore';
 import WindowTitlebar from './WindowTitlebar';
 
-const TASKBAR_HEIGHT = 48;
+// Top MenuBar height (matches --dt-menubar-height in globals.css)
+const MENUBAR_HEIGHT = 44;
+// Right IconStrip width (matches --dt-iconstrip-width in globals.css)
+const ICONSTRIP_WIDTH = 64;
 
 export default function Window({ windowData, children }) {
   const closeWindow = useWindowStore((s) => s.closeWindow);
@@ -25,14 +28,17 @@ export default function Window({ windowData, children }) {
   const viewportHeight = typeof window !== 'undefined' ? window.innerHeight : 800;
 
   const maximizedStyle = {
-    position: { x: 0, y: 0 },
-    size: { width: viewportWidth, height: viewportHeight - TASKBAR_HEIGHT },
+    position: { x: 0, y: MENUBAR_HEIGHT },
+    size: {
+      width: viewportWidth - ICONSTRIP_WIDTH,
+      height: viewportHeight - MENUBAR_HEIGHT,
+    },
   };
 
-  // Clamp position so titlebar is always reachable
+  // Clamp position so titlebar is always reachable below the MenuBar.
   const clampedPosition = {
     x: Math.max(-((size?.width || 320) - 100), Math.min(position.x, viewportWidth - 100)),
-    y: Math.max(0, Math.min(position.y, viewportHeight - TASKBAR_HEIGHT - 40)),
+    y: Math.max(MENUBAR_HEIGHT, Math.min(position.y, viewportHeight - 40)),
   };
 
   const rndPosition = isMaximized ? maximizedStyle.position : clampedPosition;
@@ -67,7 +73,7 @@ export default function Window({ windowData, children }) {
       aria-label={title}
       onDragStop={(_e, d) => {
         const clampedX = Math.max(-((size?.width || 320) - 100), Math.min(d.x, viewportWidth - 100));
-        const clampedY = Math.max(0, Math.min(d.y, viewportHeight - TASKBAR_HEIGHT - 40));
+        const clampedY = Math.max(MENUBAR_HEIGHT, Math.min(d.y, viewportHeight - 40));
         setPosition(id, { x: clampedX, y: clampedY });
       }}
       onResizeStop={(_e, _dir, _ref, _delta, pos) => {
