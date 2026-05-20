@@ -216,6 +216,56 @@ const WORLD_MENU_PREFIX: WorldPrefixMap = {
 
 const DEFAULT_MENU_PREFIX = '$';
 
+// ─── MenuBar nav labels per world ──────────────────────────────────────────
+// PostHog-style horizontal top nav. Each item maps to an AppId (action target)
+// but the visible label is world-themed.
+
+interface MenuBarItem {
+  label: string;
+  action: AppId;
+}
+
+const WORLD_MENUBAR_NAV: Record<WorldId, MenuBarItem[]> = {
+  'elden-ring': [
+    { label: 'Tarnished',  action: 'about'       },
+    { label: 'Relics',     action: 'filemanager' },
+    { label: 'Chronicles', action: 'logviewer'   },
+    { label: 'Raven Post', action: 'mail'        },
+    { label: 'Scroll',     action: 'resume'      },
+  ],
+  'ghibli': [
+    { label: 'About',    action: 'about'       },
+    { label: 'Garden',   action: 'filemanager' },
+    { label: 'Journal',  action: 'logviewer'   },
+    { label: 'Letters',  action: 'mail'        },
+    { label: 'Resume',   action: 'resume'      },
+  ],
+  'got': [
+    { label: 'House',     action: 'about'       },
+    { label: 'Archives',  action: 'filemanager' },
+    { label: 'Ravens',    action: 'logviewer'   },
+    { label: 'Scrolls',   action: 'mail'        },
+    { label: 'Decree',    action: 'resume'      },
+  ],
+};
+
+const DEFAULT_MENUBAR_NAV: MenuBarItem[] = [
+  { label: 'About',    action: 'about'       },
+  { label: 'Projects', action: 'filemanager' },
+  { label: 'Blog',     action: 'logviewer'   },
+  { label: 'Contact',  action: 'mail'        },
+  { label: 'Resume',   action: 'resume'      },
+];
+
+// CTA on the right side of the menubar.
+const WORLD_MENUBAR_CTA: Record<WorldId, string> = {
+  'elden-ring': 'Touch Grace',
+  'ghibli': 'Say Hello',
+  'got': 'Send a Raven',
+};
+
+const DEFAULT_MENUBAR_CTA = 'Get in touch';
+
 // ─── Taskbar content per world ─────────────────────────────────────────────
 
 const WORLD_TASKBAR: WorldTaskbarMap = {
@@ -393,4 +443,21 @@ export function getWorldCta(worldId: string | null): string {
 export function getWorldEmoji(worldId: string | null): string {
   if (worldId && isWorldId(worldId)) return WORLD_EMOJI[worldId];
   return DEFAULT_EMOJI;
+}
+
+/**
+ * Horizontal top-nav items shown in the MenuBar (PostHog-style).
+ * Returns world-themed labels each mapping to an app action.
+ */
+export function getWorldMenuBarNav(worldId: string | null): MenuBarItem[] {
+  if (worldId && isWorldId(worldId)) return WORLD_MENUBAR_NAV[worldId];
+  return DEFAULT_MENUBAR_NAV;
+}
+
+/**
+ * Right-side CTA label in the MenuBar.
+ */
+export function getWorldMenuBarCta(worldId: string | null): string {
+  if (worldId && isWorldId(worldId)) return WORLD_MENUBAR_CTA[worldId];
+  return DEFAULT_MENUBAR_CTA;
 }

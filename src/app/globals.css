@@ -93,9 +93,22 @@
   --dt-titlebar-shadow:     inset 0 1px 0 rgba(255,255,255,0.06), inset 0 0 12px rgba(255,255,255,0.01);
   --dt-titlebar-border:     rgba(255, 255, 255, 0.06);
 
-  /* Taskbar */
+  /* Taskbar (legacy — kept for back-compat) */
   --dt-taskbar-bg:          linear-gradient(180deg, rgba(14, 14, 16, 0.9) 0%, rgba(10, 10, 12, 0.95) 100%);
   --dt-taskbar-border:      rgba(255, 255, 255, 0.06);
+
+  /* MenuBar — horizontal top nav (PostHog-style). Inherits world taskbar tokens. */
+  --dt-menubar-height:      44px;
+  --dt-menubar-bg:          var(--dt-taskbar-bg);
+  --dt-menubar-border:      var(--dt-taskbar-border);
+  --dt-menubar-link:        var(--dt-text);
+  --dt-menubar-link-muted:  var(--dt-text-muted);
+  --dt-menubar-link-hover:  var(--dt-accent);
+
+  /* Icon strip — slim right-side system icons. Inherits world taskbar tokens. */
+  --dt-iconstrip-width:     64px;
+  --dt-iconstrip-bg:        var(--dt-taskbar-bg);
+  --dt-iconstrip-border:    var(--dt-taskbar-border);
 
   /* Scrollbar (neutral white, not accent-colored) */
   --dt-scrollbar-thumb:       rgba(255, 255, 255, 0.15);
