@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState, useCallback, lazy, Suspense } from 'react';
+import { useEffect, useState, useCallback, useRef, lazy, Suspense } from 'react';
 import { useWindowStore } from '@/store/windowStore';
 import WindowManager from './WindowManager';
 import MenuBar from './MenuBar';
@@ -18,6 +18,47 @@ import { TooltipProvider } from '@/components/ui/Tooltip';
 
 // Lazy-loaded — easter egg, not critical path. Silent Suspense fallback.
 const KitsuneMode = lazy(() => import('@/lib/kitsune-mode/KitsuneMode'));
+
+/**
+ * Subtle moon at the top-right of the desktop, visible only in the Ghibli world.
+ * Three clicks within 5 seconds trigger the "moon listens" easter egg: shows a
+ * toast (via onTrigger), waves the mascot, and flashes the brand swatch.
+ * Reduced-motion users still get the egg — only ambient CSS animation is gated.
+ */
+function GhibliMoon({ onTrigger }) {
+  const clicksRef = useRef([]);
+  const handleClick = () => {
+    const now = Date.now();
+    const recent = [...clicksRef.current, now].filter((t) => now - t <= 5000);
+    clicksRef.current = recent;
+    if (recent.length >= 3) {
+      clicksRef.current = [];
+      onTrigger();
+    }
+  };
+  return (
+    <button
+      type="button"
+      aria-label="Moon"
+      onClick={handleClick}
+      style={{
+        position: 'fixed',
+        top: 'calc(var(--dt-menubar-height, 36px) + 12px)',
+        right: 'calc(var(--dt-iconstrip-width, 64px) + 16px)',
+        width: 32,
+        height: 32,
+        borderRadius: '50%',
+        background: 'var(--dt-accent)',
+        opacity: 0.4,
+        border: 'none',
+        padding: 0,
+        cursor: 'pointer',
+        boxShadow: '0 0 18px 4px var(--dt-accent-30, rgba(255,255,255,0.25))',
+        zIndex: 45,
+      }}
+    />
+  );
+}
 
 const SWITCHER_DISMISSED_KEY = 'dt-world-switcher-dismissed';
 
@@ -230,6 +271,12 @@ export default function Desktop({ githubData, initialApp }) {
     setContextMenu(null);
   }, []);
 
+  const handleMoonEgg = useCallback(() => {
+    setEggToast('The moon listens.');
+    window.dispatchEvent(new CustomEvent('mascot-clicked'));
+    window.dispatchEvent(new CustomEvent('brand-flash'));
+  }, []);
+
   const handleContextMenu = useCallback((e) => {
     // Only show if the click target is the desktop background itself
     if (
@@ -375,6 +422,9 @@ export default function Desktop({ githubData, initialApp }) {
           size={activeMascot.size || 112}
         />
       )}
+
+      {/* Ghibli-only moon — 3 clicks within 5s = easter egg */}
+      {currentWorldId === 'ghibli' && <GhibliMoon onTrigger={handleMoonEgg} />}
 
       {/* Context menu */}
       {contextMenu && (
