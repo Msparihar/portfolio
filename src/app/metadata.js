@@ -60,9 +60,9 @@ export const metadata = {
     }
   },
   icons: {
-    icon: '/icons/terminal-favicon.svg',
-    shortcut: '/icons/terminal-favicon.svg',
-    apple: '/icons/terminal-favicon.svg'
+    icon: '/icons/kitsune-favicon-32.png',
+    shortcut: '/icons/kitsune-favicon-32.png',
+    apple: '/icons/kitsune-favicon-180.png'
   },
   manifest: '/manifest.json'
 };
