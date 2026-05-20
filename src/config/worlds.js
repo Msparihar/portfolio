@@ -110,8 +110,17 @@ export const WORLDS = [
       '--dt-icon-text-shadow':     '0 1px 4px rgba(0,0,0,0.9)',
       '--dt-tint-color':           'radial-gradient(ellipse at 50% 60%, rgba(40, 18, 0, 0) 35%, rgba(40, 18, 0, 0.55) 100%)',
       '--dt-tint-opacity':         '0.10',
+      '--dt-mascot-shadow':        'drop-shadow(0 4px 8px rgba(0,0,0,0.55)) drop-shadow(0 0 18px rgba(201,168,76,0.25))',
     },
-    mascot: { src: '/images/mascot/elden-ring/01-grace.png', alt: 'Tarnished kitsune' },
+    mascot: {
+      poses: {
+        idle: '/images/mascot/elden-ring/idle.png',
+        blink: '/images/mascot/elden-ring/blink.png',
+        wave: '/images/mascot/elden-ring/wave.png',
+      },
+      alt: 'Tarnished kitsune',
+      size: 120,
+    },
   },
   {
     id: 'ghibli',
@@ -198,8 +207,17 @@ export const WORLDS = [
       '--dt-icon-text-shadow':     '0 1px 2px rgba(0,0,0,0.15)',
       '--dt-tint-color':           'linear-gradient(135deg, rgba(255, 244, 214, 0.9) 0%, rgba(180, 210, 180, 0.7) 100%)',
       '--dt-tint-opacity':         '0.06',
+      '--dt-mascot-shadow':        'drop-shadow(0 4px 8px rgba(45,52,54,0.18)) drop-shadow(0 8px 16px rgba(45,52,54,0.12))',
     },
-    mascot: { src: '/images/mascot/ghibli-watercolor/03-skygaze.png', alt: 'Forest spirit kitsune' },
+    mascot: {
+      poses: {
+        idle: '/images/mascot/ghibli/idle.png',
+        blink: '/images/mascot/ghibli/blink.png',
+        wave: '/images/mascot/ghibli/wave.png',
+      },
+      alt: 'Forest spirit kitsune',
+      size: 112,
+    },
   },
   {
     id: 'got',
@@ -289,8 +307,17 @@ export const WORLDS = [
           '--dt-icon-text-shadow': '0 1px 3px rgba(0,0,0,0.8)',
           '--dt-tint-color': 'linear-gradient(180deg, rgba(120, 180, 230, 0.6) 0%, rgba(40, 80, 140, 0.8) 100%)',
           '--dt-tint-opacity': '0.08',
+          '--dt-mascot-shadow': 'drop-shadow(0 4px 8px rgba(0,0,0,0.5)) drop-shadow(0 0 16px rgba(74,158,218,0.18))',
         },
-        mascot: { src: '/images/mascot/got-north/03-howl.png', alt: 'Stark direwolf-kitsune' },
+        mascot: {
+          poses: {
+            idle: '/images/mascot/got-north/idle.png',
+            blink: '/images/mascot/got-north/blink.png',
+            wave: '/images/mascot/got-north/wave.png',
+          },
+          alt: 'Stark direwolf-kitsune',
+          size: 120,
+        },
       },
       'kings-landing': {
         name: "King's Landing",
@@ -343,8 +370,17 @@ export const WORLDS = [
           '--dt-icon-text-shadow': '0 1px 3px rgba(0,0,0,0.8)',
           '--dt-tint-color': 'radial-gradient(ellipse at 50% 40%, rgba(255, 200, 120, 0) 30%, rgba(120, 40, 0, 0.6) 100%)',
           '--dt-tint-opacity': '0.10',
+          '--dt-mascot-shadow': 'drop-shadow(0 4px 8px rgba(0,0,0,0.55)) drop-shadow(0 0 16px rgba(201,168,76,0.22))',
         },
-        mascot: { src: '/images/mascot/got-kings-landing/01-portrait.png', alt: 'Lannister gold kitsune' },
+        mascot: {
+          poses: {
+            idle: '/images/mascot/got-kings-landing/idle.png',
+            blink: '/images/mascot/got-kings-landing/blink.png',
+            wave: '/images/mascot/got-kings-landing/wave.png',
+          },
+          alt: 'Lannister gold kitsune',
+          size: 120,
+        },
       },
       'nights-watch': {
         name: "The Night's Watch",
@@ -397,8 +433,17 @@ export const WORLDS = [
           '--dt-icon-text-shadow': '0 1px 3px rgba(0,0,0,0.8)',
           '--dt-tint-color': 'linear-gradient(180deg, rgba(20, 30, 50, 0.7) 0%, rgba(10, 15, 30, 0.95) 100%)',
           '--dt-tint-opacity': '0.10',
+          '--dt-mascot-shadow': 'drop-shadow(0 4px 10px rgba(0,0,0,0.7)) drop-shadow(0 0 14px rgba(74,158,218,0.15))',
         },
-        mascot: { src: '/images/mascot/got-nights-watch/01-portrait.png', alt: 'Sworn brother kitsune' },
+        mascot: {
+          poses: {
+            idle: '/images/mascot/got-nights-watch/idle.png',
+            blink: '/images/mascot/got-nights-watch/blink.png',
+            wave: '/images/mascot/got-nights-watch/wave.png',
+          },
+          alt: 'Sworn brother kitsune',
+          size: 120,
+        },
       },
       'dragonstone': {
         name: 'Dragonstone',
@@ -451,8 +496,17 @@ export const WORLDS = [
           '--dt-icon-text-shadow': '0 1px 3px rgba(0,0,0,0.8)',
           '--dt-tint-color': 'radial-gradient(ellipse at 50% 70%, rgba(232, 101, 26, 0) 25%, rgba(80, 10, 0, 0.7) 100%)',
           '--dt-tint-opacity': '0.10',
+          '--dt-mascot-shadow': 'drop-shadow(0 4px 10px rgba(0,0,0,0.6)) drop-shadow(0 0 18px rgba(196,60,44,0.25))',
         },
-        mascot: { src: '/images/mascot/got-dragonstone/01-portrait.png', alt: 'Targaryen dragon-kitsune' },
+        mascot: {
+          poses: {
+            idle: '/images/mascot/got-dragonstone/idle.png',
+            blink: '/images/mascot/got-dragonstone/blink.png',
+            wave: '/images/mascot/got-dragonstone/wave.png',
+          },
+          alt: 'Targaryen dragon-kitsune',
+          size: 120,
+        },
       },
     },
     // Top-level vars = north region vars for initial load before seasonal cycle kicks in
@@ -497,8 +551,17 @@ export const WORLDS = [
       '--dt-icon-text-shadow': '0 1px 3px rgba(0,0,0,0.8)',
       '--dt-tint-color': 'linear-gradient(180deg, rgba(120, 180, 230, 0.6) 0%, rgba(40, 80, 140, 0.8) 100%)',
       '--dt-tint-opacity': '0.08',
+      '--dt-mascot-shadow': 'drop-shadow(0 4px 8px rgba(0,0,0,0.5)) drop-shadow(0 0 16px rgba(74,158,218,0.18))',
     },
-    mascot: { src: '/images/mascot/got-north/03-howl.png', alt: 'Stark direwolf-kitsune' },
+    mascot: {
+      poses: {
+        idle: '/images/mascot/got-north/idle.png',
+        blink: '/images/mascot/got-north/blink.png',
+        wave: '/images/mascot/got-north/wave.png',
+      },
+      alt: 'Stark direwolf-kitsune',
+      size: 120,
+    },
   },
 ];
 
