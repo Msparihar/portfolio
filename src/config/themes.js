@@ -15,6 +15,8 @@ export const BASE_THEME_VARS = {
   '--dt-overlay-vignette':     'none',
   '--dt-overlay-grain':        '0',
   '--dt-overlay-bg':           'rgba(0, 0, 0, 0.85)',
+  // Mascot shadow — drop-shadow filter values so the mascot grounds onto the desktop
+  '--dt-mascot-shadow':        'drop-shadow(0 4px 8px rgba(0,0,0,0.35)) drop-shadow(0 12px 24px rgba(0,0,0,0.25))',
   // Radius
   '--dt-radius-sm':            '4px',
   // Semantic colors
