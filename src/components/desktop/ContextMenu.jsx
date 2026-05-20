@@ -70,6 +70,7 @@ function buildMenuModel(ctx) {
       submenu: [
         { label: 'Try the Konami code', action: actions.hintKonami, icon: '🎮' },
         { label: 'Click the brand 3× for the founder mark', action: actions.hintBrand, icon: '✨' },
+        { label: 'In Ghibli, click the moon three times', action: actions.hintMoon, icon: '🌙' },
         { label: 'Type "sudo summon" in Terminal', action: actions.hintSudo, icon: '🪄' },
         { label: 'Watch the brand at 3:33', action: actions.hintBrand, icon: '⏱️' },
         { label: 'Stay idle for 90 seconds', action: actions.hintIdle, icon: '💤' },
@@ -473,6 +474,7 @@ export default function ContextMenu({ x, y, onClose }) {
       showBanner(kitsuneModeEnabled ? 'Kitsune Mode off' : 'Kitsune Mode on');
     },
     hintKonami: () => { showBanner('Hint: ↑ ↑ ↓ ↓ ← → ← → B A'); onClose(); },
+    hintMoon: () => { showBanner('Hint: switch to the Ghibli world first'); onClose(); },
     hintSudo: () => { showBanner('Hint: open the Terminal first'); onClose(); },
     hintBrand: () => { flashBrand(); showBanner('Hint: timing matters — and three clicks help'); onClose(); },
     hintIdle: () => { showBanner('Hint: walk away from the keyboard'); onClose(); },
