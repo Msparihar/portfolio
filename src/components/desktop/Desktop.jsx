@@ -44,6 +44,7 @@ export default function Desktop({ githubData, initialApp }) {
   const currentRegion = useSeasonStore((s) => s.currentRegion);
   const pinnedWallpaperId  = usePrefsStore((s) => s.pinnedWallpaperId);
   const animateWallpaper   = usePrefsStore((s) => s.animateWallpaper);
+  const mascotVisible      = usePrefsStore((s) => s.mascotVisible);
 
   const [isMobile, setIsMobile] = useState(false);
   const [contextMenu, setContextMenu] = useState(null);
@@ -309,7 +310,7 @@ export default function Desktop({ githubData, initialApp }) {
       <IconStrip />
 
       {/* Themed kitsune mascot — bottom-right, idle bob, decorative */}
-      {activeMascot && <Mascot src={activeMascot.src} alt={activeMascot.alt} />}
+      {activeMascot && mascotVisible && <Mascot src={activeMascot.src} alt={activeMascot.alt} />}
 
       {/* Context menu */}
       {contextMenu && (
