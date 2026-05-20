@@ -35,7 +35,6 @@ const DEFAULTS = {
   pinnedWallpaperId: 'auto',
   animateWallpaper: true,
   // v0.8 ContextMenu additions
-  wallpaperPinned: false,
   mascotVisible: true,
   kitsuneModeEnabled: false,
 };
@@ -67,7 +66,6 @@ export const usePrefsStore = create(
       iconBg: DEFAULTS.iconBg,
       pinnedWallpaperId: DEFAULTS.pinnedWallpaperId,
       animateWallpaper: DEFAULTS.animateWallpaper,
-      wallpaperPinned: DEFAULTS.wallpaperPinned,
       mascotVisible: DEFAULTS.mascotVisible,
       kitsuneModeEnabled: DEFAULTS.kitsuneModeEnabled,
 
@@ -107,10 +105,6 @@ export const usePrefsStore = create(
 
       setAnimateWallpaper: (enabled) => {
         set({ animateWallpaper: Boolean(enabled) });
-      },
-
-      toggleWallpaperPinned: () => {
-        set((state) => ({ wallpaperPinned: !state.wallpaperPinned }));
       },
 
       toggleMascotVisible: () => {
