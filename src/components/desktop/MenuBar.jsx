@@ -13,6 +13,7 @@ import {
   createWorldChangeListener,
 } from '@/config/worldContent';
 import WorldPicker from './WorldPicker';
+import { Tooltip } from '@/components/ui/Tooltip';
 
 function useClock() {
   const [time, setTime] = useState('');
@@ -95,17 +96,22 @@ export default function MenuBar() {
           flexShrink: 0,
         }}
       >
-        <span
-          aria-hidden
-          style={{
-            width: 18,
-            height: 18,
-            borderRadius: 4,
-            background: world?.swatch ?? 'var(--dt-accent)',
-            boxShadow: `0 0 8px ${world?.swatch ?? 'var(--dt-accent)'}66`,
-            flexShrink: 0,
-          }}
-        />
+        <Tooltip content={world ? `World: ${world.name ?? world.id}` : 'Portfolio'} side="bottom">
+          <span
+            aria-label={world ? `Current world: ${world.name ?? world.id}` : 'Portfolio'}
+            tabIndex={0}
+            style={{
+              width: 18,
+              height: 18,
+              borderRadius: 4,
+              background: world?.swatch ?? 'var(--dt-accent)',
+              boxShadow: `0 0 8px ${world?.swatch ?? 'var(--dt-accent)'}66`,
+              flexShrink: 0,
+              display: 'inline-block',
+              outline: 'none',
+            }}
+          />
+        </Tooltip>
         <span
           style={{
             fontFamily: world ? 'var(--dt-font-heading, monospace)' : 'var(--dt-font-mono, monospace)',
@@ -133,6 +139,7 @@ export default function MenuBar() {
       >
         {navItems.map((item) => (
           <Menubar.Menu key={item.action}>
+            <Tooltip content={item.tooltip ?? item.label} side="bottom">
             <Menubar.Trigger
               onClick={() => handleNavClick(item.action)}
               style={{
@@ -159,6 +166,7 @@ export default function MenuBar() {
             >
               {item.label}
             </Menubar.Trigger>
+            </Tooltip>
           </Menubar.Menu>
         ))}
 
@@ -235,6 +243,7 @@ export default function MenuBar() {
           flexShrink: 0,
         }}
       >
+        <Tooltip content="Get in touch" side="bottom">
         <button
           onClick={() => openWindow('mail')}
           style={{
@@ -255,12 +264,13 @@ export default function MenuBar() {
         >
           {ctaLabel}
         </button>
+        </Tooltip>
 
         <WorldPicker />
 
+        <Tooltip content="Switch to Website Mode (Ctrl+Shift+W)" side="bottom">
         <button
           onClick={toggleWebsiteMode}
-          title="Switch to Website Mode (Ctrl+Shift+W)"
           aria-label="Switch to Website Mode"
           style={{
             background: 'none',
@@ -277,6 +287,7 @@ export default function MenuBar() {
         >
           ⊞
         </button>
+        </Tooltip>
 
         <span
           aria-label={taskbarLabels.wifiLabel}
