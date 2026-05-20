@@ -47,6 +47,7 @@ dist/
 .playwright-mcp/
 .claude/
 .next
+.worktrees/
 
 # POC / scratch files
 poc-*.html

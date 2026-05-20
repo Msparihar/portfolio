@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { WORLDS, WORLD_STORAGE_KEY } from '@/config/worlds';
+import { Tooltip } from '@/components/ui/Tooltip';
 
 function useWorldTitleFormat() {
   const [titleFormat, setTitleFormat] = useState(null);
@@ -51,6 +52,7 @@ export default function WindowTitlebar({ title, onClose, onMinimize, onMaximize,
       {/* Traffic lights */}
       <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
         {/* Red — close */}
+        <Tooltip content="Close" side="bottom">
         <button
           className="window-titlebar traffic-close"
           onClick={(e) => { e.stopPropagation(); onClose?.(); }}
@@ -74,12 +76,13 @@ export default function WindowTitlebar({ title, onClose, onMinimize, onMaximize,
             flexShrink: 0,
             transition: 'all 0.15s ease',
           }}
-          title="Close"
         >
           {hovered ? '×' : ''}
         </button>
+        </Tooltip>
 
         {/* Yellow — minimize */}
+        <Tooltip content="Minimize" side="bottom">
         <button
           className="window-titlebar traffic-minimize"
           onClick={(e) => { e.stopPropagation(); onMinimize?.(); }}
@@ -103,12 +106,13 @@ export default function WindowTitlebar({ title, onClose, onMinimize, onMaximize,
             flexShrink: 0,
             transition: 'all 0.15s ease',
           }}
-          title="Minimize"
         >
           {hovered ? '−' : ''}
         </button>
+        </Tooltip>
 
         {/* Green — maximize / restore */}
+        <Tooltip content={isMaximized ? 'Restore' : 'Maximize'} side="bottom">
         <button
           className="window-titlebar traffic-maximize"
           onClick={(e) => { e.stopPropagation(); onMaximize?.(); }}
@@ -132,10 +136,10 @@ export default function WindowTitlebar({ title, onClose, onMinimize, onMaximize,
             flexShrink: 0,
             transition: 'all 0.15s ease',
           }}
-          title={isMaximized ? 'Restore' : 'Maximize'}
         >
           {hovered ? (isMaximized ? '⊡' : '+') : ''}
         </button>
+        </Tooltip>
       </div>
 
       {/* Title text */}

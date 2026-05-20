@@ -34,6 +34,10 @@ const DEFAULTS = {
   iconBg: 0.55,
   pinnedWallpaperId: 'auto',
   animateWallpaper: true,
+  // v0.8 ContextMenu additions
+  wallpaperPinned: false,
+  mascotVisible: true,
+  kitsuneModeEnabled: false,
 };
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
@@ -63,6 +67,9 @@ export const usePrefsStore = create(
       iconBg: DEFAULTS.iconBg,
       pinnedWallpaperId: DEFAULTS.pinnedWallpaperId,
       animateWallpaper: DEFAULTS.animateWallpaper,
+      wallpaperPinned: DEFAULTS.wallpaperPinned,
+      mascotVisible: DEFAULTS.mascotVisible,
+      kitsuneModeEnabled: DEFAULTS.kitsuneModeEnabled,
 
       setHeadingFont: (font) => {
         if (!HEADING_FONTS.includes(font)) return;
@@ -100,6 +107,18 @@ export const usePrefsStore = create(
 
       setAnimateWallpaper: (enabled) => {
         set({ animateWallpaper: Boolean(enabled) });
+      },
+
+      toggleWallpaperPinned: () => {
+        set((state) => ({ wallpaperPinned: !state.wallpaperPinned }));
+      },
+
+      toggleMascotVisible: () => {
+        set((state) => ({ mascotVisible: !state.mascotVisible }));
+      },
+
+      toggleKitsuneMode: () => {
+        set((state) => ({ kitsuneModeEnabled: !state.kitsuneModeEnabled }));
       },
 
       // Call once on mount to rehydrate CSS vars from persisted state.
