@@ -133,6 +133,11 @@
   /* Context menu background */
   --dt-context-bg:          rgba(15, 16, 17, 0.97);
 
+  /* Tooltip — inherits context-bg surface by default; worlds may override */
+  --dt-tooltip-bg:          var(--dt-context-bg);
+  --dt-tooltip-text:        var(--dt-text);
+  --dt-tooltip-border:      var(--dt-accent-border-strong, var(--dt-accent-border));
+
   /* Window backdrop blur (overridden by Glass theme) */
   --dt-window-blur:         blur(20px) saturate(1.2);
 

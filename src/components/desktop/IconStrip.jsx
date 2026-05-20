@@ -7,6 +7,7 @@ import {
   getCurrentWorldId,
   createWorldChangeListener,
 } from '@/config/worldContent';
+import { Tooltip } from '@/components/ui/Tooltip';
 
 // System tray apps shown vertically as icon-only buttons on the right edge.
 // Order mirrors the old DesktopIconGrid so muscle-memory survives the redesign.
@@ -61,10 +62,9 @@ export default function IconStrip() {
       {STRIP_ITEMS.map((item) => {
         const { icon, label } = getWorldIcon(worldId, item.appId, item.icon, item.label);
         return (
+          <Tooltip key={item.appId} content={label} side="left">
           <button
-            key={item.appId}
             onClick={() => handleClick(item.appId)}
-            title={label}
             aria-label={label}
             style={{
               display: 'flex',
@@ -109,6 +109,7 @@ export default function IconStrip() {
               {label}
             </span>
           </button>
+          </Tooltip>
         );
       })}
     </aside>

@@ -5,6 +5,7 @@ import { WORLDS, WORLD_STORAGE_KEY, applyWorld, applyWorldWithTransition } from 
 import { THEME_STORAGE_KEY } from '@/config/themes';
 import { getCurrentWorldId } from '@/config/worldContent';
 import { useSeasonStore } from '@/store/seasonStore';
+import { Tooltip } from '@/components/ui/Tooltip';
 
 export default function WorldPicker() {
   const [isOpen, setIsOpen] = useState(false);
@@ -65,11 +66,11 @@ export default function WorldPicker() {
   return (
     <div style={{ position: 'relative' }}>
       {/* Trigger button */}
+      <Tooltip content="Change world" side="bottom" open={isOpen ? false : undefined}>
       <button
         ref={buttonRef}
         onClick={() => setIsOpen(!isOpen)}
         aria-label="Change world"
-        title="Change world"
         style={{
           display: 'flex',
           alignItems: 'center',
@@ -107,6 +108,7 @@ export default function WorldPicker() {
         <span>{currentWorldConfig?.name ?? 'Theme'}</span>
         <span style={{ fontSize: '8px', opacity: 0.6 }}>▾</span>
       </button>
+      </Tooltip>
 
       {/* Popover */}
       {isOpen && (
@@ -179,6 +181,7 @@ export default function WorldPicker() {
                 <div style={{ marginLeft: '22px', marginTop: '4px', marginBottom: '2px' }}>
                   {/* Cycling indicator / unpin button */}
                   {isPinned ? (
+                    <Tooltip content="Unpin — resume seasonal cycling" side="left">
                     <button
                       onClick={handleUnpin}
                       style={{
@@ -195,11 +198,11 @@ export default function WorldPicker() {
                         marginBottom: '4px',
                         borderRadius: '3px',
                       }}
-                      title="Unpin — resume seasonal cycling"
                     >
                       <span>📌</span>
                       <span>Pinned — click to resume cycling</span>
                     </button>
+                    </Tooltip>
                   ) : (
                     <div style={{
                       fontFamily: 'var(--dt-font-mono)',
@@ -217,8 +220,12 @@ export default function WorldPicker() {
                     const isActive = currentRegion === regionId;
                     const isPinnedToThis = isPinned && isActive;
                     return (
-                      <button
+                      <Tooltip
                         key={regionId}
+                        content={isPinnedToThis ? 'Click to unpin and resume cycling' : `Pin to ${region.name}`}
+                        side="left"
+                      >
+                      <button
                         onClick={() => handleRegionSelect(regionId)}
                         style={{
                           display: 'flex',
@@ -239,7 +246,6 @@ export default function WorldPicker() {
                         }}
                         onMouseEnter={(e) => { if (!isActive) e.currentTarget.style.background = 'var(--dt-accent-soft)'; }}
                         onMouseLeave={(e) => { if (!isActive) e.currentTarget.style.background = 'transparent'; }}
-                        title={isPinnedToThis ? 'Click to unpin and resume cycling' : `Pin to ${region.name}`}
                       >
                         <span style={{
                           width: '8px',
@@ -257,6 +263,7 @@ export default function WorldPicker() {
                           <span style={{ fontSize: '9px', marginLeft: '2px' }}>📌</span>
                         )}
                       </button>
+                      </Tooltip>
                     );
                   })}
                 </div>
