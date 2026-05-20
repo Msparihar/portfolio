@@ -50,6 +50,49 @@ export default function Desktop({ githubData, initialApp }) {
   const [contextMenu, setContextMenu] = useState(null);
   const [currentWorldId, setCurrentWorldId] = useState(null);
   const [showWorldSwitcher, setShowWorldSwitcher] = useState(false);
+  const [eggToast, setEggToast] = useState(null);
+
+  // Konami code listener — sets kitsuneModeEnabled. If the v0.8-kitsune branch
+  // doesn't define the activation effect yet, the flag still flips and the toast
+  // makes the unlock observable.
+  useEffect(() => {
+    const SEQUENCE = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
+    let buffer = [];
+    const handler = (e) => {
+      const key = e.key.length === 1 ? e.key.toLowerCase() : e.key;
+      buffer = [...buffer, key].slice(-SEQUENCE.length);
+      if (buffer.length === SEQUENCE.length && SEQUENCE.every((k, i) => k === buffer[i])) {
+        buffer = [];
+        usePrefsStore.setState({ kitsuneModeEnabled: true });
+        setEggToast('Kitsune Mode unlocked');
+      }
+    };
+    window.addEventListener('keydown', handler);
+    return () => window.removeEventListener('keydown', handler);
+  }, []);
+
+  // 90s idle → fleeting toast. Resets on any input event.
+  useEffect(() => {
+    let timerId;
+    const reset = () => {
+      clearTimeout(timerId);
+      timerId = setTimeout(() => setEggToast('The desktop dreams…'), 90 * 1000);
+    };
+    reset();
+    const evs = ['mousemove', 'mousedown', 'keydown', 'wheel', 'touchstart'];
+    evs.forEach((e) => window.addEventListener(e, reset, { passive: true }));
+    return () => {
+      clearTimeout(timerId);
+      evs.forEach((e) => window.removeEventListener(e, reset));
+    };
+  }, []);
+
+  // Auto-clear the toast after 3.2s.
+  useEffect(() => {
+    if (!eggToast) return;
+    const id = setTimeout(() => setEggToast(null), 3200);
+    return () => clearTimeout(id);
+  }, [eggToast]);
 
   // Mobile detection on mount + resize
   useEffect(() => {
@@ -329,6 +372,32 @@ export default function Desktop({ githubData, initialApp }) {
       />
 
       {/* SettingsPanel removed 2026-05-20 */}
+
+      {/* Easter-egg toasts (Konami unlock, 90s idle) */}
+      {eggToast && (
+        <div
+          role="status"
+          style={{
+            position: 'fixed',
+            bottom: 24,
+            left: '50%',
+            transform: 'translateX(-50%)',
+            background: 'var(--dt-context-bg)',
+            border: '1px solid var(--dt-accent-border)',
+            borderRadius: 'var(--dt-window-radius, 8px)',
+            boxShadow: 'var(--dt-shadow-focused)',
+            backdropFilter: 'var(--dt-window-blur)',
+            WebkitBackdropFilter: 'var(--dt-window-blur)',
+            padding: '8px 16px',
+            fontFamily: 'var(--dt-font-mono)',
+            fontSize: 12,
+            color: 'var(--dt-text)',
+            zIndex: 400,
+          }}
+        >
+          {eggToast}
+        </div>
+      )}
 
     </div>
     </TooltipProvider>

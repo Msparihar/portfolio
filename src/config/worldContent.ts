@@ -258,13 +258,21 @@ const DEFAULT_MENUBAR_NAV: MenuBarItem[] = [
 ];
 
 // CTA on the right side of the menubar.
-const WORLD_MENUBAR_CTA: Record<WorldId, string> = {
-  'elden-ring': 'Touch Grace',
-  'ghibli': 'Say Hello',
-  'got': 'Send a Raven',
+interface MenuBarCta {
+  label: string;
+  target: AppId;
+}
+
+const WORLD_MENUBAR_CTA: Record<WorldId, MenuBarCta> = {
+  // Elden Ring: "Touch Grace" = the introspective gesture of reading the Tarnished (about page).
+  'elden-ring': { label: 'Touch Grace', target: 'about' },
+  // Ghibli: invite the visitor to walk the garden (introspective about page).
+  'ghibli':     { label: 'Walk the Garden', target: 'about' },
+  // GoT: a raven is mail — keep it.
+  'got':        { label: 'Send a Raven', target: 'mail' },
 };
 
-const DEFAULT_MENUBAR_CTA = 'Get in touch';
+const DEFAULT_MENUBAR_CTA: MenuBarCta = { label: 'Get in touch', target: 'mail' };
 
 // ─── Taskbar content per world ─────────────────────────────────────────────
 
@@ -455,9 +463,11 @@ export function getWorldMenuBarNav(worldId: string | null): MenuBarItem[] {
 }
 
 /**
- * Right-side CTA label in the MenuBar.
+ * Right-side CTA descriptor in the MenuBar.
+ * Returns the themed label AND the action target so each world can route the CTA
+ * to whichever app fits its tone (Ghibli/Elden Ring → about; GoT → mail).
  */
-export function getWorldMenuBarCta(worldId: string | null): string {
+export function getWorldMenuBarCta(worldId: string | null): MenuBarCta {
   if (worldId && isWorldId(worldId)) return WORLD_MENUBAR_CTA[worldId];
   return DEFAULT_MENUBAR_CTA;
 }
