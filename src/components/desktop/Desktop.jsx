@@ -2,17 +2,13 @@
 
 import { useEffect, useState, useCallback } from 'react';
 import { useWindowStore } from '@/store/windowStore';
-import DesktopIconGrid from './DesktopIconGrid';
 import WindowManager from './WindowManager';
-import Taskbar from './Taskbar';
+import MenuBar from './MenuBar';
+import IconStrip from './IconStrip';
 import ContextMenu from './ContextMenu';
-import { THEME_STORAGE_KEY, DEFAULT_THEME_ID, applyTheme } from '@/config/themes';
 import { WORLD_STORAGE_KEY, WORLDS, applyWorld, normalizeWallpaper } from '@/config/worlds';
-import Sidebar from './Sidebar';
 import WorldSwitcherPopup from './WorldSwitcherPopup';
-// SettingsPanel removed 2026-05-20 — defaults locked in per user request
 import ParticleCanvas from './ParticleCanvas';
-import { useSidebarStore } from '@/store/sidebarStore';
 import { useUiStore } from '@/store/uiStore';
 import { useSeasonStore } from '@/store/seasonStore';
 import { usePrefsStore } from '@/store/prefsStore';
@@ -39,7 +35,6 @@ function MobileFallback() {
 
 export default function Desktop({ githubData, initialApp }) {
   const openWindow = useWindowStore((s) => s.openWindow);
-  const sidebarOpen = useSidebarStore((s) => s.sidebarOpen);
   const toggleWebsiteMode = useUiStore((s) => s.toggleWebsiteMode);
   const startCycle = useSeasonStore((s) => s.startCycle);
   const stopCycle = useSeasonStore((s) => s.stopCycle);
@@ -48,7 +43,6 @@ export default function Desktop({ githubData, initialApp }) {
   const animateWallpaper   = usePrefsStore((s) => s.animateWallpaper);
 
   const [isMobile, setIsMobile] = useState(false);
-  const [selectedIcon, setSelectedIcon] = useState(null);
   const [contextMenu, setContextMenu] = useState(null);
   const [currentWorldId, setCurrentWorldId] = useState(null);
   const [showWorldSwitcher, setShowWorldSwitcher] = useState(false);
@@ -170,19 +164,7 @@ export default function Desktop({ githubData, initialApp }) {
     localStorage.setItem(SWITCHER_DISMISSED_KEY, 'true');
   }, []);
 
-  const handleOpenApp = useCallback(
-    (appId) => {
-      if (appId === 'resume') {
-        window.open('/resume.pdf', '_blank');
-        return;
-      }
-      openWindow(appId);
-    },
-    [openWindow]
-  );
-
   const handleDesktopClick = useCallback(() => {
-    setSelectedIcon(null);
     setContextMenu(null);
   }, []);
 
@@ -305,23 +287,14 @@ export default function Desktop({ githubData, initialApp }) {
         </div>
       )}
 
-      {/* Desktop icons */}
-      <div className="absolute inset-0 p-4" style={{ zIndex: 10, paddingBottom: '60px', paddingRight: sidebarOpen ? '216px' : '56px' }}>
-        <DesktopIconGrid
-          onOpenApp={handleOpenApp}
-          selectedIcon={selectedIcon}
-          onSelectIcon={setSelectedIcon}
-        />
-      </div>
-
       {/* Window Manager */}
       <WindowManager />
 
-      {/* Taskbar */}
-      <Taskbar />
+      {/* Top horizontal MenuBar (PostHog-style) */}
+      <MenuBar />
 
-      {/* Right sidebar */}
-      <Sidebar />
+      {/* Slim right-side icon strip */}
+      <IconStrip />
 
       {/* Context menu */}
       {contextMenu && (
