@@ -9,6 +9,8 @@ import ContextMenu from './ContextMenu';
 import { WORLD_STORAGE_KEY, WORLDS, applyWorld, normalizeWallpaper } from '@/config/worlds';
 import WorldSwitcherPopup from './WorldSwitcherPopup';
 import ParticleCanvas from './ParticleCanvas';
+import TintOverlay from './TintOverlay';
+import Mascot from './Mascot';
 import { useUiStore } from '@/store/uiStore';
 import { useSeasonStore } from '@/store/seasonStore';
 import { usePrefsStore } from '@/store/prefsStore';
@@ -202,6 +204,11 @@ export default function Desktop({ githubData, initialApp }) {
 
   const activeParticleConfig = normalizedWallpaper.particles;
 
+  // Resolve mascot: region override (GoT) wins; falls back to world-level mascot.
+  const activeMascot = (currentWorldConfig?.regions && currentRegion
+    ? (currentWorldConfig.regions[currentRegion]?.mascot ?? currentWorldConfig.mascot)
+    : currentWorldConfig?.mascot) || null;
+
   return (
     <div
       className="desktop-canvas dark"
@@ -225,6 +232,9 @@ export default function Desktop({ githubData, initialApp }) {
 
       {/* Particle canvas overlay — single rAF loop, gated by animateWallpaper */}
       <ParticleCanvas config={activeParticleConfig} enabled={animateWallpaper} />
+
+      {/* World tint overlay — subtle mood layer above wallpaper, below windows */}
+      <TintOverlay />
 
       {/* Gradient wallpaper layer — tints the image (or standalone gradient) */}
       <div
@@ -295,6 +305,9 @@ export default function Desktop({ githubData, initialApp }) {
 
       {/* Slim right-side icon strip */}
       <IconStrip />
+
+      {/* Themed kitsune mascot — bottom-right, idle bob, decorative */}
+      {activeMascot && <Mascot src={activeMascot.src} alt={activeMascot.alt} />}
 
       {/* Context menu */}
       {contextMenu && (
