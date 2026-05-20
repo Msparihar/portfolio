@@ -398,7 +398,18 @@ ${portfolioData.education.map(edu =>
   const suggestion = getSuggestion(input);
 
   const executeCommand = (commandInput) => {
-    const [command, ...args] = commandInput.trim().split(' ');
+    const trimmed = commandInput.trim();
+
+    // Easter egg: `sudo summon` — summons the kitsune mascot (wave + event).
+    // Matched before the standard tokenizer so the two-word form is recognised.
+    if (trimmed.toLowerCase() === 'sudo summon') {
+      if (typeof window !== 'undefined') {
+        window.dispatchEvent(new CustomEvent('mascot-clicked'));
+      }
+      return '> 🦊 summoning fox spirit...\n✨ done.';
+    }
+
+    const [command, ...args] = trimmed.split(' ');
     const argsString = args.join(' ');
 
     if (commands[command]) {
