@@ -48,8 +48,48 @@ export default function MenuBar() {
 
   const world = worldId ? WORLDS.find((w) => w.id === worldId) : null;
   const navItems = getWorldMenuBarNav(worldId);
-  const ctaLabel = getWorldMenuBarCta(worldId);
+  const cta = getWorldMenuBarCta(worldId);
   const taskbarLabels = getWorldTaskbar(worldId);
+
+  // Brand-swatch easter egg: click 3 times in 3s for the founder mark.
+  const [brandClicks, setBrandClicks] = useState([]);
+  const [brandPulse, setBrandPulse] = useState(false);
+  const [foundMark, setFoundMark] = useState(false);
+  const [timePulse, setTimePulse] = useState(false);
+
+  // Brand-flash hook: ContextMenu hint dispatches `brand-flash` → pulse for 2s.
+  useEffect(() => {
+    const handler = () => {
+      setBrandPulse(true);
+      setTimeout(() => setBrandPulse(false), 2000);
+    };
+    window.addEventListener('brand-flash', handler);
+    return () => window.removeEventListener('brand-flash', handler);
+  }, []);
+
+  // 3:33 brand pulse — checks every 30s, pulses for 60s when local minute == 33 and hour ends in 3.
+  useEffect(() => {
+    const check = () => {
+      const now = new Date();
+      const h = now.getHours() % 12; // 3 AM and 3 PM both qualify
+      setTimePulse(h === 3 && now.getMinutes() === 33);
+    };
+    check();
+    const id = setInterval(check, 30 * 1000);
+    return () => clearInterval(id);
+  }, []);
+
+  const handleBrandClick = () => {
+    const now = Date.now();
+    const recent = [...brandClicks, now].filter((t) => now - t <= 3000);
+    setBrandClicks(recent);
+    if (recent.length >= 3) {
+      setBrandClicks([]);
+      setFoundMark(true);
+      window.dispatchEvent(new CustomEvent('easter-egg', { detail: { id: 'founder-mark' } }));
+      setTimeout(() => setFoundMark(false), 3200);
+    }
+  };
 
   const focusedId = windows.find((w) => w.zIndex >= nextZIndex - 1 && !w.isMinimized)?.id ?? null;
 
@@ -99,7 +139,11 @@ export default function MenuBar() {
         <Tooltip content={world ? `World: ${world.name ?? world.id}` : 'Portfolio'} side="bottom">
           <span
             aria-label={world ? `Current world: ${world.name ?? world.id}` : 'Portfolio'}
+            role="button"
             tabIndex={0}
+            onClick={handleBrandClick}
+            onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleBrandClick(); } }}
+            className={`menubar-brand-swatch${brandPulse || foundMark || timePulse ? ' is-pulsing' : ''}`}
             style={{
               width: 18,
               height: 18,
@@ -109,6 +153,7 @@ export default function MenuBar() {
               flexShrink: 0,
               display: 'inline-block',
               outline: 'none',
+              cursor: 'pointer',
             }}
           />
         </Tooltip>
@@ -243,9 +288,9 @@ export default function MenuBar() {
           flexShrink: 0,
         }}
       >
-        <Tooltip content="Get in touch" side="bottom">
+        <Tooltip content={cta.label} side="bottom">
         <button
-          onClick={() => openWindow('mail')}
+          onClick={() => openWindow(cta.target)}
           style={{
             background: 'var(--dt-accent)',
             color: 'var(--dt-bg)',
@@ -262,7 +307,7 @@ export default function MenuBar() {
           onMouseEnter={(e) => { e.currentTarget.style.background = 'var(--dt-accent-hover)'; }}
           onMouseLeave={(e) => { e.currentTarget.style.background = 'var(--dt-accent)'; }}
         >
-          {ctaLabel}
+          {cta.label}
         </button>
         </Tooltip>
 
