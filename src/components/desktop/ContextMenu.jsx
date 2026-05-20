@@ -10,7 +10,8 @@ import {
   getWorldMenuPrefix,
   createWorldChangeListener,
 } from '@/config/worldContent';
-import { WORLDS, applyWorldWithTransition } from '@/config/worlds';
+import { WORLDS, applyWorldWithTransition, normalizeWallpaper } from '@/config/worlds';
+import { useSeasonStore } from '@/store/seasonStore';
 
 /**
  * Build the flat list of menu items. Submenu items are inlined; rendering decides
@@ -19,7 +20,8 @@ import { WORLDS, applyWorldWithTransition } from '@/config/worlds';
  */
 function buildMenuModel(ctx) {
   const { worldId, prefs, actions } = ctx;
-  const pinIcon = prefs.wallpaperPinned ? '📌' : '📍';
+  const isPinned = prefs.pinnedWallpaperId && prefs.pinnedWallpaperId !== 'auto';
+  const pinIcon = isPinned ? '📌' : '📍';
   const mascotIcon = prefs.mascotVisible ? '👁️' : '🙈';
   const kitsuneIcon = prefs.kitsuneModeEnabled ? '🦊' : '🐾';
 
@@ -45,8 +47,8 @@ function buildMenuModel(ctx) {
       })),
     },
     {
-      label: prefs.wallpaperPinned ? 'Unpin Wallpaper' : 'Pin Current Wallpaper',
-      action: actions.toggleWallpaperPinned,
+      label: isPinned ? 'Unpin Wallpaper' : 'Pin Current Wallpaper',
+      action: actions.togglePinWallpaper,
       icon: pinIcon,
     },
     {
@@ -67,9 +69,9 @@ function buildMenuModel(ctx) {
       icon: '🥚',
       submenu: [
         { label: 'Try the Konami code', action: actions.hintKonami, icon: '🎮' },
-        { label: 'Click the moon three times', action: actions.hintMoon, icon: '🌙' },
+        { label: 'Click the brand 3× for the founder mark', action: actions.hintBrand, icon: '✨' },
         { label: 'Type "sudo summon" in Terminal', action: actions.hintSudo, icon: '🪄' },
-        { label: 'Hover the brand at 3:33', action: actions.hintBrand, icon: '⏱️' },
+        { label: 'Watch the brand at 3:33', action: actions.hintBrand, icon: '⏱️' },
         { label: 'Stay idle for 90 seconds', action: actions.hintIdle, icon: '💤' },
       ],
     },
@@ -125,8 +127,60 @@ function MenuItemButton({ item, focused, hasSubmenu, onMouseEnter, onClick, worl
 }
 
 function Modal({ title, children, onClose }) {
+  const contentRef = useRef(null);
+  const previousActiveRef = useRef(null);
+
   useEffect(() => {
-    const handleKey = (e) => { if (e.key === 'Escape') onClose(); };
+    previousActiveRef.current = document.activeElement;
+    // Focus the first focusable inside the modal on open.
+    const node = contentRef.current;
+    if (node) {
+      const focusables = node.querySelectorAll(
+        'a[href], button:not([disabled]), textarea, input, select, [tabindex]:not([tabindex="-1"])'
+      );
+      const first = focusables[0];
+      if (first instanceof HTMLElement) first.focus();
+      else node.focus();
+    }
+    return () => {
+      const prev = previousActiveRef.current;
+      if (prev instanceof HTMLElement) prev.focus();
+    };
+  }, []);
+
+  useEffect(() => {
+    const handleKey = (e) => {
+      if (e.key === 'Escape') {
+        onClose();
+        return;
+      }
+      if (e.key !== 'Tab') return;
+      const node = contentRef.current;
+      if (!node) return;
+      const focusables = Array.from(
+        node.querySelectorAll(
+          'a[href], button:not([disabled]), textarea, input, select, [tabindex]:not([tabindex="-1"])'
+        )
+      ).filter((el) => el instanceof HTMLElement && !el.hasAttribute('inert'));
+      if (focusables.length === 0) {
+        e.preventDefault();
+        return;
+      }
+      const first = focusables[0];
+      const last = focusables[focusables.length - 1];
+      const active = document.activeElement;
+      if (e.shiftKey) {
+        if (active === first || !node.contains(active)) {
+          e.preventDefault();
+          last.focus();
+        }
+      } else {
+        if (active === last) {
+          e.preventDefault();
+          first.focus();
+        }
+      }
+    };
     document.addEventListener('keydown', handleKey);
     return () => document.removeEventListener('keydown', handleKey);
   }, [onClose]);
@@ -149,6 +203,8 @@ function Modal({ title, children, onClose }) {
       }}
     >
       <div
+        ref={contentRef}
+        tabIndex={-1}
         onMouseDown={(e) => e.stopPropagation()}
         style={{
           ...MENU_BG,
@@ -158,6 +214,7 @@ function Modal({ title, children, onClose }) {
           maxHeight: '80vh',
           overflow: 'auto',
           color: 'var(--dt-text)',
+          outline: 'none',
         }}
       >
         <div style={{
@@ -350,12 +407,14 @@ export default function ContextMenu({ x, y, onClose }) {
   const openWindow = useWindowStore((s) => s.openWindow);
   const toggleWebsiteMode = useUiStore((s) => s.toggleWebsiteMode);
 
-  const wallpaperPinned = usePrefsStore((s) => s.wallpaperPinned);
+  const pinnedWallpaperId = usePrefsStore((s) => s.pinnedWallpaperId);
   const mascotVisible = usePrefsStore((s) => s.mascotVisible);
   const kitsuneModeEnabled = usePrefsStore((s) => s.kitsuneModeEnabled);
-  const toggleWallpaperPinned = usePrefsStore((s) => s.toggleWallpaperPinned);
+  const setPinnedWallpaper = usePrefsStore((s) => s.setPinnedWallpaper);
   const toggleMascotVisible = usePrefsStore((s) => s.toggleMascotVisible);
   const toggleKitsuneMode = usePrefsStore((s) => s.toggleKitsuneMode);
+  const setKitsuneMode = (val) => usePrefsStore.setState({ kitsuneModeEnabled: val });
+  const currentRegion = useSeasonStore((s) => s.currentRegion);
 
   const menuRef = useRef(null);
   const [worldId, setWorldId] = useState(() => getCurrentWorldId());
@@ -369,6 +428,10 @@ export default function ContextMenu({ x, y, onClose }) {
 
   const showBanner = useCallback((msg) => setBanner(msg), []);
 
+  const flashBrand = useCallback(() => {
+    window.dispatchEvent(new CustomEvent('brand-flash'));
+  }, []);
+
   const actions = {
     openTerminal: () => { openWindow('terminal'); onClose(); },
     openFileManager: () => { openWindow('filemanager'); onClose(); },
@@ -378,9 +441,26 @@ export default function ContextMenu({ x, y, onClose }) {
     viewSource: () => { window.open('https://github.com/Msparihar', '_blank'); onClose(); },
     confirmWebsiteMode: () => setModal('website-mode'),
     switchWorld: (id) => { applyWorldWithTransition(id); onClose(); },
-    toggleWallpaperPinned: () => {
-      toggleWallpaperPinned();
-      showBanner(wallpaperPinned ? 'Wallpaper unpinned' : 'Wallpaper pinned');
+    togglePinWallpaper: () => {
+      const isPinned = pinnedWallpaperId && pinnedWallpaperId !== 'auto';
+      if (isPinned) {
+        setPinnedWallpaper('auto');
+        showBanner('Wallpaper unpinned');
+      } else {
+        // Read the currently displayed wallpaper src from the active world/region.
+        const currentWorldId = getCurrentWorldId();
+        const world = currentWorldId ? WORLDS.find((w) => w.id === currentWorldId) : null;
+        const rawEntry = world?.regions && currentRegion
+          ? (world.regions[currentRegion]?.wallpaper ?? world.wallpaper)
+          : world?.wallpaper;
+        const src = normalizeWallpaper(rawEntry).src;
+        if (src) {
+          setPinnedWallpaper(src);
+          showBanner('Wallpaper pinned');
+        } else {
+          showBanner('No wallpaper to pin');
+        }
+      }
     },
     toggleMascotVisible: () => {
       toggleMascotVisible();
@@ -393,15 +473,14 @@ export default function ContextMenu({ x, y, onClose }) {
       showBanner(kitsuneModeEnabled ? 'Kitsune Mode off' : 'Kitsune Mode on');
     },
     hintKonami: () => { showBanner('Hint: ↑ ↑ ↓ ↓ ← → ← → B A'); onClose(); },
-    hintMoon: () => { showBanner('Hint: there\'s a moon somewhere…'); onClose(); },
     hintSudo: () => { showBanner('Hint: open the Terminal first'); onClose(); },
-    hintBrand: () => { showBanner('Hint: timing matters'); onClose(); },
+    hintBrand: () => { flashBrand(); showBanner('Hint: timing matters — and three clicks help'); onClose(); },
     hintIdle: () => { showBanner('Hint: walk away from the keyboard'); onClose(); },
   };
 
   const items = buildMenuModel({
     worldId,
-    prefs: { wallpaperPinned, mascotVisible, kitsuneModeEnabled },
+    prefs: { pinnedWallpaperId, mascotVisible, kitsuneModeEnabled },
     actions,
   });
 
@@ -495,6 +574,11 @@ export default function ContextMenu({ x, y, onClose }) {
       <div
         ref={menuRef}
         role="menu"
+        // Prevent menu clicks from bubbling to Desktop.onClick which would
+        // dismiss the menu BEFORE the item's action (e.g. setModal('about'))
+        // has had a chance to commit its render.
+        onClick={(e) => e.stopPropagation()}
+        onMouseDown={(e) => e.stopPropagation()}
         style={{
           position: 'absolute',
           left: x,

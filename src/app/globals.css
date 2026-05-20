@@ -690,3 +690,28 @@
   font-family: var(--font-im-fell-english), Georgia, serif;
   letter-spacing: 0.03em;
 }
+/* Brand-swatch pulse — easter eggs (3-click founder mark, brand-flash hint, 3:33 pulse) */
+@keyframes dt-brand-pulse {
+  0%, 100% { transform: scale(1); filter: brightness(1); }
+  50%      { transform: scale(1.18); filter: brightness(1.4); }
+}
+.menubar-brand-swatch.is-pulsing {
+  animation: dt-brand-pulse 1s ease-in-out infinite;
+}
+
+/* Tooltip enter/exit polish */
+.dt-tooltip-content[data-state="delayed-open"],
+.dt-tooltip-content[data-state="instant-open"] {
+  animation: dt-tooltip-in 120ms ease-out;
+}
+.dt-tooltip-content[data-state="closed"] {
+  animation: dt-tooltip-out 80ms ease-in;
+}
+@keyframes dt-tooltip-in {
+  from { opacity: 0; transform: translateY(2px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes dt-tooltip-out {
+  from { opacity: 1; transform: translateY(0); }
+  to   { opacity: 0; transform: translateY(2px); }
+}
