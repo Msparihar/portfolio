@@ -84,8 +84,18 @@ export default function Mascot({ poses, alt, size = 112 }) {
     scheduleBlink();
     scheduleWave();
 
+    // External trigger: anyone (terminal `sudo summon`, moon-3-click egg, etc.)
+    // can fire `mascot-clicked` on window to make the mascot wave.
+    const onExternalTrigger = () => {
+      dispatch({ type: 'WAVE' });
+      const t = setTimeout(() => dispatch({ type: 'IDLE' }), WAVE_MS);
+      timersRef.current.push(t);
+    };
+    window.addEventListener('mascot-clicked', onExternalTrigger);
+
     return () => {
       clearAll();
+      window.removeEventListener('mascot-clicked', onExternalTrigger);
       mq?.removeEventListener?.('change', onChange);
     };
   }, []);
@@ -93,12 +103,12 @@ export default function Mascot({ poses, alt, size = 112 }) {
   if (!poses || !poses.idle) return null;
 
   const handleInteract = () => {
-    dispatch({ type: 'WAVE' });
+    // Route through the window event so the wave/idle scheduling lives in one
+    // place (the listener installed above). Other features can trigger the
+    // same animation by firing `mascot-clicked`.
     if (typeof window !== 'undefined') {
       window.dispatchEvent(new CustomEvent('mascot-clicked'));
     }
-    const t = setTimeout(() => dispatch({ type: 'IDLE' }), WAVE_MS);
-    timersRef.current.push(t);
   };
 
   const currentSrc = poses[state.pose] || poses.idle;
