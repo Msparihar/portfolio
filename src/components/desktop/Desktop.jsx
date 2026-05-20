@@ -12,6 +12,7 @@ import ParticleCanvas from './ParticleCanvas';
 import { useUiStore } from '@/store/uiStore';
 import { useSeasonStore } from '@/store/seasonStore';
 import { usePrefsStore } from '@/store/prefsStore';
+import { TooltipProvider } from '@/components/ui/Tooltip';
 
 const SWITCHER_DISMISSED_KEY = 'dt-world-switcher-dismissed';
 
@@ -203,6 +204,7 @@ export default function Desktop({ githubData, initialApp }) {
   const activeParticleConfig = normalizedWallpaper.particles;
 
   return (
+    <TooltipProvider>
     <div
       className="desktop-canvas dark"
       style={{ position: 'fixed', inset: 0, overflow: 'hidden', background: 'var(--dt-bg)' }}
@@ -315,5 +317,6 @@ export default function Desktop({ githubData, initialApp }) {
       {/* SettingsPanel removed 2026-05-20 */}
 
     </div>
+    </TooltipProvider>
   );
 }
