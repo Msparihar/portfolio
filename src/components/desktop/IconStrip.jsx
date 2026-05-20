@@ -40,6 +40,7 @@ export default function IconStrip() {
   return (
     <aside
       aria-label="Application launcher"
+      data-kitsune-platform="iconstrip"
       style={{
         position: 'fixed',
         right: 0,

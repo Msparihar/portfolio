@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback, lazy, Suspense } from 'react';
 import { useWindowStore } from '@/store/windowStore';
 import WindowManager from './WindowManager';
 import MenuBar from './MenuBar';
@@ -15,6 +15,9 @@ import { useUiStore } from '@/store/uiStore';
 import { useSeasonStore } from '@/store/seasonStore';
 import { usePrefsStore } from '@/store/prefsStore';
 import { TooltipProvider } from '@/components/ui/Tooltip';
+
+// Lazy-loaded — easter egg, not critical path. Silent Suspense fallback.
+const KitsuneMode = lazy(() => import('@/lib/kitsune-mode/KitsuneMode'));
 
 const SWITCHER_DISMISSED_KEY = 'dt-world-switcher-dismissed';
 
@@ -45,6 +48,7 @@ export default function Desktop({ githubData, initialApp }) {
   const pinnedWallpaperId  = usePrefsStore((s) => s.pinnedWallpaperId);
   const animateWallpaper   = usePrefsStore((s) => s.animateWallpaper);
   const mascotVisible      = usePrefsStore((s) => s.mascotVisible);
+  const kitsuneModeEnabled = usePrefsStore((s) => s.kitsuneModeEnabled);
 
   const [isMobile, setIsMobile] = useState(false);
   const [contextMenu, setContextMenu] = useState(null);
@@ -201,6 +205,17 @@ export default function Desktop({ githubData, initialApp }) {
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [toggleWebsiteMode]);
+
+  // Dev API: window.__kitsune.set(bool) / .enable() / .disable()
+  // Not for production — useful for DevTools debugging.
+  useEffect(() => {
+    window.__kitsune = {
+      set:     (v) => usePrefsStore.setState({ kitsuneModeEnabled: Boolean(v) }),
+      enable:  () => usePrefsStore.setState({ kitsuneModeEnabled: true }),
+      disable: () => usePrefsStore.setState({ kitsuneModeEnabled: false }),
+    };
+    return () => { delete window.__kitsune; };
+  }, []);
 
   const handleWorldSwitcherClose = useCallback(() => {
     setShowWorldSwitcher(false);
@@ -377,7 +392,12 @@ export default function Desktop({ githubData, initialApp }) {
         onDontShowAgain={handleWorldSwitcherDontShow}
       />
 
-      {/* SettingsPanel removed 2026-05-20 */}
+      {/* Kitsune Mode — lazy-loaded easter egg, gated on prefsStore.kitsuneModeEnabled */}
+      {kitsuneModeEnabled && (
+        <Suspense fallback={null}>
+          <KitsuneMode />
+        </Suspense>
+      )}
 
       {/* Easter-egg toasts (Konami unlock, 90s idle) */}
       {eggToast && (
