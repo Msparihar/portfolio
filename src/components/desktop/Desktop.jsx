@@ -353,7 +353,13 @@ export default function Desktop({ githubData, initialApp }) {
       <IconStrip />
 
       {/* Themed kitsune mascot — bottom-right, idle bob, decorative */}
-      {activeMascot && mascotVisible && <Mascot src={activeMascot.src} alt={activeMascot.alt} />}
+      {activeMascot && mascotVisible && (
+        <Mascot
+          poses={activeMascot.poses}
+          alt={activeMascot.alt}
+          size={activeMascot.size || 112}
+        />
+      )}
 
       {/* Context menu */}
       {contextMenu && (
