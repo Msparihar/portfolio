@@ -344,7 +344,7 @@ export const WORLDS = [
           '--dt-tint-color': 'radial-gradient(ellipse at 50% 40%, rgba(255, 200, 120, 0) 30%, rgba(120, 40, 0, 0.6) 100%)',
           '--dt-tint-opacity': '0.10',
         },
-        mascot: { src: '/images/mascot/sumi-e-ink/03-profile.png', alt: 'Lannister gold kitsune' },
+        mascot: { src: '/images/mascot/got-kings-landing/01-portrait.png', alt: 'Lannister gold kitsune' },
       },
       'nights-watch': {
         name: "The Night's Watch",
@@ -398,7 +398,7 @@ export const WORLDS = [
           '--dt-tint-color': 'linear-gradient(180deg, rgba(20, 30, 50, 0.7) 0%, rgba(10, 15, 30, 0.95) 100%)',
           '--dt-tint-opacity': '0.10',
         },
-        mascot: { src: '/images/mascot/got-north/01-standing.png', alt: 'Sworn brother kitsune' },
+        mascot: { src: '/images/mascot/got-nights-watch/01-portrait.png', alt: 'Sworn brother kitsune' },
       },
       'dragonstone': {
         name: 'Dragonstone',
@@ -452,7 +452,7 @@ export const WORLDS = [
           '--dt-tint-color': 'radial-gradient(ellipse at 50% 70%, rgba(232, 101, 26, 0) 25%, rgba(80, 10, 0, 0.7) 100%)',
           '--dt-tint-opacity': '0.10',
         },
-        mascot: { src: '/images/mascot/elden-ring/03-leap.png', alt: 'Targaryen dragon-kitsune' },
+        mascot: { src: '/images/mascot/got-dragonstone/01-portrait.png', alt: 'Targaryen dragon-kitsune' },
       },
     },
     // Top-level vars = north region vars for initial load before seasonal cycle kicks in
