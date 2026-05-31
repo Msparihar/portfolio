@@ -139,6 +139,55 @@ export default function Desktop({ githubData, initialApp }) {
     return () => clearTimeout(id);
   }, [eggToast]);
 
+  // Egg: type "kon" anywhere (not in an input) — the kitsune greeting.
+  useEffect(() => {
+    const WORD = 'kon';
+    let buf = '';
+    const handler = (e) => {
+      const tag = e.target.tagName;
+      if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT' || e.target.isContentEditable) return;
+      if (e.key.length !== 1) { buf = ''; return; }
+      buf = (buf + e.key.toLowerCase()).slice(-WORD.length);
+      if (buf === WORD) {
+        buf = '';
+        setEggToast('kon kon! 🦊');
+        window.dispatchEvent(new CustomEvent('mascot-clicked'));
+      }
+    };
+    window.addEventListener('keydown', handler);
+    return () => window.removeEventListener('keydown', handler);
+  }, []);
+
+  // Egg: Halloween — Oct 31st auto-shows a spooky toast once per calendar day.
+  useEffect(() => {
+    const SEEN_KEY = 'dt-egg-halloween-seen';
+    const today = new Date();
+    const todayStr = today.toDateString();
+    if (today.getMonth() === 9 && today.getDate() === 31 && localStorage.getItem(SEEN_KEY) !== todayStr) {
+      localStorage.setItem(SEEN_KEY, todayStr);
+      const id = setTimeout(() => {
+        setEggToast('The spirits roam tonight. 🎃');
+        window.dispatchEvent(new CustomEvent('brand-flash'));
+      }, 2000);
+      return () => clearTimeout(id);
+    }
+  }, []);
+
+  // Egg: rapid world-switching — 3+ world changes within 8 seconds = "The worlds blur…"
+  const worldChangesRef = useRef([]);
+  useEffect(() => {
+    const handler = () => {
+      const now = Date.now();
+      worldChangesRef.current = [...worldChangesRef.current, now].filter((t) => now - t <= 8000);
+      if (worldChangesRef.current.length >= 3) {
+        worldChangesRef.current = [];
+        setEggToast('The worlds blur…');
+      }
+    };
+    window.addEventListener('worldchange', handler);
+    return () => window.removeEventListener('worldchange', handler);
+  }, []);
+
   // Mobile detection on mount + resize
   useEffect(() => {
     const check = () => setIsMobile(window.innerWidth < 768);
