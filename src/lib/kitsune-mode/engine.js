@@ -1,32 +1,29 @@
-/**
- * KitsuneEngine — DOM-platform walker engine.
- *
- * Pure JS (no framework deps). One rAF loop drives physics + state.
- * Platform list is refreshed by setInterval (decoupled from rAF).
- *
- * States: idle | walk-left | walk-right | jump | fall | land
- */
-
-const GRAVITY       = 0.55;   // px/frame² — how fast the fox accelerates downward
-const WALK_SPEED    = 1.8;    // px/frame horizontal when walking
-const JUMP_VEL      = -12;    // initial Y velocity on jump (negative = upward)
-const LAND_FRAMES   = 18;     // frames to stay in 'land' state before resuming
-const IDLE_INTERVAL = 3000;   // ms between idle → walking decisions
-const WALK_DIR_CHANGE_CHANCE = 0.005; // per-frame chance to reverse direction while walking
-const JUMP_CHANCE   = 0.015;  // per-frame chance to jump while walking (if platform above)
+const GRAVITY       = 0.55;
+const WALK_SPEED    = 1.8;
+const JUMP_VEL      = -12;
+const LAND_FRAMES   = 18;
+const IDLE_INTERVAL = 3000;
+const WALK_DIR_CHANGE_CHANCE = 0.005;
+const JUMP_CHANCE   = 0.015;
 
 export class KitsuneEngine {
   /**
    * @param {HTMLCanvasElement} canvas
-   * @param {{ platformSelector: string, viewportPadding: { top: number }, minWidth: number }} opts
+   * @param {{
+   *   selector?: string,
+   *   viewportPadding?: { top?: number },
+   *   minWidth?: number,
+   *   onQuit?: () => void,
+   * }} config
    */
-  constructor(canvas, opts = {}) {
+  constructor(canvas, config = {}) {
     this._canvas   = canvas;
     this._ctx      = canvas.getContext('2d');
     this._opts     = {
-      platformSelector: opts.platformSelector ?? '[data-kitsune-platform]',
-      viewportPadding:  opts.viewportPadding  ?? { top: 100 },
-      minWidth:         opts.minWidth         ?? 50,
+      selector:        config.selector        ?? '[data-kitsune-platform]',
+      viewportPadding: config.viewportPadding ?? { top: 100 },
+      minWidth:        config.minWidth        ?? 50,
+      onQuit:          config.onQuit          ?? null,
     };
 
     // Physics state
@@ -96,8 +93,8 @@ export class KitsuneEngine {
   }
 
   _refreshPlatforms() {
-    const { platformSelector, viewportPadding, minWidth } = this._opts;
-    const nodes = document.querySelectorAll(platformSelector);
+    const { selector, viewportPadding, minWidth } = this._opts;
+    const nodes = document.querySelectorAll(selector);
     const pads  = viewportPadding;
     const rects = [];
 
@@ -321,6 +318,15 @@ export class KitsuneEngine {
   /** Called by KitsuneMode to inject the sprite draw function */
   setDrawSprite(fn) {
     this._drawSprite = fn;
+  }
+
+  // ── Quit (graceful exit with callback) ───────────────────────────────────────
+
+  quit() {
+    this.destroy();
+    if (typeof this._opts.onQuit === 'function') {
+      this._opts.onQuit();
+    }
   }
 
   // ── Cleanup ───────────────────────────────────────────────────────────────────
