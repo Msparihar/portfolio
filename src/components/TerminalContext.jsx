@@ -199,21 +199,28 @@ export const TerminalProvider = ({ children }) => {
   const commands = {
     help: {
       description: 'Show available commands',
-      execute: () => `Available commands:
+      execute: () => {
+        const wt = getWorldTerminal(worldId);
+        const fm = getWorldAppTitle(worldId, 'filemanager', 'File Manager');
+        const mail = getWorldAppTitle(worldId, 'mail', 'Mail');
+        const log = getWorldAppTitle(worldId, 'logviewer', 'Log Viewer');
+        const abt = getWorldAppTitle(worldId, 'about', 'About');
+        return `${wt.helpHeader}
 - whoami: About me
-- projects: Open File Manager (projects)
+- projects: Open ${fm}
 - exp | experience: View my work experience
 - edu | education: View my education
-- contact: Open Mail (contact)
-- blog: Open Log Viewer (blog)
-- about: Open About window
+- contact: Open ${mail}
+- blog: Open ${log}
+- about: Open ${abt}
 - open [app]: Open an application window
-- cd [directory]: Open an app window (e.g., cd projects, cd contact, cd blog)
+- cd [directory]: Navigate to a section
 - clear: Clear the terminal
 - echo [text]: Display text
 - date: Show current date and time
 - ls | dir: List available sections
-- help: Show this help message`
+- help: Show this help message`;
+      }
     },
     clear: {
       description: 'Clear the terminal',
@@ -223,31 +230,31 @@ export const TerminalProvider = ({ children }) => {
       }
     },
     projects: {
-      description: 'Open File Manager (projects)',
+      description: 'Open projects',
       execute: () => {
         openWindow('filemanager');
-        return 'Opening File Manager...';
+        return `Opening ${getWorldAppTitle(worldId, 'filemanager', 'File Manager')}...`;
       }
     },
     contact: {
       description: 'Get my contact information',
       execute: () => {
         openWindow('mail');
-        return 'Opening Mail...';
+        return `Opening ${getWorldAppTitle(worldId, 'mail', 'Mail')}...`;
       }
     },
     blog: {
       description: 'View my blog',
       execute: () => {
         openWindow('logviewer');
-        return 'Opening Log Viewer...';
+        return `Opening ${getWorldAppTitle(worldId, 'logviewer', 'Log Viewer')}...`;
       }
     },
     github: {
       description: 'View GitHub & about info',
       execute: () => {
         openWindow('about');
-        return 'Opening About...';
+        return `Opening ${getWorldAppTitle(worldId, 'about', 'About')}...`;
       }
     },
     whoami: {
@@ -312,16 +319,26 @@ ${portfolioData.education.map(edu =>
     },
     ls: {
       description: 'List available sections',
-      execute: () => `Available sections (use 'open [name]' to launch):
-- filemanager: My development projects
-- mail: Contact information
-- logviewer: My blog posts
-- about: About & GitHub contributions
-- browser: Web browser
-- trash: Trash / deleted items
-- gallery: Image gallery
+      execute: () => {
+        const wt = getWorldTerminal(worldId);
+        const fm = getWorldAppTitle(worldId, 'filemanager', 'File Manager');
+        const mail = getWorldAppTitle(worldId, 'mail', 'Mail');
+        const log = getWorldAppTitle(worldId, 'logviewer', 'Log Viewer');
+        const abt = getWorldAppTitle(worldId, 'about', 'About');
+        const browser = getWorldAppTitle(worldId, 'browser', 'Browser');
+        const trash = getWorldAppTitle(worldId, 'trash', 'Trash');
+        const gallery = getWorldAppTitle(worldId, 'gallery', 'Gallery');
+        return `${wt.lsHeader}
+- filemanager: ${fm}
+- mail: ${mail}
+- logviewer: ${log}
+- about: ${abt}
+- browser: ${browser}
+- trash: ${trash}
+- gallery: ${gallery}
 - experience: Work experience (type 'exp')
-- education: Educational background (type 'edu')`
+- education: Educational background (type 'edu')`;
+      }
     },
     dir: {
       description: 'List available sections',
