@@ -51,6 +51,12 @@ const APP_DEFAULTS = {
     defaultPos: { x: 160, y: 80 },
     defaultSize: { width: 860, height: 580 },
   },
+  journal: {
+    title: 'Journal',
+    icon: '📖',
+    defaultPos: { x: 180, y: 90 },
+    defaultSize: { width: 820, height: 600 },
+  },
 };
 
 export { APP_DEFAULTS };
