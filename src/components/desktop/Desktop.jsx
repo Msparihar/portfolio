@@ -158,6 +158,74 @@ export default function Desktop({ githubData, initialApp }) {
     return () => window.removeEventListener('keydown', handler);
   }, []);
 
+  // Egg: type "fox" anywhere (not in an input) — the spirit reveals itself.
+  useEffect(() => {
+    const WORD = 'fox';
+    let buf = '';
+    const handler = (e) => {
+      const tag = e.target.tagName;
+      if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT' || e.target.isContentEditable) return;
+      if (e.key.length !== 1) { buf = ''; return; }
+      buf = (buf + e.key.toLowerCase()).slice(-WORD.length);
+      if (buf === WORD) {
+        buf = '';
+        setEggToast('A fox slips through the mist. 🌫️');
+        window.dispatchEvent(new CustomEvent('mascot-clicked'));
+        window.dispatchEvent(new CustomEvent('brand-flash'));
+      }
+    };
+    window.addEventListener('keydown', handler);
+    return () => window.removeEventListener('keydown', handler);
+  }, []);
+
+  // Egg: double-Shift within 400 ms (not in an input) — the world stirs.
+  useEffect(() => {
+    let lastShift = 0;
+    const handler = (e) => {
+      if (e.key !== 'Shift') return;
+      const tag = e.target.tagName;
+      if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT' || e.target.isContentEditable) return;
+      const now = Date.now();
+      if (now - lastShift < 400) {
+        lastShift = 0;
+        setEggToast('The veil between worlds thins…');
+        window.dispatchEvent(new CustomEvent('brand-flash'));
+      } else {
+        lastShift = now;
+      }
+    };
+    window.addEventListener('keydown', handler);
+    return () => window.removeEventListener('keydown', handler);
+  }, []);
+
+  // Egg: midnight (00:00 local) — fires once per calendar day.
+  useEffect(() => {
+    const SEEN_KEY = 'dt-egg-midnight-seen';
+    let timerId;
+    const schedule = () => {
+      const now = new Date();
+      const todayStr = now.toDateString();
+      const msTillMidnight =
+        (23 - now.getHours()) * 3600000 +
+        (59 - now.getMinutes()) * 60000 +
+        (60 - now.getSeconds()) * 1000;
+      timerId = setTimeout(() => {
+        const fireDate = new Date().toDateString();
+        if (localStorage.getItem(SEEN_KEY) !== fireDate) {
+          localStorage.setItem(SEEN_KEY, fireDate);
+          setEggToast('The witching hour. 🌑');
+          window.dispatchEvent(new CustomEvent('brand-flash'));
+        }
+        schedule();
+      }, msTillMidnight);
+    };
+    // Only arm if not already triggered today (handles page loads near midnight)
+    if (localStorage.getItem(SEEN_KEY) !== new Date().toDateString()) {
+      schedule();
+    }
+    return () => clearTimeout(timerId);
+  }, []);
+
   // Egg: Halloween — Oct 31st auto-shows a spooky toast once per calendar day.
   useEffect(() => {
     const SEEN_KEY = 'dt-egg-halloween-seen';
