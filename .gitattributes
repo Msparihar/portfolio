@@ -1,0 +1,19 @@
+# Normalize line endings to LF; stops CRLF churn (e.g. fallback-github-data.json)
+* text=auto eol=lf
+
+# Treat binaries as binary (no EOL conversion, no diff noise)
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.webp binary
+*.gif binary
+*.ico binary
+*.glb binary
+*.mp3 binary
+*.mp4 binary
+*.woff binary
+*.woff2 binary
+
+# Lockfiles + generated data: LF, and don't show as diffs in review
+bun.lockb binary
+public/fallback-github-data.json text eol=lf

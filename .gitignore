@@ -53,6 +53,11 @@ dist/
 poc-*.html
 CODEX.md
 
-# Private working files (ideas, session status) — personal notes, not public
-/STATUS.md
+# Private single idea/status tracker — personal notes, not public
 /docs/IDEAS.md
+
+# tooling caches + research scratch — keep on disk, never commit
+.wrangler/
+.playwright-cli/
+/Research/
+/public/images/design-references/
