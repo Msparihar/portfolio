@@ -241,6 +241,58 @@ export default function Desktop({ githubData, initialApp }) {
     }
   }, []);
 
+  // Egg: type "kitsune" anywhere (not in an input) — the full name summons more.
+  useEffect(() => {
+    const WORD = 'kitsune';
+    let buf = '';
+    const handler = (e) => {
+      const tag = e.target.tagName;
+      if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT' || e.target.isContentEditable) return;
+      if (e.key.length !== 1) { buf = ''; return; }
+      buf = (buf + e.key.toLowerCase()).slice(-WORD.length);
+      if (buf === WORD) {
+        buf = '';
+        setEggToast('九尾の狐. The nine-tailed fox awakens. 🦊✨');
+        window.dispatchEvent(new CustomEvent('mascot-clicked'));
+        window.dispatchEvent(new CustomEvent('brand-flash'));
+      }
+    };
+    window.addEventListener('keydown', handler);
+    return () => window.removeEventListener('keydown', handler);
+  }, []);
+
+  // Egg: New Year's Day — fires once per calendar day on Jan 1st.
+  useEffect(() => {
+    const SEEN_KEY = 'dt-egg-newyear-seen';
+    const today = new Date();
+    const todayStr = today.toDateString();
+    if (today.getMonth() === 0 && today.getDate() === 1 && localStorage.getItem(SEEN_KEY) !== todayStr) {
+      localStorage.setItem(SEEN_KEY, todayStr);
+      const id = setTimeout(() => {
+        setEggToast('A new world begins. Happy New Year. 🎆');
+        window.dispatchEvent(new CustomEvent('brand-flash'));
+      }, 1500);
+      return () => clearTimeout(id);
+    }
+  }, []);
+
+  // Egg: 7 rapid clicks on bare desktop within 3 seconds — the hidden layer.
+  const desktopClicksRef = useRef([]);
+  const handleDesktopRapidClick = useCallback((e) => {
+    if (
+      e.target !== e.currentTarget &&
+      !e.target.classList.contains('desktop-canvas') &&
+      !e.target.classList.contains('desktop-bg-layer')
+    ) return;
+    const now = Date.now();
+    desktopClicksRef.current = [...desktopClicksRef.current, now].filter((t) => now - t <= 3000);
+    if (desktopClicksRef.current.length >= 7) {
+      desktopClicksRef.current = [];
+      setEggToast('You found the hidden layer. 🌀');
+      window.dispatchEvent(new CustomEvent('brand-flash'));
+    }
+  }, []);
+
   // Egg: rapid world-switching — 3+ world changes within 8 seconds = "The worlds blur…"
   const worldChangesRef = useRef([]);
   useEffect(() => {
@@ -384,9 +436,10 @@ export default function Desktop({ githubData, initialApp }) {
     localStorage.setItem(SWITCHER_DISMISSED_KEY, 'true');
   }, []);
 
-  const handleDesktopClick = useCallback(() => {
+  const handleDesktopClick = useCallback((e) => {
     setContextMenu(null);
-  }, []);
+    handleDesktopRapidClick(e);
+  }, [handleDesktopRapidClick]);
 
   const handleMoonEgg = useCallback(() => {
     setEggToast('The moon listens.');
