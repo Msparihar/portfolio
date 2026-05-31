@@ -36,9 +36,6 @@ function drawSnow(ctx, p) {
   ctx.fill();
 }
 
-// Phase D hooks — not implemented yet, left as no-ops
-// drawRain, drawFirefly
-
 const RENDERERS = {
   pollen: drawPollen,
   petal:  drawPetal,

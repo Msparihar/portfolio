@@ -32,6 +32,7 @@ function buildMenuModel(ctx) {
     {
       label: 'Switch World',
       icon: '🌍',
+      keepOpen: true,
       submenu: WORLDS.map((world) => ({
         label: world.name,
         icon: <span style={{
@@ -297,7 +298,7 @@ function AboutModal({ worldId, onClose }) {
     <Modal title="About this Portfolio" onClose={onClose}>
       <div style={{ display: 'grid', gridTemplateColumns: 'auto 1fr', columnGap: 14, rowGap: 8, fontSize: 12 }}>
         <span style={{ color: 'var(--dt-text-muted)' }}>Build</span>
-        <span>v0.8 — contextmenu</span>
+        <span>v0.9</span>
 
         <span style={{ color: 'var(--dt-text-muted)' }}>Current world</span>
         <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
@@ -536,7 +537,7 @@ export default function ContextMenu({ x, y, onClose }) {
         } else if (e.key === 'Enter') {
           e.preventDefault();
           sub[submenuFocus]?.action();
-          if (items[openSubmenu].label !== 'Switch World') onClose();
+          if (!items[openSubmenu].keepOpen) onClose();
         }
         return;
       }
@@ -655,7 +656,7 @@ export default function ContextMenu({ x, y, onClose }) {
                       onMouseEnter={() => setSubmenuFocus(subIdx)}
                       onClick={() => {
                         sub.action();
-                        if (item.label !== 'Switch World') onClose();
+                        if (!item.keepOpen) onClose();
                       }}
                     />
                   ))}
