@@ -238,7 +238,7 @@ export default function Desktop({ githubData, initialApp }) {
     const handleKeyDown = (e) => {
       if (e.ctrlKey && e.shiftKey && e.key === 'W') {
         const tag = e.target.tagName;
-        if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return;
+        if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT' || e.target.isContentEditable) return;
         e.preventDefault();
         toggleWebsiteMode();
       }
