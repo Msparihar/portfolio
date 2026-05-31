@@ -38,6 +38,12 @@ interface TerminalContent {
   bootSkillsLabel: string;
   whoamiName: string;
   whoamiTitle: string;
+  helpHeader: string;
+  lsHeader: string;
+}
+
+interface WorldIdentity {
+  pageTitle: string;
 }
 
 interface TaskbarContent {
@@ -54,6 +60,7 @@ type WorldTitleMap = Record<WorldId, Record<AppId, string>>;
 type WorldTerminalMap = Record<WorldId, TerminalContent>;
 type WorldPrefixMap = Record<WorldId, string>;
 type WorldTaskbarMap = Record<WorldId, TaskbarContent>;
+type WorldIdentityMap = Record<WorldId, WorldIdentity>;
 
 // ─── Icon & Label overrides per world ──────────────────────────────────────
 
@@ -142,24 +149,30 @@ const WORLD_TERMINAL: WorldTerminalMap = {
     bootSkillsLabel: 'Loading ancient runes',
     whoamiName: 'The Tarnished',
     whoamiTitle: 'Seeker of Grace & Elden Ring',
+    helpHeader: 'Ancient incantations (commands):',
+    lsHeader: 'Discovered sites of grace (sections):',
   },
   'ghibli': {
-    promptUser: 'ghibli',
-    promptHost: 'forest',
+    promptUser: 'wanderer',
+    promptHost: 'the-garden',
     bootName: 'Forest Spirit',
     bootTitle: 'Keeper of the Garden',
     bootSkillsLabel: 'Growing seeds of knowledge',
     whoamiName: 'Forest Keeper',
     whoamiTitle: 'Tender of the Spirit Garden',
+    helpHeader: 'Paths through the garden (commands):',
+    lsHeader: 'Clearings to explore (sections):',
   },
   'got': {
-    promptUser: 'lord',
-    promptHost: 'westeros',
+    promptUser: 'maester',
+    promptHost: 'citadel',
     bootName: 'The Lord Commander',
     bootTitle: 'Ruler of the Seven Kingdoms',
     bootSkillsLabel: 'Forging alliances',
     whoamiName: 'Lord Commander',
     whoamiTitle: 'Warden of the Digital Realm',
+    helpHeader: "The Maester's index (commands):",
+    lsHeader: 'Wings of the Citadel (sections):',
   },
 };
 
@@ -316,17 +329,29 @@ const DEFAULT_EMOJI = '🌍';
 const DEFAULT_TERMINAL: TerminalContent = {
   promptUser: 'manish',
   promptHost: 'portfolio',
-  bootName: '',       // empty = use real name from portfolio.json
-  bootTitle: '',      // empty = use real title from portfolio.json
+  bootName: '',
+  bootTitle: '',
   bootSkillsLabel: 'Loading skills',
   whoamiName: '',
   whoamiTitle: '',
+  helpHeader: 'Available commands:',
+  lsHeader: 'Available sections (use \'open [name]\' to launch):',
 };
 
 const DEFAULT_TASKBAR: TaskbarContent = {
   wifiLabel: '●●● wifi',
   batteryLabel: '[▮▮▮▮▯] 87%',
 };
+
+// ─── World page identity ───────────────────────────────────────────────────
+
+const WORLD_IDENTITY: WorldIdentityMap = {
+  'elden-ring': { pageTitle: 'Tarnished Portfolio | Lands Between' },
+  'ghibli':     { pageTitle: 'The Garden | Manish Singh Parihar' },
+  'got':        { pageTitle: "Maester's Archive | Seven Kingdoms" },
+};
+
+const DEFAULT_PAGE_TITLE = 'Manish Singh Parihar | Full Stack & AI Engineer';
 
 // ─── Public API ────────────────────────────────────────────────────────────
 
@@ -470,4 +495,12 @@ export function getWorldMenuBarNav(worldId: string | null): MenuBarItem[] {
 export function getWorldMenuBarCta(worldId: string | null): MenuBarCta {
   if (worldId && isWorldId(worldId)) return WORLD_MENUBAR_CTA[worldId];
   return DEFAULT_MENUBAR_CTA;
+}
+
+/**
+ * Get world-specific browser page title for document.title.
+ */
+export function getWorldPageTitle(worldId: string | null): string {
+  if (worldId && isWorldId(worldId)) return WORLD_IDENTITY[worldId].pageTitle;
+  return DEFAULT_PAGE_TITLE;
 }

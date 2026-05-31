@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
+import { getWorldAppTitle, isWorldId } from '@/config/worldContent';
 
 const APP_DEFAULTS = {
   terminal: {
@@ -85,11 +86,15 @@ export const useWindowStore = create(
       defaultSize: { width: 700, height: 480 },
     };
 
+    const rawWorldId = typeof window !== 'undefined' ? localStorage.getItem('portfolio_world') : null;
+    const activeWorldId = rawWorldId && isWorldId(rawWorldId) ? rawWorldId : null;
+    const themedTitle = getWorldAppTitle(activeWorldId, appId, defaults.title);
+
     const saved = get().savedPositions[appId];
     const newWindow = {
       id: `${appId}-${Date.now()}`,
       appId,
-      title: opts.title ?? defaults.title,
+      title: opts.title ?? themedTitle,
       isMinimized: false,
       isMaximized: false,
       position: opts.position ?? saved?.position ?? { ...defaults.defaultPos },
