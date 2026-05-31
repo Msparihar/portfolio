@@ -2,6 +2,7 @@
 
 import dynamic from 'next/dynamic';
 import { useEffect, useRef, useState } from 'react';
+import { AnimatePresence } from 'framer-motion';
 import { useWindowStore, APP_DEFAULTS } from '@/store/windowStore';
 import Window from './Window';
 import { getCurrentWorldId, getWorldAppTitle, createWorldChangeListener } from '@/config/worldContent';
@@ -86,15 +87,19 @@ export default function WindowManager() {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [closeWindow]);
 
-  return windows.map((win) => {
-    const resolvedTitle = getWorldAppTitle(worldId, win.appId, win.title);
-    const resolvedWindowData = resolvedTitle !== win.title
-      ? { ...win, title: resolvedTitle }
-      : win;
-    return (
-      <Window key={win.id} windowData={resolvedWindowData}>
-        {getAppContent(win.appId)}
-      </Window>
-    );
-  });
+  return (
+    <AnimatePresence>
+      {windows.map((win) => {
+        const resolvedTitle = getWorldAppTitle(worldId, win.appId, win.title);
+        const resolvedWindowData = resolvedTitle !== win.title
+          ? { ...win, title: resolvedTitle }
+          : win;
+        return (
+          <Window key={win.id} windowData={resolvedWindowData}>
+            {getAppContent(win.appId)}
+          </Window>
+        );
+      })}
+    </AnimatePresence>
+  );
 }
