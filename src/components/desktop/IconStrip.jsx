@@ -16,6 +16,7 @@ const STRIP_ITEMS = [
   { appId: 'logviewer',   icon: '📰', label: 'Blog'        },
   { appId: 'browser',     icon: '🌐', label: 'Browser'     },
   { appId: 'gallery',     icon: '🖼️', label: 'Gallery'     },
+  { appId: 'journal',     icon: '📖', label: 'Journal'     },
   { appId: 'about',       icon: '👤', label: 'About'       },
   { appId: 'mail',        icon: '✉️', label: 'Contact'     },
   { appId: 'resume',      icon: '📄', label: 'Resume'      },
