@@ -3,31 +3,27 @@
 import { useEffect, useRef } from 'react';
 import { KitsuneEngine } from './engine';
 import { drawKitsune } from './sprite';
+import { usePrefsStore } from '@/store/prefsStore';
 
 /**
- * KitsuneMode — mounts a fullscreen canvas and runs the kitsune DOM-walker engine.
- *
+ * Mounts a fullscreen canvas and runs the kitsune DOM-walker engine.
  * Rendered conditionally by Desktop.jsx via React.lazy + Suspense.
- * The canvas sits above page content (z-index 50) but below modals (z-index 100+).
- * pointer-events: none so it never intercepts clicks.
  */
-export default function KitsuneMode() {
+export default function KitsuneMode({ config = {} }) {
   const canvasRef = useRef(null);
   const engineRef = useRef(null);
-
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
 
-    const engine = new KitsuneEngine(canvas, {
-      // data-kitsune-platform is added to MenuBar, IconStrip, and Window titlebar.
-      // .window-panel is also scanned as a secondary surface for window tops.
-      platformSelector: '[data-kitsune-platform], .window-panel',
-      viewportPadding:  { top: 60 },
-      minWidth:         50,
-    });
+    const resolvedConfig = {
+      selector:        config.selector        ?? '[data-kitsune-platform], .window-panel',
+      viewportPadding: config.viewportPadding ?? { top: 60 },
+      minWidth:        config.minWidth        ?? 50,
+      onQuit:          config.onQuit          ?? (() => usePrefsStore.setState({ kitsuneModeEnabled: false })),
+    };
 
-    // Inject the sprite draw function
+    const engine = new KitsuneEngine(canvas, resolvedConfig);
     engine.setDrawSprite(drawKitsune);
     engineRef.current = engine;
 
