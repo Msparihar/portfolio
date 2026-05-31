@@ -21,7 +21,8 @@ export type AppId =
   | 'browser'
   | 'gallery'
   | 'trash'
-  | 'resume';
+  | 'resume'
+  | 'journal';
 
 export type WorldId = 'elden-ring' | 'ghibli' | 'got';
 
@@ -75,6 +76,7 @@ const WORLD_ICONS: WorldIconMap = {
     gallery:     { icon: '🏺', label: 'Relics' },
     trash:       { icon: '🕳️', label: 'Abyss' },
     resume:      { icon: '📜', label: 'Scroll' },
+    journal:     { icon: '📖', label: 'Travel Log' },
   },
   'ghibli': {
     terminal:    { icon: '🌿', label: 'Terminal' },
@@ -86,6 +88,7 @@ const WORLD_ICONS: WorldIconMap = {
     gallery:     { icon: '🎨', label: 'Gallery' },
     trash:       { icon: '🍂', label: 'Compost' },
     resume:      { icon: '📄', label: 'Resume' },
+    journal:     { icon: '📔', label: 'Journal' },
   },
   'got': {
     terminal:    { icon: '⚒️', label: 'Terminal' },
@@ -97,6 +100,7 @@ const WORLD_ICONS: WorldIconMap = {
     gallery:     { icon: '🖼️', label: 'Tapestry' },
     trash:       { icon: '⛓️', label: 'Dungeon' },
     resume:      { icon: '📋', label: 'Decree' },
+    journal:     { icon: '🐦‍⬛', label: 'Raven Scrolls' },
   },
 };
 
@@ -113,6 +117,7 @@ const WORLD_APP_TITLES: WorldTitleMap = {
     gallery: 'Relics',
     trash: 'Abyss',
     resume: 'Scroll',
+    journal: 'Travel Log',
   },
   'ghibli': {
     terminal: 'Terminal',
@@ -124,6 +129,7 @@ const WORLD_APP_TITLES: WorldTitleMap = {
     gallery: 'Gallery',
     trash: 'Compost',
     resume: 'Resume',
+    journal: 'Journal',
   },
   'got': {
     terminal: 'Terminal',
@@ -135,6 +141,7 @@ const WORLD_APP_TITLES: WorldTitleMap = {
     gallery: 'Tapestry',
     trash: 'Dungeon',
     resume: 'Decree',
+    journal: 'Raven Scrolls',
   },
 };
 
@@ -377,7 +384,7 @@ export function isWorldId(id: string): id is WorldId {
  * Type guard for AppId.
  */
 export function isAppId(id: string): id is AppId {
-  return ['terminal', 'filemanager', 'logviewer', 'mail', 'about', 'browser', 'gallery', 'trash', 'resume'].includes(id);
+  return ['terminal', 'filemanager', 'logviewer', 'mail', 'about', 'browser', 'gallery', 'trash', 'resume', 'journal'].includes(id);
 }
 
 /**
