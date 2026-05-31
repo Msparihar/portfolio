@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Golden Kitsune Walker — benchmark</title>
+<style>
+  html, body { margin: 0; height: 100%; background: linear-gradient(180deg, #2d3b2a 0%, #1e2a1c 100%); overflow: hidden; }
+  .ground {
+    position: fixed; left: 0; right: 0; bottom: 0; height: 160px;
+    background: linear-gradient(180deg, transparent, #0e160c);
+  }
+  .label {
+    position: fixed; top: 20px; left: 0; right: 0; text-align: center;
+    color: #a8d8a8aa; font: 13px ui-monospace, monospace; letter-spacing: 3px;
+  }
+  .kitsune-walker {
+    position: fixed; bottom: 120px; left: 0; width: 170px; height: 220px;
+    animation: kitWalkAcross 16s linear infinite;
+  }
+  .kitsune {
+    width: 170px; height: 220px;
+    background: url('kitsune-walk.png') 0 0 / 510px 220px no-repeat;
+    animation: kitStep .65s steps(3) infinite;
+    filter: drop-shadow(0 10px 10px rgba(10,16,8,.4));
+  }
+  @keyframes kitStep { from { background-position-x: 0; } to { background-position-x: -510px; } }
+  @keyframes kitWalkAcross {
+    0%   { transform: translateX(40px) scaleX(1); }
+    48%  { transform: translateX(calc(100vw - 210px)) scaleX(1); }
+    50%  { transform: translateX(calc(100vw - 210px)) scaleX(-1); }
+    98%  { transform: translateX(40px) scaleX(-1); }
+    100% { transform: translateX(40px) scaleX(1); }
+  }
+</style>
+</head>
+<body>
+  <div class="label">🦊 GOLDEN KITSUNE WALKER — 3-frame benchmark</div>
+  <div class="ground"></div>
+  <div class="kitsune-walker"><div class="kitsune"></div></div>
+</body>
+</html>
