@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
+import Image from 'next/image';
 import portfolioData from '@/config/portfolio.json';
 
 const ACCENT = 'var(--dt-accent)';
@@ -13,7 +14,7 @@ function isVideo(src) {
   return src?.endsWith('.webm') || src?.endsWith('.mp4');
 }
 
-function MediaThumb({ src, alt, style }) {
+function MediaThumb({ src, alt }) {
   if (isVideo(src)) {
     return (
       <video
@@ -22,14 +23,23 @@ function MediaThumb({ src, alt, style }) {
         loop
         autoPlay
         playsInline
-        style={style}
+        style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
       />
     );
   }
-  return <img src={src} alt={alt} style={style} />;
+  return (
+    <Image
+      src={src}
+      alt={alt}
+      fill
+      sizes="(max-width: 768px) 100vw, 33vw"
+      style={{ objectFit: 'cover' }}
+      loading="lazy"
+    />
+  );
 }
 
-function MediaFull({ src, alt, style }) {
+function MediaFull({ src, alt }) {
   if (isVideo(src)) {
     return (
       <video
@@ -37,11 +47,20 @@ function MediaFull({ src, alt, style }) {
         controls
         autoPlay
         loop
-        style={style}
+        style={{ maxWidth: '100%', maxHeight: '60vh', objectFit: 'contain', borderRadius: 'var(--dt-radius-sm, 4px)' }}
       />
     );
   }
-  return <img src={src} alt={alt} style={style} />;
+  return (
+    <Image
+      src={src}
+      alt={alt}
+      fill
+      sizes="80vw"
+      style={{ objectFit: 'contain', borderRadius: 'var(--dt-radius-sm, 4px)' }}
+      loading="eager"
+    />
+  );
 }
 
 export default function Gallery() {
@@ -96,6 +115,7 @@ export default function Gallery() {
             style={{ cursor: 'pointer' }}
           >
             <div style={{
+              position: 'relative',
               aspectRatio: '16/9',
               borderRadius: 'var(--dt-radius-sm, 4px)',
               overflow: 'hidden',
@@ -106,7 +126,6 @@ export default function Gallery() {
               <MediaThumb
                 src={project.image}
                 alt={project.name}
-                style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
               />
             </div>
             <div style={{ color: MUTED, fontSize: '11px', fontFamily: 'var(--dt-font-mono, monospace)', marginTop: '4px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
@@ -192,11 +211,13 @@ export default function Gallery() {
           </button>
 
           {/* Main image */}
-          <div onClick={(e) => e.stopPropagation()} style={{ maxWidth: '80%', maxHeight: '70%' }}>
+          <div
+            onClick={(e) => e.stopPropagation()}
+            style={{ position: 'relative', width: '80vw', maxWidth: '900px', height: '60vh' }}
+          >
             <MediaFull
               src={items[lightboxIndex].image}
               alt={items[lightboxIndex].name}
-              style={{ maxWidth: '100%', maxHeight: '60vh', objectFit: 'contain', borderRadius: 'var(--dt-radius-sm, 4px)' }}
             />
           </div>
 
