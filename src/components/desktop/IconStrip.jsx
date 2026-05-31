@@ -31,7 +31,7 @@ export default function IconStrip() {
 
   const handleClick = (action) => {
     if (action === 'resume') {
-      window.open('/resume.pdf', '_blank');
+      window.open('/resume.pdf', '_blank', 'noopener,noreferrer');
       return;
     }
     openWindow(action);

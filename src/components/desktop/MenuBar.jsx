@@ -95,7 +95,7 @@ export default function MenuBar() {
 
   const handleNavClick = (action) => {
     if (action === 'resume') {
-      window.open('/resume.pdf', '_blank');
+      window.open('/resume.pdf', '_blank', 'noopener,noreferrer');
       return;
     }
     openWindow(action);
@@ -161,7 +161,7 @@ export default function MenuBar() {
         <span
           style={{
             fontFamily: world ? 'var(--dt-font-heading, monospace)' : 'var(--dt-font-mono, monospace)',
-            fontSize: world ? 13 : 13,
+            fontSize: 13,
             letterSpacing: world ? '1.2px' : '0',
             color: 'var(--dt-accent-70)',
             userSelect: 'none',
