@@ -72,6 +72,8 @@ export const WORLDS = [
       // Colors
       '--dt-bg':                   '#0d0b07',
       '--dt-surface':              'rgba(26, 21, 16, 0.97)',
+      '--dt-surface-secondary':    'rgba(36, 30, 22, 0.97)',
+      '--dt-surface-tertiary':     'rgba(46, 38, 28, 0.97)',
       '--dt-surface-deep':         'rgba(13, 11, 7, 0.98)',
       '--dt-surface-input':        'rgba(201, 168, 76, 0.06)',
       '--dt-text':                 '#e8d5a3',
@@ -169,6 +171,8 @@ export const WORLDS = [
       // Colors
       '--dt-bg':                   '#f5f0e8',
       '--dt-surface':              'rgba(250, 246, 237, 0.95)',
+      '--dt-surface-secondary':    'rgba(242, 236, 223, 0.95)',
+      '--dt-surface-tertiary':     'rgba(233, 225, 208, 0.95)',
       '--dt-surface-deep':         'rgba(240, 232, 216, 0.97)',
       '--dt-surface-input':        'rgba(74, 124, 89, 0.06)',
       '--dt-text':                 '#4a6b52',
@@ -269,6 +273,8 @@ export const WORLDS = [
         vars: {
           '--dt-bg': '#0d1b2a',
           '--dt-surface': 'rgba(26, 58, 92, 0.85)',
+          '--dt-surface-secondary': 'rgba(33, 72, 110, 0.88)',
+          '--dt-surface-tertiary': 'rgba(40, 86, 128, 0.90)',
           '--dt-surface-deep': 'rgba(13, 27, 42, 0.95)',
           '--dt-surface-input': 'rgba(74, 158, 218, 0.08)',
           '--dt-text': '#e8edf2',
@@ -332,6 +338,8 @@ export const WORLDS = [
         vars: {
           '--dt-bg': '#2a1008',
           '--dt-surface': 'rgba(60, 30, 15, 0.88)',
+          '--dt-surface-secondary': 'rgba(72, 38, 20, 0.90)',
+          '--dt-surface-tertiary': 'rgba(85, 46, 24, 0.92)',
           '--dt-surface-deep': 'rgba(42, 16, 8, 0.95)',
           '--dt-surface-input': 'rgba(201, 168, 76, 0.08)',
           '--dt-text': '#f5e6c8',
@@ -395,6 +403,8 @@ export const WORLDS = [
         vars: {
           '--dt-bg': '#0a0a0a',
           '--dt-surface': 'rgba(26, 26, 46, 0.88)',
+          '--dt-surface-secondary': 'rgba(34, 34, 58, 0.90)',
+          '--dt-surface-tertiary': 'rgba(42, 42, 70, 0.92)',
           '--dt-surface-deep': 'rgba(13, 13, 26, 0.95)',
           '--dt-surface-input': 'rgba(74, 158, 218, 0.06)',
           '--dt-text': '#c8dce8',
@@ -458,6 +468,8 @@ export const WORLDS = [
         vars: {
           '--dt-bg': '#1a1012',
           '--dt-surface': 'rgba(40, 20, 25, 0.88)',
+          '--dt-surface-secondary': 'rgba(52, 26, 32, 0.90)',
+          '--dt-surface-tertiary': 'rgba(64, 32, 40, 0.92)',
           '--dt-surface-deep': 'rgba(26, 16, 18, 0.95)',
           '--dt-surface-input': 'rgba(196, 60, 44, 0.08)',
           '--dt-text': '#f0d0c0',
@@ -513,6 +525,8 @@ export const WORLDS = [
     vars: {
       '--dt-bg': '#0d1b2a',
       '--dt-surface': 'rgba(26, 58, 92, 0.85)',
+      '--dt-surface-secondary': 'rgba(33, 72, 110, 0.88)',
+      '--dt-surface-tertiary': 'rgba(40, 86, 128, 0.90)',
       '--dt-surface-deep': 'rgba(13, 27, 42, 0.95)',
       '--dt-surface-input': 'rgba(74, 158, 218, 0.08)',
       '--dt-text': '#e8edf2',
