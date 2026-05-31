@@ -57,6 +57,12 @@ const APP_DEFAULTS = {
     defaultPos: { x: 180, y: 90 },
     defaultSize: { width: 820, height: 600 },
   },
+  codex: {
+    title: 'Codex',
+    icon: '📖',
+    defaultPos: { x: 200, y: 100 },
+    defaultSize: { width: 880, height: 620 },
+  },
 };
 
 export { APP_DEFAULTS };
