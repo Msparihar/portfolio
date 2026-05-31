@@ -1,16 +1,10 @@
 'use client';
 
-import { useEffect, useReducer, useRef } from 'react';
+import { useEffect, useReducer, useRef, useState } from 'react';
 import Image from 'next/image';
-
-/**
- * Animated sprite-based kitsune mascot rendered bottom-right of the desktop.
- * Three poses: idle | blink | wave. Crossfades between sprites on state change.
- * - Random blink every 4-7s (~150ms)
- * - Random wave every 30-60s (~1.2s) or on hover/click
- * - Click dispatches a 'mascot-clicked' window event for easter egg wiring
- * - prefers-reduced-motion: stays in idle pose, no random triggers
- */
+import { useReducedMotion } from 'framer-motion';
+import MascotSpeech, { pickLine } from './MascotSpeech';
+import { WORLD_STORAGE_KEY } from '@/config/worlds';
 
 const BLINK_MS = 160;
 const WAVE_MS = 1200;
@@ -18,6 +12,9 @@ const BLINK_MIN = 4000;
 const BLINK_MAX = 7000;
 const WAVE_MIN = 30000;
 const WAVE_MAX = 60000;
+const BUBBLE_MIN = 45000;
+const BUBBLE_MAX = 90000;
+const BUBBLE_SHOW_MS = 4000;
 
 const rand = (min, max) => min + Math.random() * (max - min);
 
@@ -34,14 +31,23 @@ function reducer(state, action) {
   }
 }
 
+function readWorldId() {
+  if (typeof localStorage === 'undefined') return null;
+  return localStorage.getItem(WORLD_STORAGE_KEY) || null;
+}
+
 export default function Mascot({ poses, alt, size = 112 }) {
-  // poses = { idle, blink, wave } — all required for animation; fall back to idle if any missing
   const [state, dispatch] = useReducer(reducer, { pose: 'idle' });
   const timersRef = useRef([]);
   const prefersReducedRef = useRef(false);
   const lastInteractRef = useRef(0);
 
-  // Random blink / wave loop
+  const [bubbleText, setBubbleText] = useState(null);
+  const [hovered, setHovered] = useState(false);
+
+  const reduced = useReducedMotion();
+
+  // Random blink / wave loop + speech bubble loop
   useEffect(() => {
     const mq = typeof window !== 'undefined' && window.matchMedia
       ? window.matchMedia('(prefers-reduced-motion: reduce)')
@@ -82,15 +88,31 @@ export default function Mascot({ poses, alt, size = 112 }) {
       timersRef.current.push(t);
     };
 
+    const showBubble = (wId) => {
+      const line = pickLine(wId ?? readWorldId());
+      setBubbleText(line);
+      const t = setTimeout(() => setBubbleText(null), BUBBLE_SHOW_MS);
+      timersRef.current.push(t);
+    };
+
+    const scheduleBubble = () => {
+      if (prefersReducedRef.current) return;
+      const t = setTimeout(() => {
+        showBubble(null);
+        scheduleBubble();
+      }, rand(BUBBLE_MIN, BUBBLE_MAX));
+      timersRef.current.push(t);
+    };
+
     scheduleBlink();
     scheduleWave();
+    scheduleBubble();
 
-    // External trigger: anyone (terminal `sudo summon`, moon-3-click egg, etc.)
-    // can fire `mascot-clicked` on window to make the mascot wave.
     const onExternalTrigger = () => {
       dispatch({ type: 'WAVE' });
       const t = setTimeout(() => dispatch({ type: 'IDLE' }), WAVE_MS);
       timersRef.current.push(t);
+      showBubble(null);
     };
     window.addEventListener('mascot-clicked', onExternalTrigger);
 
@@ -115,57 +137,94 @@ export default function Mascot({ poses, alt, size = 112 }) {
   if (import.meta.env.DEV && state.pose !== 'idle' && !poses[state.pose]) {
     console.warn(`[Mascot] missing sprite for pose "${state.pose}", falling back to idle`);
   }
-  const currentSrc = poses[state.pose] || poses.idle;
 
   return (
-    <button
-      type="button"
-      aria-label={alt || 'Friendly mascot — click to wave'}
-      onMouseEnter={handleInteract}
-      onClick={handleInteract}
-      className="mascot-bob"
+    <div
       style={{
         position: 'fixed',
         right: 'calc(var(--dt-iconstrip-width, 64px) + 16px)',
         bottom: 16,
         width: size,
         height: size,
-        background: 'transparent',
-        border: 'none',
-        padding: 0,
-        cursor: 'pointer',
         zIndex: 50,
-        animation: 'mascot-bob 3.6s ease-in-out infinite',
-        filter: 'var(--dt-mascot-shadow, drop-shadow(0 6px 12px rgba(0,0,0,0.35)))',
       }}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
     >
-      {/* Layered sprites with crossfade — only currentSrc is opaque */}
-      {['idle', 'blink', 'wave'].map((pose) => {
-        const src = poses[pose];
-        if (!src) return null;
-        const isActive = state.pose === pose;
-        return (
-          <Image
-            key={pose}
-            src={src}
-            alt=""
-            width={size}
-            height={size}
-            priority={pose === 'idle'}
-            draggable={false}
-            style={{
-              position: 'absolute',
-              inset: 0,
-              width: '100%',
-              height: '100%',
-              objectFit: 'contain',
-              opacity: isActive ? 1 : 0,
-              transition: 'opacity 140ms ease',
-              pointerEvents: 'none',
-            }}
-          />
-        );
-      })}
-    </button>
+      <MascotSpeech text={bubbleText} size={size} />
+
+      {hovered && !bubbleText && alt && (
+        <div
+          aria-hidden="true"
+          style={{
+            position: 'absolute',
+            bottom: size + 8,
+            right: 0,
+            background: 'var(--dt-bubble-bg, rgba(15,15,15,0.82))',
+            color: 'var(--dt-bubble-fg, #f0ece4)',
+            border: '1px solid var(--dt-bubble-border, rgba(255,255,255,0.10))',
+            borderRadius: 6,
+            padding: '4px 9px',
+            fontSize: 11,
+            fontFamily: 'var(--dt-font-body, sans-serif)',
+            letterSpacing: '0.03em',
+            whiteSpace: 'nowrap',
+            pointerEvents: 'none',
+            backdropFilter: 'blur(4px)',
+            WebkitBackdropFilter: 'blur(4px)',
+            opacity: reduced ? 1 : undefined,
+          }}
+        >
+          {alt}
+        </div>
+      )}
+
+      <button
+        type="button"
+        aria-label={alt || 'Friendly mascot — click to wave'}
+        onMouseEnter={handleInteract}
+        onClick={handleInteract}
+        className="mascot-bob"
+        style={{
+          position: 'absolute',
+          inset: 0,
+          width: '100%',
+          height: '100%',
+          background: 'transparent',
+          border: 'none',
+          padding: 0,
+          cursor: 'pointer',
+          animation: 'mascot-bob 3.6s ease-in-out infinite',
+          filter: 'var(--dt-mascot-shadow, drop-shadow(0 6px 12px rgba(0,0,0,0.35)))',
+        }}
+      >
+        {['idle', 'blink', 'wave'].map((pose) => {
+          const src = poses[pose];
+          if (!src) return null;
+          const isActive = state.pose === pose;
+          return (
+            <Image
+              key={pose}
+              src={src}
+              alt=""
+              width={size}
+              height={size}
+              priority={pose === 'idle'}
+              draggable={false}
+              style={{
+                position: 'absolute',
+                inset: 0,
+                width: '100%',
+                height: '100%',
+                objectFit: 'contain',
+                opacity: isActive ? 1 : 0,
+                transition: 'opacity 140ms ease',
+                pointerEvents: 'none',
+              }}
+            />
+          );
+        })}
+      </button>
+    </div>
   );
 }
