@@ -4,36 +4,32 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Workflow (READ FIRST — critical)
 
-This repo uses a lightweight three-file workflow. Claude MUST follow this.
+### Single source of truth
+- **`docs/IDEAS.md`** (gitignored, private) is the ONE tracker — every idea with its **status, worktree, and PRD link**, organized into pillars (OS Shell, Worlds, 3D, Mascot/Kitsune, Atmosphere, Eggs, Lore, Infra). **Read it first.** Statuses: ⚪ idea · 🟡 prd · 🔵 in-progress · 🟢 shipped · ⏸️ parked.
+- There is **no `STATUS.md`** (retired — folded into the "Now" section of `docs/IDEAS.md`). Do not recreate it.
+- **`docs/prd/`** — active PRDs only; shipped ones in `docs/prd/archive/`. **`docs/research/`** — reference docs (PostHog mining etc.). **`docs/design/worlds.pen`** — Pencil design source.
 
-### At session start
-1. Read `STATUS.md` (repo root) — current shipped version, in-progress work, known issues, next on deck. **Gitignored**, may not exist on fresh clones; if missing, ask the user.
-2. Read `docs/IDEAS.md` — future version ideas, backlog, rough thoughts. **Gitignored**, also personal.
-3. Skim `docs/prd/` for any **active** (non-archived) PRD files — these are what we're building right now.
+### No versioning — one canonical implementation per idea
+- Do NOT create `-v2`/`-v3` folders or stray `vN` branches that orphan ideas. ONE canonical implementation per idea; its history lives in git + `CHANGELOG.md`. A new idea = a new **row** in `docs/IDEAS.md`, never a new folder.
 
-### Where things live
-- **`STATUS.md`** (gitignored) — single source of truth for "what's happening right now." Update at end of every session. One file, ~50-100 lines max.
-- **`docs/IDEAS.md`** (gitignored) — one big append-only markdown file with dated sections. All future version ideas, backlog notes, brainstorms. Newest on top. No per-idea files.
-- **`docs/prd/`** — contains ONLY the PRD for work actively being planned or built. Shipped PRDs move to `docs/prd/archive/`. No "future version" PRDs live here.
-- **`docs/prd/archive/`** — shipped/completed PRDs, kept for reference.
-- **`docs/prd/design/`** + **`docs/design/worlds.pen`** — design source files.
+### Worktree pipeline (how we parallelize — DEFAULT for any non-trivial task)
+1. Each self-contained task gets its own git worktree: `git worktree add ../portfolio-wt/<slug> -b feat/<slug>`.
+2. **Delegate the work to a subagent** in that worktree — design + implementation both. Don't do everything in the main thread.
+3. Brief parallel agents with **disjoint file ownership** so their merges never conflict.
+4. When a worktree's work is done + reviewed: **merge into `main` → push `main` → delete the worktree + branch** (`git worktree remove ... && git branch -d ...`). One by one as each lands.
 
-### The flow
-1. **Ideas phase** — new thought? Append a dated section to `docs/IDEAS.md`. Do NOT create a new PRD.
-2. **Planning phase** — when an idea matures to "we're building this next," run `prd-writer` → `prd-reviewer` on it, creating `docs/prd/vX.Y.Z-name.md`.
-3. **Build phase** — implement per PRD (subagents for multi-file work per global CLAUDE.md rules). Run `/simplify` after.
-4. **Ship phase** — commit + push. Move the PRD to `docs/prd/archive/`. Update `STATUS.md`: bump "Current shipped version," clear "In progress," adjust "Next on deck."
+### Deploy
+- Push to `main` **auto-deploys to production** (manishsingh.tech). There are **NO branch/preview deploys** — do not invent them. Repo: `github.com/Msparihar/portfolio` (personal `Msparihar` account).
+
+### Design work
+- **`docs/design/worlds.pen` is STALE** — it's the old Elden Ring dark-fantasy mockup system and has drifted far from the shipped app. Do NOT treat it as the source of truth. **The CODE is the design source of truth now** — design directly against the live `--dt-*` world tokens (`src/app/globals.css`, overridden per world) so it matches the running app and themes everywhere. (FileManager card grid was done this way and matches; a Pencil mockup would not.)
+- Only open Pencil if the task is explicitly to re-sync `worlds.pen` to the current app.
+- **NEVER use the Pencil CLI `--prompt` mode to generate designs** — that delegates the design to another AI model. Author Pencil designs ONLY by hand via the MCP `batch_design` tools (place every element yourself). If the MCP is disconnected, ask the user to reopen the Pencil app so it reconnects, or design in code — do NOT reach for `pencil --prompt`.
 
 ### Do NOT
-- Create per-idea markdown files. Everything goes into the single `docs/IDEAS.md`.
-- Write full PRDs for "someday" ideas. PRDs are for work being actively built, not for backlog.
-- Forget to update `STATUS.md` at end of session — that's the discipline that makes the whole system work.
-- Commit `STATUS.md` or `docs/IDEAS.md`. They're gitignored on purpose (personal notes; repo is public).
-
-### Version numbering
-- Patch bumps (v0.6.2, v0.6.3) for bug fixes and small focused changes.
-- Minor bumps (v0.7.0, v0.8.0) for new feature systems.
-- Major bumps (v1.0.0, v2.0.0) for architecture-level shifts (landing page, 3D world).
+- Recreate `STATUS.md` or per-idea files. Everything is in `docs/IDEAS.md`.
+- Commit `docs/IDEAS.md` (gitignored — personal; repo is public).
+- Invent infrastructure (preview deploys, CI, branch builds) without verifying it exists.
 
 ---
 
