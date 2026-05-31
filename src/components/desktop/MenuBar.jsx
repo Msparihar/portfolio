@@ -14,6 +14,7 @@ import {
 } from '@/config/worldContent';
 import WorldPicker from './WorldPicker';
 import { Tooltip } from '@/components/ui/Tooltip';
+import TrayMenu from './TrayMenu';
 
 function useClock() {
   const [time, setTime] = useState('');
@@ -56,6 +57,7 @@ export default function MenuBar() {
   const [brandPulse, setBrandPulse] = useState(false);
   const [foundMark, setFoundMark] = useState(false);
   const [timePulse, setTimePulse] = useState(false);
+  const [trayMenu, setTrayMenu] = useState(null); // { x, y } | null
 
   // Brand-flash hook: ContextMenu hint dispatches `brand-flash` → pulse for 2s.
   useEffect(() => {
@@ -282,6 +284,10 @@ export default function MenuBar() {
 
       {/* Right cluster */}
       <div
+        onContextMenu={(e) => {
+          e.preventDefault();
+          setTrayMenu({ x: e.clientX, y: e.clientY });
+        }}
         style={{
           display: 'flex',
           alignItems: 'center',
@@ -348,6 +354,14 @@ export default function MenuBar() {
           {clock}
         </span>
       </div>
+
+      {trayMenu && (
+        <TrayMenu
+          x={trayMenu.x}
+          y={trayMenu.y}
+          onClose={() => setTrayMenu(null)}
+        />
+      )}
     </div>
   );
 }
