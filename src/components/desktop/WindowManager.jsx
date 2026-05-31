@@ -32,6 +32,7 @@ const Browser = dynamic(() => import('@/components/apps/Browser'), { ssr: false 
 const Trash = dynamic(() => import('@/components/apps/Trash'), { ssr: false });
 const Gallery = dynamic(() => import('@/components/apps/Gallery'), { ssr: false });
 const Journal = dynamic(() => import('@/components/apps/Journal'), { ssr: false });
+const Codex = dynamic(() => import('@/components/apps/Codex'), { ssr: false });
 
 function getAppContent(appId) {
   switch (appId) {
@@ -53,6 +54,8 @@ function getAppContent(appId) {
       return <Gallery />;
     case 'journal':
       return <Journal />;
+    case 'codex':
+      return <Codex />;
     default:
       return (
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%', fontFamily: 'var(--dt-font-mono)', color: 'var(--dt-text-muted)' }}>

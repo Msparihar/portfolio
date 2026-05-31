@@ -22,7 +22,8 @@ export type AppId =
   | 'gallery'
   | 'trash'
   | 'resume'
-  | 'journal';
+  | 'journal'
+  | 'codex';
 
 export type WorldId = 'elden-ring' | 'ghibli' | 'got';
 
@@ -77,6 +78,7 @@ const WORLD_ICONS: WorldIconMap = {
     trash:       { icon: '🕳️', label: 'Abyss' },
     resume:      { icon: '📜', label: 'Scroll' },
     journal:     { icon: '📖', label: 'Travel Log' },
+    codex:       { icon: '📖', label: 'Bestiary' },
   },
   'ghibli': {
     terminal:    { icon: '🌿', label: 'Terminal' },
@@ -89,6 +91,7 @@ const WORLD_ICONS: WorldIconMap = {
     trash:       { icon: '🍂', label: 'Compost' },
     resume:      { icon: '📄', label: 'Resume' },
     journal:     { icon: '📔', label: 'Journal' },
+    codex:       { icon: '🌸', label: 'Field Guide' },
   },
   'got': {
     terminal:    { icon: '⚒️', label: 'Terminal' },
@@ -101,6 +104,7 @@ const WORLD_ICONS: WorldIconMap = {
     trash:       { icon: '⛓️', label: 'Dungeon' },
     resume:      { icon: '📋', label: 'Decree' },
     journal:     { icon: '🐦‍⬛', label: 'Raven Scrolls' },
+    codex:       { icon: '📖', label: "Maester's Codex" },
   },
 };
 
@@ -118,6 +122,7 @@ const WORLD_APP_TITLES: WorldTitleMap = {
     trash: 'Abyss',
     resume: 'Scroll',
     journal: 'Travel Log',
+    codex: 'Bestiary',
   },
   'ghibli': {
     terminal: 'Terminal',
@@ -130,6 +135,7 @@ const WORLD_APP_TITLES: WorldTitleMap = {
     trash: 'Compost',
     resume: 'Resume',
     journal: 'Journal',
+    codex: 'Field Guide',
   },
   'got': {
     terminal: 'Terminal',
@@ -142,6 +148,7 @@ const WORLD_APP_TITLES: WorldTitleMap = {
     trash: 'Dungeon',
     resume: 'Decree',
     journal: 'Raven Scrolls',
+    codex: "Maester's Codex",
   },
 };
 
@@ -384,7 +391,7 @@ export function isWorldId(id: string): id is WorldId {
  * Type guard for AppId.
  */
 export function isAppId(id: string): id is AppId {
-  return ['terminal', 'filemanager', 'logviewer', 'mail', 'about', 'browser', 'gallery', 'trash', 'resume', 'journal'].includes(id);
+  return ['terminal', 'filemanager', 'logviewer', 'mail', 'about', 'browser', 'gallery', 'trash', 'resume', 'journal', 'codex'].includes(id);
 }
 
 /**
