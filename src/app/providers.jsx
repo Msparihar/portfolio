@@ -9,6 +9,7 @@ import { PostHogProvider } from "@/components/PostHogProvider";
 import ImagePreloader from "@/components/ImagePreloader";
 import AnalyticsTracker from "@/components/AnalyticsTracker";
 import RouteLoadingIndicator from "@/components/RouteLoadingIndicator";
+import WorldHead from "@/components/WorldHead";
 
 // Clean up ref param from URL after tracking
 function RefCleanup() {
@@ -31,6 +32,7 @@ export function Providers({ children }) {
           storageKey="portfolio-theme"
         >
           <TerminalProvider>
+            <WorldHead />
             <ImagePreloader />
             <AnalyticsTracker />
             <RefCleanup />
