@@ -39,6 +39,7 @@ export default function Mascot({ poses, alt, size = 112 }) {
   const [state, dispatch] = useReducer(reducer, { pose: 'idle' });
   const timersRef = useRef([]);
   const prefersReducedRef = useRef(false);
+  const lastInteractRef = useRef(0);
 
   // Random blink / wave loop
   useEffect(() => {
@@ -103,14 +104,17 @@ export default function Mascot({ poses, alt, size = 112 }) {
   if (!poses || !poses.idle) return null;
 
   const handleInteract = () => {
-    // Route through the window event so the wave/idle scheduling lives in one
-    // place (the listener installed above). Other features can trigger the
-    // same animation by firing `mascot-clicked`.
+    const now = Date.now();
+    if (now - lastInteractRef.current < 1200) return;
+    lastInteractRef.current = now;
     if (typeof window !== 'undefined') {
       window.dispatchEvent(new CustomEvent('mascot-clicked'));
     }
   };
 
+  if (import.meta.env.DEV && state.pose !== 'idle' && !poses[state.pose]) {
+    console.warn(`[Mascot] missing sprite for pose "${state.pose}", falling back to idle`);
+  }
   const currentSrc = poses[state.pose] || poses.idle;
 
   return (
