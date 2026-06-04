@@ -38,7 +38,7 @@ export default function TrayMenu({ x, y, onClose }) {
   const menuRef = useRef(null);
   const mascotVisible = usePrefsStore((s) => s.mascotVisible);
   const toggleMascotVisible = usePrefsStore((s) => s.toggleMascotVisible);
-  const [worldId, setWorldId] = useState(() => getCurrentWorldId());
+  const [worldId, setWorldId] = useState(null);
   const [focusedIndex, setFocusedIndex] = useState(-1);
   const [showWorlds, setShowWorlds] = useState(false);
   const [worldsFocus, setWorldsFocus] = useState(0);

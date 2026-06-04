@@ -109,6 +109,12 @@ export default function Window({ windowData, children }) {
       bounds="parent"
       role="dialog"
       aria-label={title}
+      resizeHandleStyles={{
+        topLeft:     { top: 4,    left: 4,    width: 12, height: 12 },
+        topRight:    { top: 4,    right: 4,   width: 12, height: 12 },
+        bottomLeft:  { bottom: 4, left: 4,    width: 12, height: 12 },
+        bottomRight: { bottom: 4, right: 4,   width: 12, height: 12 },
+      }}
       onDragStop={(_e, d) => {
         const clampedX = Math.max(-((size?.width || 320) - 100), Math.min(d.x, viewportWidth - 100));
         const clampedY = Math.max(MENUBAR_HEIGHT, Math.min(d.y, viewportHeight - 40));

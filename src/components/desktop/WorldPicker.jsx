@@ -9,9 +9,8 @@ import { Tooltip } from '@/components/ui/Tooltip';
 
 export default function WorldPicker() {
   const [isOpen, setIsOpen] = useState(false);
-  const [activeWorld, setActiveWorld] = useState(
-    () => getCurrentWorldId()
-  );
+  const [activeWorld, setActiveWorld] = useState(null);
+  useEffect(() => { setActiveWorld(getCurrentWorldId()); }, []);
   const popoverRef = useRef(null);
   const buttonRef = useRef(null);
 
@@ -118,9 +117,11 @@ export default function WorldPicker() {
           aria-label="World selection"
           style={{
             position: 'absolute',
-            bottom: '32px',
+            top: 'calc(100% + 8px)',
             right: '-4px',
             background: 'var(--dt-context-bg)',
+            backdropFilter: 'var(--dt-window-blur)',
+            WebkitBackdropFilter: 'var(--dt-window-blur)',
             border: '1px solid var(--dt-accent-border-strong)',
             borderRadius: 'var(--dt-window-radius, 8px)',
             padding: '10px 12px',

@@ -671,6 +671,86 @@
 }
 
 /* ══════════════════════════════════════════════════
+   Spirit Garden tokens — scoped to .world-ghibli
+   Used by Welcome, Widgets, Dock, and future windows
+   ══════════════════════════════════════════════════ */
+.world-ghibli {
+  /* Canvas */
+  --sg-canvas-bg:            #121c15;
+
+  /* Dusk gradient (180° linear, applied in DuskBackdrop) */
+  --sg-dusk-top:             rgba(13, 26, 40, 0.70);
+  --sg-dusk-mid:             rgba(32, 48, 46, 0.55);
+  --sg-dusk-warm:            rgba(94, 71, 38, 0.45);
+  --sg-dusk-bottom:          rgba(10, 20, 12, 0.93);
+  --sg-horizon-bloom:        rgba(255, 207, 120, 0.25);
+
+  /* Window glass */
+  --sg-window-fill:          rgba(255, 253, 247, 0.85);
+  --sg-window-stroke:        rgba(255, 255, 255, 0.65);
+  --sg-window-blur:          16px;
+  --sg-window-shadow:        0 20px 48px rgba(58, 74, 46, 0.25);
+  --sg-window-radius:        26px;
+  --sg-titlebar-divider:     rgba(51, 68, 47, 0.10);
+
+  /* Widget glass */
+  --sg-widget-fill:          rgba(253, 250, 242, 0.90);
+  --sg-widget-stroke:        rgba(255, 255, 255, 0.65);
+  --sg-widget-blur:          12px;
+  --sg-widget-shadow:        0 10px 24px rgba(75, 94, 61, 0.20);
+  --sg-widget-radius:        22px;
+
+  /* Text */
+  --sg-text-primary:         #33442f;
+  --sg-text-secondary:       #52634a;
+  --sg-text-label:           #6f7e63;
+  --sg-text-cream:           #f9f4e8;
+  --sg-text-offwhite:        #fffdf6;
+  --sg-text-parchment:       #ece6d6;
+  --sg-poem-footer:          rgba(243, 233, 212, 0.76);
+
+  /* Accent / action */
+  --sg-accent-start:         #5a9268;
+  --sg-accent-end:           #3f6e4c;
+  --sg-tag-bg:               rgba(74, 124, 89, 0.15);
+  --sg-progress-fill:        #4a7c59;
+  --sg-track-bg:             rgba(51, 68, 47, 0.15);
+
+  /* Dock */
+  --sg-dock-fill:            rgba(255, 255, 255, 0.12);
+  --sg-dock-stroke:          rgba(255, 255, 255, 0.70);
+  --sg-dock-blur:            10px;
+  --sg-dock-shadow:          0 14px 30px rgba(0, 0, 0, 0.22);
+  --sg-dock-radius:          24px;
+
+  /* App window chrome — stroke width, nav sidebar, cards */
+  --sg-window-stroke-width:  1.5px;
+  --sg-sidebar-fill:         rgba(251, 247, 236, 0.20);
+  --sg-sidebar-divider:      rgba(51, 68, 47, 0.10);
+  --sg-nav-active-bg:        rgba(74, 124, 89, 0.15);
+  --sg-card-fill:            rgba(255, 255, 255, 0.40);
+  --sg-card-stroke:          rgba(255, 255, 255, 0.50);
+  --sg-card-radius:          18px;
+
+  /* Section breadcrumb label */
+  --sg-label-color:          #8a9678;
+
+  /* Glass shimmer (conservatory overlay) */
+  --sg-shimmer-opacity:      0.85;
+  --sg-shimmer-blend:        screen;
+
+  /* Z-index map (welcome stack) */
+  --sg-z-backdrop:           0;
+  --sg-z-shaders:            4;
+  --sg-z-hero:               6;
+  --sg-z-widgets:            7;
+  --sg-z-poem:               10;
+  --sg-z-mascot:             11;
+  --sg-z-dock:               14;
+  --sg-z-soot:               15;
+}
+
+/* ══════════════════════════════════════════════════
    World: Game of Thrones (Westeros — Four houses)
    Active when .world-got is on .desktop-canvas
    ══════════════════════════════════════════════════ */

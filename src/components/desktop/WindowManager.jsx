@@ -33,6 +33,7 @@ const Trash = dynamic(() => import('@/components/apps/Trash'), { ssr: false });
 const Gallery = dynamic(() => import('@/components/apps/Gallery'), { ssr: false });
 const Journal = dynamic(() => import('@/components/apps/Journal'), { ssr: false });
 const Codex = dynamic(() => import('@/components/apps/Codex'), { ssr: false });
+const Whisperwell = dynamic(() => import('@/components/apps/Whisperwell'), { ssr: false });
 
 function getAppContent(appId) {
   switch (appId) {
@@ -56,6 +57,8 @@ function getAppContent(appId) {
       return <Journal />;
     case 'codex':
       return <Codex />;
+    case 'whisperwell':
+      return <Whisperwell />;
     default:
       return (
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%', fontFamily: 'var(--dt-font-mono)', color: 'var(--dt-text-muted)' }}>
@@ -69,7 +72,7 @@ export default function WindowManager() {
   const windows = useWindowStore((s) => s.windows);
   const closeWindow = useWindowStore((s) => s.closeWindow);
 
-  const [worldId, setWorldId] = useState(() => getCurrentWorldId());
+  const [worldId, setWorldId] = useState(null);
 
   useEffect(() => {
     return createWorldChangeListener((id) => setWorldId(id));

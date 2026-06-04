@@ -419,7 +419,7 @@ export default function ContextMenu({ x, y, onClose }) {
   const currentRegion = useSeasonStore((s) => s.currentRegion);
 
   const menuRef = useRef(null);
-  const [worldId, setWorldId] = useState(() => getCurrentWorldId());
+  const [worldId, setWorldId] = useState(null);
   const [focusedIndex, setFocusedIndex] = useState(-1);
   const [openSubmenu, setOpenSubmenu] = useState(null); // index of open submenu in items
   const [submenuFocus, setSubmenuFocus] = useState(0);

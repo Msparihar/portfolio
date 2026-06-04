@@ -3,6 +3,8 @@
 import { useState, useEffect, useCallback } from 'react';
 import Image from 'next/image';
 import portfolioData from '@/config/portfolio.json';
+import { getCurrentWorldId, createWorldChangeListener, getGhibliPoemFooter } from '@/config/worldContent';
+import PoemFooter from '@/components/welcome/PoemFooter';
 
 const ACCENT = 'var(--dt-accent)';
 const BORDER = 'var(--dt-accent-border)';
@@ -10,8 +12,15 @@ const TEXT = 'var(--dt-text)';
 const MUTED = 'var(--dt-text-muted)';
 const GLOW = 'var(--dt-accent-glow-soft)';
 
+const SEASONS = ['All', 'Spring', 'Summer', 'Autumn', 'Winter', 'Spirits'];
+
 function isVideo(src) {
   return src?.endsWith('.webm') || src?.endsWith('.mp4');
+}
+
+function assignSeason(index) {
+  const cycle = ['Spring', 'Summer', 'Autumn', 'Winter', 'Spirits'];
+  return cycle[index % cycle.length];
 }
 
 function MediaThumb({ src, alt }) {
@@ -63,9 +72,175 @@ function MediaFull({ src, alt }) {
   );
 }
 
+function GhibliFilterChip({ label, active, onClick }) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      style={{
+        borderRadius: '999px',
+        padding: '7px 15px',
+        fontFamily: 'var(--font-geist), sans-serif',
+        fontSize: '13px',
+        fontWeight: active ? 600 : 500,
+        cursor: 'pointer',
+        border: active ? 'none' : '1px solid rgba(255,255,255,0.70)',
+        background: active
+          ? 'linear-gradient(135deg, #5a9268, #3f6e4c)'
+          : 'rgba(255,255,255,0.50)',
+        color: active ? '#ffffff' : '#52634a',
+        transition: 'opacity 0.15s ease',
+      }}
+    >
+      {label}
+    </button>
+  );
+}
+
+function GhibliCard({ project, onClick }) {
+  const [hovered, setHovered] = useState(false);
+  return (
+    <div
+      onClick={onClick}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      style={{
+        borderRadius: '16px',
+        overflow: 'hidden',
+        background: 'rgba(255,255,255,0.50)',
+        border: `1px solid rgba(255,255,255,${hovered ? '0.75' : '0.50'})`,
+        cursor: 'pointer',
+        transition: 'border-color 0.15s ease, box-shadow 0.15s ease',
+        boxShadow: hovered ? '0 4px 20px rgba(58,74,46,0.18)' : 'none',
+        breakInside: 'avoid',
+        marginBottom: '16px',
+      }}
+    >
+      <div style={{ position: 'relative', aspectRatio: '16/9', overflow: 'hidden' }}>
+        <MediaThumb src={project.image} alt={project.name} />
+      </div>
+      <div style={{ padding: '10px 12px 12px' }}>
+        <p
+          style={{
+            margin: 0,
+            fontFamily: 'var(--font-newsreader), Georgia, serif',
+            fontStyle: 'italic',
+            fontSize: '14px',
+            color: 'var(--sg-text-primary)',
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+            whiteSpace: 'nowrap',
+          }}
+        >
+          {project.name}
+        </p>
+      </div>
+    </div>
+  );
+}
+
+function GhibliGallery({ items, worldId }) {
+  const [activeFilter, setActiveFilter] = useState('All');
+  const poemText = getGhibliPoemFooter(worldId, 'gallery');
+
+  const taggedItems = items.map((item, i) => ({ ...item, _season: assignSeason(i) }));
+  const filtered = activeFilter === 'All' ? taggedItems : taggedItems.filter((it) => it._season === activeFilter);
+
+  const col0 = filtered.filter((_, i) => i % 3 === 0);
+  const col1 = filtered.filter((_, i) => i % 3 === 1);
+  const col2 = filtered.filter((_, i) => i % 3 === 2);
+
+  return (
+    <div
+      style={{
+        height: '100%',
+        overflowY: 'auto',
+        display: 'flex',
+        flexDirection: 'column',
+        padding: '24px',
+        gap: '18px',
+        background: 'transparent',
+        boxSizing: 'border-box',
+      }}
+    >
+      {/* Header */}
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' }}>
+        <div>
+          <p
+            style={{
+              margin: 0,
+              fontFamily: 'var(--font-geist), sans-serif',
+              fontSize: '10px',
+              fontWeight: 600,
+              color: 'var(--sg-label-color)',
+              letterSpacing: '2px',
+              textTransform: 'uppercase',
+            }}
+          >
+            THE ATELIER · COLLECTION
+          </p>
+          <p
+            style={{
+              margin: '2px 0 0',
+              fontFamily: 'var(--font-newsreader), Georgia, serif',
+              fontSize: '27px',
+              fontStyle: 'italic',
+              color: 'var(--sg-text-primary)',
+              lineHeight: 1,
+            }}
+          >
+            Seasons
+          </p>
+        </div>
+        <p
+          style={{
+            margin: 0,
+            fontFamily: 'var(--font-geist), sans-serif',
+            fontSize: '12px',
+            color: 'var(--sg-text-label)',
+          }}
+        >
+          {items.length} works gathered through the year
+        </p>
+      </div>
+
+      {/* Season filter chips */}
+      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+        {SEASONS.map((s) => (
+          <GhibliFilterChip
+            key={s}
+            label={s}
+            active={activeFilter === s}
+            onClick={() => setActiveFilter(s)}
+          />
+        ))}
+      </div>
+
+      {/* 3-column masonry */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '16px', flex: 1 }}>
+        {[col0, col1, col2].map((col, ci) => (
+          <div key={ci}>
+            {col.map((project, i) => (
+              <GhibliCard key={`${project.name}-${i}`} project={project} onClick={() => {}} />
+            ))}
+          </div>
+        ))}
+      </div>
+
+      {poemText && <PoemFooter text={poemText} />}
+    </div>
+  );
+}
+
 export default function Gallery() {
   const [lightboxIndex, setLightboxIndex] = useState(null);
   const [hoveredIndex, setHoveredIndex] = useState(null);
+  const [worldId, setWorldId] = useState(null);
+
+  useEffect(() => {
+    setWorldId(getCurrentWorldId());
+    return createWorldChangeListener((id) => setWorldId(id));
+  }, []);
 
   const items = portfolioData.projects?.filter((p) => p.image) ?? [];
 
@@ -93,14 +268,16 @@ export default function Gallery() {
     return () => window.removeEventListener('keydown', handleKey);
   }, [lightboxIndex, goNext, goPrev]);
 
+  if (worldId === 'ghibli') {
+    return <GhibliGallery items={items} worldId={worldId} />;
+  }
+
   return (
     <div style={{ height: '100%', overflowY: 'auto', fontFamily: 'var(--dt-font-mono, monospace)', color: TEXT, padding: '16px' }}>
-      {/* Header */}
       <div style={{ color: MUTED, fontSize: '11px', letterSpacing: '0.08em', marginBottom: '14px', textTransform: 'uppercase' }}>
         Gallery — Work Samples ({items.length})
       </div>
 
-      {/* Grid */}
       <div style={{
         display: 'grid',
         gridTemplateColumns: 'repeat(3, 1fr)',
@@ -135,7 +312,6 @@ export default function Gallery() {
         ))}
       </div>
 
-      {/* Lightbox */}
       {lightboxIndex !== null && items[lightboxIndex] && (
         <div
           onClick={closeLightbox}
@@ -150,8 +326,9 @@ export default function Gallery() {
             justifyContent: 'center',
           }}
         >
-          {/* Close button */}
           <button
+            type="button"
+            aria-label="Close lightbox"
             onClick={closeLightbox}
             style={{
               position: 'absolute',
@@ -168,8 +345,9 @@ export default function Gallery() {
             ✕
           </button>
 
-          {/* Nav: prev */}
           <button
+            type="button"
+            aria-label="Previous image"
             onClick={(e) => { e.stopPropagation(); goPrev(); }}
             style={{
               position: 'absolute',
@@ -189,8 +367,9 @@ export default function Gallery() {
             ←
           </button>
 
-          {/* Nav: next */}
           <button
+            type="button"
+            aria-label="Next image"
             onClick={(e) => { e.stopPropagation(); goNext(); }}
             style={{
               position: 'absolute',
@@ -210,7 +389,6 @@ export default function Gallery() {
             →
           </button>
 
-          {/* Main image */}
           <div
             onClick={(e) => e.stopPropagation()}
             style={{ position: 'relative', width: '80vw', maxWidth: '900px', height: '60vh' }}
@@ -221,7 +399,6 @@ export default function Gallery() {
             />
           </div>
 
-          {/* Caption */}
           <div onClick={(e) => e.stopPropagation()} style={{ textAlign: 'center', marginTop: '16px', maxWidth: '60%' }}>
             <div style={{ color: 'var(--dt-text)', fontFamily: 'var(--dt-font-mono, monospace)', fontSize: '14px', fontWeight: 'bold' }}>
               {items[lightboxIndex].name}

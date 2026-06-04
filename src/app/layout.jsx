@@ -40,10 +40,12 @@ const crimsonText = Crimson_Text({
 });
 
 const newsreader = Newsreader({
+  weight: ['400', '500'],
+  style: ['normal', 'italic'],
   subsets: ['latin'],
   variable: '--font-newsreader',
   display: 'swap',
-  preload: false,
+  preload: true,
 });
 
 const imFellEnglish = IM_Fell_English({
@@ -163,6 +165,8 @@ export default function RootLayout({ children }) {
         <link rel="dns-prefetch" href="//blog.futuresmart.ai" />
         <link rel="dns-prefetch" href="//images.unsplash.com" />
         <link rel="dns-prefetch" href="//res.cloudinary.com" />
+        {/* Preload Ghibli wallpaper — first-paint LCP asset for Welcome screen */}
+        <link rel="preload" as="image" href="/images/worlds/ghibli/wallpaper.webp" type="image/webp" />
       </head>
       <body suppressHydrationWarning>
         {/* FOUC prevention — apply saved world vars to :root before React mounts */}

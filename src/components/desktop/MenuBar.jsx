@@ -44,7 +44,7 @@ export default function MenuBar() {
   const toggleWebsiteMode = useUiStore((s) => s.toggleWebsiteMode);
   const clock = useClock();
 
-  const [worldId, setWorldId] = useState(getCurrentWorldId);
+  const [worldId, setWorldId] = useState(null);
   useEffect(() => createWorldChangeListener(setWorldId), []);
 
   const world = worldId ? WORLDS.find((w) => w.id === worldId) : null;
@@ -244,6 +244,8 @@ export default function MenuBar() {
                 sideOffset={6}
                 style={{
                   background: 'var(--dt-context-bg)',
+                  backdropFilter: 'var(--dt-window-blur)',
+                  WebkitBackdropFilter: 'var(--dt-window-blur)',
                   border: '1px solid var(--dt-accent-border-strong)',
                   borderRadius: 'var(--dt-window-radius, 8px)',
                   padding: 6,
