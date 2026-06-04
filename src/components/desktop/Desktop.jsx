@@ -362,7 +362,7 @@ export default function Desktop({ githubData, initialApp }) {
     }
 
     const savedWorld = localStorage.getItem(WORLD_STORAGE_KEY);
-    const worldToApply = savedWorld || 'elden-ring';
+    const worldToApply = savedWorld || 'ghibli';
     applyWorld(canvas, worldToApply);
     setCurrentWorldId(worldToApply);
 
