@@ -13,7 +13,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - Do NOT create `-v2`/`-v3` folders or stray `vN` branches that orphan ideas. ONE canonical implementation per idea; its history lives in git + `CHANGELOG.md`. A new idea = a new **row** in `docs/IDEAS.md`, never a new folder.
 
 ### How we build — directly on `main`
-- **Default: build directly on `main` from the root folder, commit, and push.** Push auto-deploys (see Deploy). No PRD, no mandatory worktree — this is how the 2026-05-31 batch and the 2026-06-04 hotfix shipped.
+- **The main thread NEVER writes code.** It is for ideation, diagnosis, and **orchestrating agents** — the pipeline is **Explore → Plan → Implement**. ALL code-writing is delegated to implementation subagents (`frontend-implementer`, `backend-implementer`, or general implementation agents). The main thread may still read files, run diagnostics, edit instruction/config docs like this one (that's orchestration, not code), commit/push, and verify — but it does not author or edit application source itself.
+- **Default: build directly on `main` from the root folder, commit, and push.** Push auto-deploys (see Deploy). No PRD, no mandatory worktree — this is how the 2026-05-31 batch and the 2026-06-04 hotfix shipped. (Branch strategy ≠ who writes the code: subagents do the editing, in the root working tree by default.)
 - **Worktrees are optional** — reach for one only when you genuinely want isolation or parallel agents on **disjoint files**: `git worktree add ../portfolio-wt/<slug> -b feat/<slug>`, brief a subagent, then **merge → push → delete the worktree + branch** (`git worktree remove ... && git branch -d ...`). Don't spin one up for routine single-task work.
 - Either way: after pushing, **wait for the Dokploy build and verify live** (see Deploy) before calling it shipped.
 
