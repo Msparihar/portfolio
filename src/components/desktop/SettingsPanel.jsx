@@ -192,7 +192,7 @@ export default function SettingsPanel() {
   // Track the active world to build the wallpaper picker
   useEffect(() => {
     const saved = localStorage.getItem(WORLD_STORAGE_KEY);
-    setCurrentWorldId(saved ?? 'elden-ring');
+    setCurrentWorldId(saved ?? 'ghibli');
 
     const handleWorldChange = (e) => {
       setCurrentWorldId(e.detail?.worldId ?? null);
