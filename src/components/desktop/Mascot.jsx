@@ -134,7 +134,7 @@ export default function Mascot({ poses, alt, size = 112 }) {
     }
   };
 
-  if (import.meta.env.DEV && state.pose !== 'idle' && !poses[state.pose]) {
+  if (process.env.NODE_ENV !== 'production' && state.pose !== 'idle' && !poses[state.pose]) {
     console.warn(`[Mascot] missing sprite for pose "${state.pose}", falling back to idle`);
   }
 
