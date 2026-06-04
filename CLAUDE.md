@@ -5,21 +5,21 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## Workflow (READ FIRST — critical)
 
 ### Single source of truth
-- **`docs/IDEAS.md`** (gitignored, private) is the ONE tracker — every idea with its **status, worktree, and PRD link**, organized into pillars (OS Shell, Worlds, 3D, Mascot/Kitsune, Atmosphere, Eggs, Lore, Infra). **Read it first.** Statuses: ⚪ idea · 🟡 prd · 🔵 in-progress · 🟢 shipped · ⏸️ parked.
-- There is **no `STATUS.md`** (retired — folded into the "Now" section of `docs/IDEAS.md`). Do not recreate it.
-- **`docs/prd/`** — active PRDs only; shipped ones in `docs/prd/archive/`. **`docs/research/`** — reference docs (PostHog mining etc.). **`docs/design/worlds.pen`** — Pencil design source.
+- **`docs/IDEAS.md`** (gitignored, private) is the ONE tracker — every idea with its **status** (and worktree, if one's in use), organized into pillars (OS Shell, Worlds, 3D, Mascot/Kitsune, Atmosphere, Eggs, Lore, Infra). **Read it first.** Statuses: ⚪ idea · 🔵 in-progress · 🟢 shipped · ⏸️ parked.
+- **No PRDs.** We do not write PRDs anymore — capture an idea as a **row in `docs/IDEAS.md`** and build directly from there. There is also **no `STATUS.md`** (retired — folded into the "Now" section of `docs/IDEAS.md`). Do not recreate either.
+- **`docs/prd/archive/`** is kept only as historical record — **do not add to it**. **`docs/research/`** — reference docs (PostHog mining etc.). **`docs/design/worlds.pen`** — Pencil design source (stale; see Design work).
 
 ### No versioning — one canonical implementation per idea
 - Do NOT create `-v2`/`-v3` folders or stray `vN` branches that orphan ideas. ONE canonical implementation per idea; its history lives in git + `CHANGELOG.md`. A new idea = a new **row** in `docs/IDEAS.md`, never a new folder.
 
-### Worktree pipeline (how we parallelize — DEFAULT for any non-trivial task)
-1. Each self-contained task gets its own git worktree: `git worktree add ../portfolio-wt/<slug> -b feat/<slug>`.
-2. **Delegate the work to a subagent** in that worktree — design + implementation both. Don't do everything in the main thread.
-3. Brief parallel agents with **disjoint file ownership** so their merges never conflict.
-4. When a worktree's work is done + reviewed: **merge into `main` → push `main` → delete the worktree + branch** (`git worktree remove ... && git branch -d ...`). One by one as each lands.
+### How we build — directly on `main`
+- **Default: build directly on `main` from the root folder, commit, and push.** Push auto-deploys (see Deploy). No PRD, no mandatory worktree — this is how the 2026-05-31 batch and the 2026-06-04 hotfix shipped.
+- **Worktrees are optional** — reach for one only when you genuinely want isolation or parallel agents on **disjoint files**: `git worktree add ../portfolio-wt/<slug> -b feat/<slug>`, brief a subagent, then **merge → push → delete the worktree + branch** (`git worktree remove ... && git branch -d ...`). Don't spin one up for routine single-task work.
+- Either way: after pushing, **wait for the Dokploy build and verify live** (see Deploy) before calling it shipped.
 
 ### Deploy
-- Push to `main` **auto-deploys to production** (manishsingh.tech). There are **NO branch/preview deploys** — do not invent them. Repo: `github.com/Msparihar/portfolio` (personal `Msparihar` account).
+- Production is **Dokploy on the Hostinger VM (72.60.96.109)**, built from the repo **`Dockerfile`** — **NOT Vercel** (there is no `vercel.json` / no CI). Push to `main` **auto-deploys** via a GitHub-App webhook (Dokploy rebuilds the Docker image, Docker Swarm rolls the service). There are **NO branch/preview deploys** — do not invent them. Repo: `github.com/Msparihar/portfolio` (personal `Msparihar` account).
+- The Docker build takes **a few minutes** — the new bundle is NOT live the instant you push. After pushing a fix, **wait for the build, then verify live** (use `agent-browser` against manishsingh.tech: check `errors --json` + the served chunk hashes) before calling it shipped. Don't assume push == live.
 
 ### Design work
 - **`docs/design/worlds.pen` is STALE** — it's the old Elden Ring dark-fantasy mockup system and has drifted far from the shipped app. Do NOT treat it as the source of truth. **The CODE is the design source of truth now** — design directly against the live `--dt-*` world tokens (`src/app/globals.css`, overridden per world) so it matches the running app and themes everywhere. (FileManager card grid was done this way and matches; a Pencil mockup would not.)
