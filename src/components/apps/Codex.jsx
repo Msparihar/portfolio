@@ -46,7 +46,7 @@ function getWorldData(worldId) {
 }
 
 export default function Codex() {
-  const [worldId, setWorldId]               = useState(() => getCurrentWorldId());
+  const [worldId, setWorldId]               = useState(null);
   const [activeCategoryId, setActiveCategoryId] = useState(null);
   const [selectedEntryId, setSelectedEntryId]   = useState(null);
   const [search, setSearch]                 = useState('');

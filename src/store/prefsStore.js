@@ -37,6 +37,7 @@ const DEFAULTS = {
   // v0.8 ContextMenu additions
   mascotVisible: true,
   kitsuneModeEnabled: false,
+  atmosphereEnabled: true,
 };
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
@@ -68,6 +69,7 @@ export const usePrefsStore = create(
       animateWallpaper: DEFAULTS.animateWallpaper,
       mascotVisible: DEFAULTS.mascotVisible,
       kitsuneModeEnabled: DEFAULTS.kitsuneModeEnabled,
+      atmosphereEnabled: DEFAULTS.atmosphereEnabled,
 
       setHeadingFont: (font) => {
         if (!HEADING_FONTS.includes(font)) return;
@@ -115,6 +117,10 @@ export const usePrefsStore = create(
         set((state) => ({ kitsuneModeEnabled: !state.kitsuneModeEnabled }));
       },
 
+      toggleAtmosphere: () => {
+        set((state) => ({ atmosphereEnabled: !state.atmosphereEnabled }));
+      },
+
       // Call once on mount to rehydrate CSS vars from persisted state.
       hydrate: () => {
         const { headingFont, bodyFont, monoFont, iconBlur, iconBg } = get();
@@ -124,6 +130,11 @@ export const usePrefsStore = create(
     }),
     {
       name: 'portfolio-os:prefs:v1',
+      onRehydrateStorage: () => (state) => {
+        if (state && state.atmosphereEnabled === undefined) {
+          state.atmosphereEnabled = DEFAULTS.atmosphereEnabled;
+        }
+      },
     }
   )
 );

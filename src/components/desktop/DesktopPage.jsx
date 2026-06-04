@@ -11,22 +11,47 @@ const WebsiteMode = dynamic(() => import("@/components/website/WebsiteMode"), {
   ssr: false,
 });
 
+const WelcomeLanding = dynamic(
+  () => import("@/components/welcome/WelcomeLanding"),
+  { ssr: false }
+);
+
+const SG_ENTERED_KEY = 'sg_entered_ghibli';
+
 export default function DesktopPage({ githubData }) {
   const [booted, setBooted] = useState(false);
   const [initialApp, setInitialApp] = useState(null);
   const websiteMode = useUiStore((s) => s.websiteMode);
-  const [worldBootConfig] = useState(() => {
+  const [worldBootConfig, setWorldBootConfig] = useState(null);
+  const [worldId, setWorldId] = useState(null);
+  const [showWelcome, setShowWelcome] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    setIsMobile(window.innerWidth < 768);
+  }, []);
+
+  useEffect(() => {
     try {
-      const worldId = localStorage.getItem(WORLD_STORAGE_KEY);
-      if (!worldId) return null;
-      const world = WORLDS.find(w => w.id === worldId);
-      if (!world?.bootLines) return null;
-      return {
-        bootLines: world.bootLines,
-        bootAccentColor: world.bootAccentColor ?? null,
-      };
-    } catch { return null; }
-  });
+      const savedWorldId = localStorage.getItem(WORLD_STORAGE_KEY) || 'ghibli';
+      setWorldId(savedWorldId);
+      const world = WORLDS.find(w => w.id === savedWorldId);
+      if (world?.bootLines) {
+        setWorldBootConfig({
+          bootLines: world.bootLines,
+          bootAccentColor: world.bootAccentColor ?? null,
+        });
+      }
+    } catch { /* localStorage unavailable */ }
+  }, []);
+
+  useEffect(() => {
+    if (!booted || isMobile || worldId !== 'ghibli') return;
+    try {
+      const entered = localStorage.getItem(SG_ENTERED_KEY) === '1';
+      if (!entered) setShowWelcome(true);
+    } catch { /* storage unavailable */ }
+  }, [booted, isMobile, worldId]);
 
   // Read ?app= from URL on mount (client-side, compatible with ISR pages)
   useEffect(() => {
@@ -50,6 +75,12 @@ export default function DesktopPage({ githubData }) {
         />
       )}
       <Desktop githubData={githubData} initialApp={initialApp} />
+      {showWelcome && (
+        <WelcomeLanding
+          worldSkin="ghibli"
+          onEnter={() => setShowWelcome(false)}
+        />
+      )}
     </>
   );
 }

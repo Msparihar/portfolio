@@ -14,6 +14,7 @@ const APP_DEFAULTS = {
     icon: '📁',
     defaultPos: { x: 120, y: 80 },
     defaultSize: { width: 860, height: 580 },
+    worldSizes: { ghibli: { width: 1080, height: 684 } },
   },
   logviewer: {
     title: 'Log Viewer',
@@ -26,6 +27,7 @@ const APP_DEFAULTS = {
     icon: '✉️',
     defaultPos: { x: 200, y: 80 },
     defaultSize: { width: 760, height: 560 },
+    worldSizes: { ghibli: { width: 1080, height: 684 } },
   },
   about: {
     title: 'About',
@@ -50,18 +52,26 @@ const APP_DEFAULTS = {
     icon: '🖼️',
     defaultPos: { x: 160, y: 80 },
     defaultSize: { width: 860, height: 580 },
+    worldSizes: { ghibli: { width: 1180, height: 712 } },
   },
   journal: {
     title: 'Journal',
     icon: '📖',
     defaultPos: { x: 180, y: 90 },
     defaultSize: { width: 820, height: 600 },
+    worldSizes: { ghibli: { width: 1200, height: 712 } },
   },
   codex: {
     title: 'Codex',
     icon: '📖',
     defaultPos: { x: 200, y: 100 },
     defaultSize: { width: 880, height: 620 },
+  },
+  whisperwell: {
+    title: 'Whisperwell',
+    icon: '🌊',
+    defaultPos: { x: 220, y: 104 },
+    defaultSize: { width: 1000, height: 660 },
   },
 };
 
@@ -102,6 +112,10 @@ export const useWindowStore = create(
     const activeWorldId = rawWorldId && isWorldId(rawWorldId) ? rawWorldId : null;
     const themedTitle = getWorldAppTitle(activeWorldId, appId, defaults.title);
 
+    const worldSize = activeWorldId && defaults.worldSizes?.[activeWorldId]
+      ? defaults.worldSizes[activeWorldId]
+      : defaults.defaultSize;
+
     const saved = get().savedPositions[appId];
     const newWindow = {
       id: `${appId}-${Date.now()}`,
@@ -110,7 +124,7 @@ export const useWindowStore = create(
       isMinimized: false,
       isMaximized: false,
       position: opts.position ?? saved?.position ?? { ...defaults.defaultPos },
-      size: opts.size ?? saved?.size ?? { ...defaults.defaultSize },
+      size: opts.size ?? saved?.size ?? { ...worldSize },
       zIndex: nextZIndex + 1,
       prevPosition: null,
       prevSize: null,

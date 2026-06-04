@@ -20,21 +20,12 @@ const nextConfig = {
     ];
   },
 
-  // Enable experimental features for better performance
   experimental: {
     optimizePackageImports: [
       "lucide-react",
       "framer-motion",
       "@radix-ui/react-slot",
     ],
-    turbo: {
-      rules: {
-        "*.svg": {
-          loaders: ["@svgr/webpack"],
-          as: "*.js",
-        },
-      },
-    },
   },
 
   images: {
@@ -87,60 +78,11 @@ const nextConfig = {
     contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
   },
 
-  // Compiler optimizations
   compiler: {
     removeConsole: process.env.NODE_ENV === "production",
   },
 
-  // Webpack optimizations for bundle size
-  webpack: (config, { isServer }) => {
-    // Optimize bundle size
-    config.optimization = {
-      ...config.optimization,
-      moduleIds: "deterministic",
-      splitChunks: {
-        chunks: "all",
-        cacheGroups: {
-          default: false,
-          vendors: false,
-          // React framework bundle
-          framework: {
-            name: "framework",
-            chunks: "all",
-            test: /(?<!node_modules.*)[\\/]node_modules[\\/](react|react-dom|scheduler|prop-types|use-sync-external-store)[\\/]/,
-            priority: 40,
-            enforce: true,
-          },
-          // Large libraries (>160KB)
-          lib: {
-            test(module) {
-              return (
-                module.size() > 160000 &&
-                /node_modules[/\\]/.test(module.identifier())
-              );
-            },
-            name(module) {
-              const packageName = module
-                .identifier()
-                .match(/[\\/]node_modules[\\/](.*?)([\\/]|$)/)?.[1];
-              return `lib-${packageName?.replace("@", "")}`;
-            },
-            priority: 30,
-            minChunks: 1,
-            reuseExistingChunk: true,
-          },
-          // Common shared modules
-          commons: {
-            name: "commons",
-            minChunks: 2,
-            priority: 20,
-          },
-        },
-      },
-    };
-
-    return config;
-  },
+  turbopack: {},
 };
 
 export default nextConfig;

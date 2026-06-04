@@ -23,7 +23,8 @@ export type AppId =
   | 'trash'
   | 'resume'
   | 'journal'
-  | 'codex';
+  | 'codex'
+  | 'whisperwell';
 
 export type WorldId = 'elden-ring' | 'ghibli' | 'got';
 
@@ -47,6 +48,9 @@ interface TerminalContent {
 interface WorldIdentity {
   pageTitle: string;
 }
+
+// poem footers are Ghibli-only; other worlds simply don't define this map
+type AppPoemFooterMap = Partial<Record<AppId, string>>;
 
 interface TaskbarContent {
   wifiLabel: string;
@@ -79,11 +83,12 @@ const WORLD_ICONS: WorldIconMap = {
     resume:      { icon: '📜', label: 'Scroll' },
     journal:     { icon: '📖', label: 'Travel Log' },
     codex:       { icon: '📖', label: 'Bestiary' },
+    whisperwell: { icon: '🌊', label: 'Echo Chamber' },
   },
   'ghibli': {
     terminal:    { icon: '🌿', label: 'Terminal' },
     filemanager: { icon: '🌻', label: 'Garden' },
-    logviewer:   { icon: '📔', label: 'Journal' },
+    logviewer:   { icon: '🌱', label: 'Garden Log' },
     mail:        { icon: '✉️', label: 'Letters' },
     about:       { icon: '🍃', label: 'About Me' },
     browser:     { icon: '🦋', label: 'Explorer' },
@@ -92,6 +97,7 @@ const WORLD_ICONS: WorldIconMap = {
     resume:      { icon: '📄', label: 'Resume' },
     journal:     { icon: '📔', label: 'Journal' },
     codex:       { icon: '🌸', label: 'Field Guide' },
+    whisperwell: { icon: '🌊', label: 'Whisperwell' },
   },
   'got': {
     terminal:    { icon: '⚒️', label: 'Terminal' },
@@ -105,6 +111,7 @@ const WORLD_ICONS: WorldIconMap = {
     resume:      { icon: '📋', label: 'Decree' },
     journal:     { icon: '🐦‍⬛', label: 'Raven Scrolls' },
     codex:       { icon: '📖', label: "Maester's Codex" },
+    whisperwell: { icon: '🌊', label: "Oracle's Pool" },
   },
 };
 
@@ -123,19 +130,21 @@ const WORLD_APP_TITLES: WorldTitleMap = {
     resume: 'Scroll',
     journal: 'Travel Log',
     codex: 'Bestiary',
+    whisperwell: 'Echo Chamber',
   },
   'ghibli': {
     terminal: 'Terminal',
-    filemanager: 'Garden',
-    logviewer: 'Journal',
+    filemanager: 'The Grove',
+    logviewer: 'Garden Log',
     mail: 'Letters',
     about: 'About Me',
     browser: 'Explorer',
-    gallery: 'Gallery',
+    gallery: 'Atelier',
     trash: 'Compost',
     resume: 'Resume',
-    journal: 'Journal',
+    journal: 'Almanac',
     codex: 'Field Guide',
+    whisperwell: 'Whisperwell',
   },
   'got': {
     terminal: 'Terminal',
@@ -149,6 +158,7 @@ const WORLD_APP_TITLES: WorldTitleMap = {
     resume: 'Decree',
     journal: 'Raven Scrolls',
     codex: "Maester's Codex",
+    whisperwell: "Oracle's Pool",
   },
 };
 
@@ -261,11 +271,11 @@ const WORLD_MENUBAR_NAV: Record<WorldId, MenuBarItem[]> = {
     { label: 'Scroll',     action: 'resume'      },
   ],
   'ghibli': [
-    { label: 'About',    action: 'about'       },
-    { label: 'Garden',   action: 'filemanager' },
-    { label: 'Journal',  action: 'logviewer'   },
-    { label: 'Letters',  action: 'mail'        },
-    { label: 'Resume',   action: 'resume'      },
+    { label: 'About',       action: 'about'       },
+    { label: 'Garden',      action: 'filemanager' },
+    { label: 'Garden Log',  action: 'logviewer'   },
+    { label: 'Letters',     action: 'mail'        },
+    { label: 'Resume',      action: 'resume'      },
   ],
   'got': [
     { label: 'House',     action: 'about'       },
@@ -357,6 +367,16 @@ const DEFAULT_TASKBAR: TaskbarContent = {
   batteryLabel: '[▮▮▮▮▯] 87%',
 };
 
+// ─── Ghibli poem footers (per app, optional) ──────────────────────────────
+
+const GHIBLI_POEM_FOOTERS: AppPoemFooterMap = {
+  filemanager:  'every seed you plant here keeps its own quiet record',
+  gallery:      'the meadow keeps a portrait of every season',
+  journal:      'turn each page gently — the ink is still drying',
+  mail:         'every letter here is carried in on a passing breeze',
+  whisperwell:  'spoken softly, the garden always answers in kind',
+};
+
 // ─── World page identity ───────────────────────────────────────────────────
 
 const WORLD_IDENTITY: WorldIdentityMap = {
@@ -391,7 +411,7 @@ export function isWorldId(id: string): id is WorldId {
  * Type guard for AppId.
  */
 export function isAppId(id: string): id is AppId {
-  return ['terminal', 'filemanager', 'logviewer', 'mail', 'about', 'browser', 'gallery', 'trash', 'resume', 'journal', 'codex'].includes(id);
+  return ['terminal', 'filemanager', 'logviewer', 'mail', 'about', 'browser', 'gallery', 'trash', 'resume', 'journal', 'codex', 'whisperwell'].includes(id);
 }
 
 /**
@@ -473,6 +493,7 @@ export function createWorldChangeListener(callback: (worldId: WorldId | null) =>
     callback(worldId);
   };
   window.addEventListener('worldchange', handler);
+  callback(getCurrentWorldId());
   return () => window.removeEventListener('worldchange', handler);
 }
 
@@ -517,4 +538,14 @@ export function getWorldMenuBarCta(worldId: string | null): MenuBarCta {
 export function getWorldPageTitle(worldId: string | null): string {
   if (worldId && isWorldId(worldId)) return WORLD_IDENTITY[worldId].pageTitle;
   return DEFAULT_PAGE_TITLE;
+}
+
+/**
+ * Get the Ghibli poem-footer text for an app screen.
+ * Returns undefined for non-Ghibli worlds or apps without a poem defined.
+ */
+export function getGhibliPoemFooter(worldId: string | null, appId: string): string | undefined {
+  if (worldId !== 'ghibli') return undefined;
+  if (!isAppId(appId)) return undefined;
+  return GHIBLI_POEM_FOOTERS[appId];
 }

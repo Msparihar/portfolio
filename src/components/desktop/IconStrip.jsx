@@ -28,7 +28,7 @@ const SPRING = { type: 'spring', stiffness: 400, damping: 20 };
 
 export default function IconStrip() {
   const openWindow = useWindowStore((s) => s.openWindow);
-  const [worldId, setWorldId] = useState(getCurrentWorldId);
+  const [worldId, setWorldId] = useState(null);
   const reducedMotion = useReducedMotion();
 
   useEffect(() => createWorldChangeListener(setWorldId), []);

@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState, useCallback, useRef, lazy, Suspense } from 'react';
+import dynamic from 'next/dynamic';
 import { useWindowStore } from '@/store/windowStore';
 import WindowManager from './WindowManager';
 import MenuBar from './MenuBar';
@@ -15,9 +16,22 @@ import { useUiStore } from '@/store/uiStore';
 import { useSeasonStore } from '@/store/seasonStore';
 import { usePrefsStore } from '@/store/prefsStore';
 import { TooltipProvider } from '@/components/ui/Tooltip';
+import { useConservatoryMode } from '@/hooks/useConservatoryMode';
+import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion';
+import GhibliDock from './GhibliDock';
 
 // Lazy-loaded — easter egg, not critical path. Silent Suspense fallback.
 const KitsuneMode = lazy(() => import('@/lib/kitsune-mode/KitsuneMode'));
+
+const GhibliAtmosphereCanvas = dynamic(
+  () => import('@/components/effects/GhibliAtmosphereCanvas'),
+  { ssr: false }
+);
+
+const GhibliSootCanvas = dynamic(
+  () => import('@/components/effects/GhibliSootCanvas'),
+  { ssr: false }
+);
 
 /**
  * Subtle moon at the top-right of the desktop, visible only in the Ghibli world.
@@ -90,6 +104,10 @@ export default function Desktop({ githubData, initialApp }) {
   const animateWallpaper   = usePrefsStore((s) => s.animateWallpaper);
   const mascotVisible      = usePrefsStore((s) => s.mascotVisible);
   const kitsuneModeEnabled = usePrefsStore((s) => s.kitsuneModeEnabled);
+  const atmosphereEnabled  = usePrefsStore((s) => s.atmosphereEnabled);
+
+  const conservatoryActive = useConservatoryMode();
+  const reducedMotion = usePrefersReducedMotion();
 
   const [isMobile, setIsMobile] = useState(false);
   const [contextMenu, setContextMenu] = useState(null);
@@ -324,6 +342,13 @@ export default function Desktop({ githubData, initialApp }) {
       openWindow('terminal');
     }
   }, [initialApp, openWindow]);
+
+  // Welcome landing → open a specific app after the enter transition
+  useEffect(() => {
+    const handler = (e) => openWindow(e.detail.appId);
+    window.addEventListener('open-app', handler);
+    return () => window.removeEventListener('open-app', handler);
+  }, [openWindow]);
 
   // Apply saved theme/world on mount and keep currentWorldId in sync
   useEffect(() => {
@@ -575,6 +600,11 @@ export default function Desktop({ githubData, initialApp }) {
         </div>
       )}
 
+      {/* Ghibli atmosphere canvas — godrays / mist / wisps, behind windows */}
+      {currentWorldId === 'ghibli' && conservatoryActive && !reducedMotion && atmosphereEnabled && (
+        <GhibliAtmosphereCanvas />
+      )}
+
       {/* Window Manager */}
       <WindowManager />
 
@@ -595,6 +625,14 @@ export default function Desktop({ githubData, initialApp }) {
 
       {/* Ghibli-only moon — 3 clicks within 5s = easter egg */}
       {currentWorldId === 'ghibli' && <GhibliMoon onTrigger={handleMoonEgg} />}
+
+      {/* Ghibli dock — fixed bottom-center, additive to IconStrip */}
+      <GhibliDock worldId={currentWorldId} />
+
+      {/* Ghibli soot sprites — above windows, mouse-reactive */}
+      {currentWorldId === 'ghibli' && !reducedMotion && atmosphereEnabled && (
+        <GhibliSootCanvas />
+      )}
 
       {/* Context menu */}
       {contextMenu && (

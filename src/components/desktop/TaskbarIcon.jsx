@@ -9,7 +9,7 @@ export default function TaskbarIcon({ windowData, isFocused, onClick }) {
   const defaultIcon = APP_DEFAULTS[appId]?.icon ?? '🪟';
   const defaultLabel = APP_DEFAULTS[appId]?.title ?? appId;
 
-  const [worldId, setWorldId] = useState(() => getCurrentWorldId());
+  const [worldId, setWorldId] = useState(null);
 
   useEffect(() => {
     return createWorldChangeListener((id) => setWorldId(id));

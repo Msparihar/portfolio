@@ -172,6 +172,7 @@ export default function SettingsPanel() {
   const iconBg = usePrefsStore((s) => s.iconBg);
   const pinnedWallpaperId = usePrefsStore((s) => s.pinnedWallpaperId);
   const animateWallpaper = usePrefsStore((s) => s.animateWallpaper);
+  const atmosphereEnabled = usePrefsStore((s) => s.atmosphereEnabled);
 
   const setHeadingFont = usePrefsStore((s) => s.setHeadingFont);
   const setBodyFont = usePrefsStore((s) => s.setBodyFont);
@@ -180,6 +181,7 @@ export default function SettingsPanel() {
   const setIconBg = usePrefsStore((s) => s.setIconBg);
   const setPinnedWallpaper = usePrefsStore((s) => s.setPinnedWallpaper);
   const setAnimateWallpaper = usePrefsStore((s) => s.setAnimateWallpaper);
+  const toggleAtmosphere = usePrefsStore((s) => s.toggleAtmosphere);
   const hydrate = usePrefsStore((s) => s.hydrate);
 
   // Hydrate CSS vars from persisted state on first mount
@@ -377,6 +379,53 @@ export default function SettingsPanel() {
                   position: 'absolute',
                   top: '2px',
                   left: animateWallpaper ? '18px' : '2px',
+                  width: '16px',
+                  height: '16px',
+                  borderRadius: '50%',
+                  background: '#fff',
+                  transition: 'left 0.2s ease',
+                }}
+              />
+            </button>
+          </div>
+
+          <Divider />
+
+          {/* Atmosphere effects toggle */}
+          <SectionLabel>Atmosphere</SectionLabel>
+          <div
+            style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}
+          >
+            <span
+              style={{
+                fontFamily: 'var(--dt-font-mono)',
+                fontSize: '11px',
+                color: 'var(--dt-text-muted)',
+              }}
+            >
+              Ghibli atmosphere effects
+            </span>
+            <button
+              role="switch"
+              aria-checked={atmosphereEnabled}
+              onClick={toggleAtmosphere}
+              style={{
+                width: '36px',
+                height: '20px',
+                borderRadius: '10px',
+                border: 'none',
+                cursor: 'pointer',
+                position: 'relative',
+                background: atmosphereEnabled ? 'var(--dt-accent)' : 'var(--dt-accent-border-strong)',
+                transition: 'background 0.2s ease',
+                flexShrink: 0,
+              }}
+            >
+              <span
+                style={{
+                  position: 'absolute',
+                  top: '2px',
+                  left: atmosphereEnabled ? '18px' : '2px',
                   width: '16px',
                   height: '16px',
                   borderRadius: '50%',
