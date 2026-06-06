@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef, useEffect, useMemo } from 'react';
+import { useRef, useEffect, useMemo, useCallback } from 'react';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import * as THREE from 'three';
 import sootGlsl from '@/shaders/soot.js';
@@ -58,7 +58,51 @@ function SootPlane() {
   );
 }
 
+const INTERACTIVE_CHROME = '[data-kitsune-platform], [data-kitsune-dock], .window-panel';
+
 export default function GhibliSootCanvas() {
+  const puffIdRef = useRef(0);
+
+  const spawnPuff = useCallback((x, y) => {
+    const el = document.createElement('div');
+    const id = ++puffIdRef.current;
+    el.dataset.sootPuff = id;
+    Object.assign(el.style, {
+      position: 'fixed',
+      left: `${x}px`,
+      top: `${y}px`,
+      width: '32px',
+      height: '32px',
+      borderRadius: '50%',
+      background: 'radial-gradient(circle, rgba(40,30,20,0.55) 0%, rgba(40,30,20,0) 70%)',
+      transform: 'translate(-50%, -50%) scale(0.4)',
+      opacity: '1',
+      pointerEvents: 'none',
+      zIndex: '9999',
+      transition: 'transform 400ms ease-out, opacity 400ms ease-out',
+    });
+    document.body.appendChild(el);
+    requestAnimationFrame(() => {
+      el.style.transform = 'translate(-50%, -50%) scale(2.2)';
+      el.style.opacity = '0';
+    });
+    setTimeout(() => el.remove(), 420);
+    window.dispatchEvent(new CustomEvent('soot-caught'));
+  }, []);
+
+  useEffect(() => {
+    const mq = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+    const handler = (e) => {
+      if (mq.matches) return;
+      if (e.target.closest(INTERACTIVE_CHROME)) return;
+      spawnPuff(e.clientX, e.clientY);
+    };
+
+    window.addEventListener('pointerdown', handler);
+    return () => window.removeEventListener('pointerdown', handler);
+  }, [spawnPuff]);
+
   return (
     <div
       aria-hidden="true"
@@ -66,14 +110,15 @@ export default function GhibliSootCanvas() {
         position: 'fixed',
         inset: 0,
         pointerEvents: 'none',
-        zIndex: 250,
+        zIndex: 'var(--sg-z-soot, 15)',
       }}
     >
       <Canvas
         gl={{ alpha: true, antialias: false, powerPreference: 'low-power' }}
         camera={{ near: 0.1, far: 10 }}
-        style={{ width: '100%', height: '100%' }}
+        style={{ width: '100%', height: '100%', pointerEvents: 'none' }}
         dpr={[1, 1]}
+        events={false}
       >
         <SootPlane />
       </Canvas>

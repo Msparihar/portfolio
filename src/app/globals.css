@@ -51,6 +51,30 @@
   }
 }
 
+.world-elden-ring .window-content-inner,
+.world-got .window-content-inner {
+  --background: 0 0% 3.9%;
+  --foreground: 0 0% 98%;
+  --card: 0 0% 3.9%;
+  --card-foreground: 0 0% 98%;
+  --popover: 0 0% 3.9%;
+  --popover-foreground: 0 0% 98%;
+  --primary: 0 0% 98%;
+  --primary-foreground: 0 0% 9%;
+  --secondary: 0 0% 14.9%;
+  --secondary-foreground: 0 0% 98%;
+  --muted: 0 0% 14.9%;
+  --muted-foreground: 0 0% 63.9%;
+  --accent: 0 0% 14.9%;
+  --accent-foreground: 0 0% 98%;
+  --destructive: 0 62.8% 30.6%;
+  --destructive-foreground: 0 0% 98%;
+  --border: 0 0% 14.9%;
+  --input: 0 0% 14.9%;
+  --ring: 0 0% 83.1%;
+  --terminal-cyan: 187 100% 50%;
+}
+
 /* ══════════════════════════════════════════════════
    Desktop OS Theme Tokens
    All desktop components use var(--dt-*) references.
@@ -241,15 +265,16 @@
     overflow-wrap: break-word;
   }
 
-  /* Dark mode terminal styling */
-  .dark .terminal-container {
+  /* Dark mode terminal styling — also covers in-window terminals for all worlds */
+  .dark .terminal-container,
+  .window-content-inner .terminal-container {
     color: var(--dt-accent);
     background-color: transparent;
     box-shadow: none;
   }
 
-  /* Light mode terminal styling */
-  .terminal-container:not(.dark *) {
+  /* Light mode terminal styling — only applies outside any window-content-inner */
+  .terminal-container:not(.dark *):not(.window-content-inner *) {
     color: var(--dt-accent);
     background-color: rgba(255, 255, 255, 0.95);
     box-shadow: 0 0 30px rgba(0, 100, 0, 0.08);
@@ -276,8 +301,8 @@
     color: var(--dt-accent-70);
   }
 
-  /* Light mode command prompt */
-  :not(.dark) .command-prompt {
+  /* Light mode command prompt — only applies outside windows */
+  :not(.dark) .command-prompt:not(.window-content-inner *) {
     color: var(--dt-accent);
   }
 
@@ -748,6 +773,27 @@
   --sg-z-mascot:             11;
   --sg-z-dock:               14;
   --sg-z-soot:               15;
+}
+
+/* Ghibli dusk wallpaper treatment — blur + gradient tint, Ghibli only */
+/* Oversized to 116%/−8% so the blurred fringe is pushed off-screen */
+.world-ghibli .wallpaper-layer {
+  filter: blur(13px);
+  width: 116%;
+  height: 116%;
+  top: -8%;
+  left: -8%;
+}
+
+.world-ghibli {
+  --dt-wallpaper-gradient:
+    linear-gradient(180deg,
+      rgba(13, 26, 40, 0.70) 0%,
+      rgba(32, 48, 46, 0.55) 38%,
+      rgba(94, 71, 38, 0.45) 68%,
+      rgba(10, 20, 12, 0.93) 100%),
+    radial-gradient(ellipse 100% 60% at 50% 62%, rgba(255, 207, 120, 0.25) 0%, transparent 70%);
+  --dt-wallpaper-gradient-size: 100% 100%, 100% 100%;
 }
 
 /* ══════════════════════════════════════════════════

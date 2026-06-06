@@ -62,12 +62,12 @@ function GhibliMoon({ onTrigger }) {
         width: 32,
         height: 32,
         borderRadius: '50%',
-        background: 'var(--dt-accent)',
+        background: '#fdf6e3',
         opacity: 0.4,
-        border: 'none',
+        border: '1px solid rgba(255, 248, 220, 0.5)',
         padding: 0,
         cursor: 'pointer',
-        boxShadow: '0 0 18px 4px var(--dt-accent-30, rgba(255,255,255,0.25))',
+        boxShadow: '0 0 18px 4px rgba(253, 246, 227, 0.4)',
         zIndex: 45,
       }}
     />
@@ -94,7 +94,7 @@ function MobileFallback() {
   );
 }
 
-export default function Desktop({ githubData, initialApp }) {
+export default function Desktop({ githubData, initialApp, autoOpen = true }) {
   const openWindow = useWindowStore((s) => s.openWindow);
   const toggleWebsiteMode = useUiStore((s) => s.toggleWebsiteMode);
   const startCycle = useSeasonStore((s) => s.startCycle);
@@ -111,7 +111,9 @@ export default function Desktop({ githubData, initialApp }) {
 
   const [isMobile, setIsMobile] = useState(false);
   const [contextMenu, setContextMenu] = useState(null);
-  const [currentWorldId, setCurrentWorldId] = useState(null);
+  const [currentWorldId, setCurrentWorldId] = useState(() => {
+    try { return localStorage.getItem(WORLD_STORAGE_KEY) || 'ghibli'; } catch { return 'ghibli'; }
+  });
   const [showWorldSwitcher, setShowWorldSwitcher] = useState(false);
   const [eggToast, setEggToast] = useState(null);
 
@@ -334,14 +336,16 @@ export default function Desktop({ githubData, initialApp }) {
     return () => window.removeEventListener('resize', check);
   }, []);
 
-  // Open initialApp on mount, or terminal by default
+  // Open initialApp on mount, or terminal by default — gated on autoOpen so the
+  // welcome lock-screen doesn't spawn a window before the user enters.
   useEffect(() => {
+    if (!autoOpen) return;
     if (initialApp) {
       openWindow(initialApp);
     } else {
       openWindow('terminal');
     }
-  }, [initialApp, openWindow]);
+  }, [autoOpen, initialApp, openWindow]);
 
   // Welcome landing → open a specific app after the enter transition
   useEffect(() => {
@@ -473,15 +477,13 @@ export default function Desktop({ githubData, initialApp }) {
   }, []);
 
   const handleContextMenu = useCallback((e) => {
-    // Only show if the click target is the desktop background itself
     if (
-      e.target === e.currentTarget ||
-      e.target.classList.contains('desktop-canvas') ||
-      e.target.classList.contains('desktop-bg-layer')
-    ) {
-      e.preventDefault();
-      setContextMenu({ x: e.clientX, y: e.clientY });
-    }
+      e.target.closest('[data-kitsune-platform]') ||
+      e.target.closest('[data-kitsune-dock]') ||
+      e.target.closest('.window-panel')
+    ) return;
+    e.preventDefault();
+    setContextMenu({ x: e.clientX, y: e.clientY });
   }, []);
 
   if (isMobile) {
@@ -609,10 +611,10 @@ export default function Desktop({ githubData, initialApp }) {
       <WindowManager />
 
       {/* Top horizontal MenuBar (PostHog-style) */}
-      <MenuBar />
+      <MenuBar slimMode={currentWorldId === 'ghibli'} />
 
-      {/* Slim right-side icon strip */}
-      <IconStrip />
+      {/* Slim right-side icon strip — hidden in Ghibli (dock handles navigation there) */}
+      {currentWorldId !== 'ghibli' && <IconStrip />}
 
       {/* Themed kitsune mascot — bottom-right, idle bob, decorative */}
       {activeMascot && mascotVisible && (
@@ -663,7 +665,7 @@ export default function Desktop({ githubData, initialApp }) {
           role="status"
           style={{
             position: 'fixed',
-            bottom: 24,
+            bottom: currentWorldId === 'ghibli' ? 108 : 24,
             left: '50%',
             transform: 'translateX(-50%)',
             background: 'var(--dt-context-bg)',

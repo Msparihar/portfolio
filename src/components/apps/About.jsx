@@ -1,6 +1,8 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import portfolioData from '@/config/portfolio.json';
+import { getCurrentWorldId, createWorldChangeListener } from '@/config/worldContent';
 
 const GREEN = 'var(--dt-accent)';
 const GREEN_BORDER = 'var(--dt-accent-border)';
@@ -55,7 +57,178 @@ function Tag({ children }) {
   );
 }
 
+function GhibliTag({ children }) {
+  return (
+    <span style={{
+      padding: '3px 10px',
+      border: '1px solid rgba(138, 116, 68, 0.30)',
+      borderRadius: '999px',
+      fontSize: '12px',
+      color: 'var(--dt-text-muted)',
+      fontFamily: 'var(--dt-font-body, Georgia, serif)',
+      background: 'rgba(255, 255, 255, 0.35)',
+      whiteSpace: 'nowrap',
+    }}>
+      {children}
+    </span>
+  );
+}
+
+function GhibliSection({ title, children }) {
+  return (
+    <div style={{
+      borderRadius: 'var(--dt-window-radius, 12px)',
+      background: 'rgba(255, 255, 255, 0.30)',
+      border: '1px solid rgba(255, 255, 255, 0.45)',
+      padding: '18px 20px',
+      display: 'flex',
+      flexDirection: 'column',
+      gap: '12px',
+    }}>
+      <div style={{
+        fontFamily: 'var(--dt-font-heading, Georgia, serif)',
+        fontSize: '13px',
+        fontWeight: 600,
+        color: 'var(--dt-accent)',
+        letterSpacing: '0.06em',
+        textTransform: 'uppercase',
+      }}>
+        {title}
+      </div>
+      {children}
+    </div>
+  );
+}
+
+function GhibliAbout() {
+  return (
+    <div style={{
+      fontFamily: 'var(--dt-font-body, Georgia, serif)',
+      color: 'var(--dt-text)',
+      padding: '24px 26px',
+      overflowY: 'auto',
+      height: '100%',
+      boxSizing: 'border-box',
+      display: 'flex',
+      flexDirection: 'column',
+      gap: '18px',
+    }}>
+      {/* Header */}
+      <div style={{
+        borderRadius: 'var(--dt-window-radius, 12px)',
+        background: 'rgba(255, 255, 255, 0.30)',
+        border: '1px solid rgba(255, 255, 255, 0.45)',
+        padding: '22px 24px',
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '6px',
+      }}>
+        <div style={{
+          fontFamily: 'var(--dt-font-heading, Georgia, serif)',
+          fontSize: '26px',
+          fontStyle: 'italic',
+          fontWeight: 400,
+          color: 'var(--dt-text)',
+          lineHeight: 1.1,
+        }}>
+          Manish Singh Parihar
+        </div>
+        <div style={{
+          fontFamily: 'var(--dt-font-body, Georgia, serif)',
+          fontSize: '14px',
+          color: 'var(--dt-accent)',
+        }}>
+          Full Stack &amp; AI Engineer
+        </div>
+        <div style={{ height: '1px', background: 'rgba(138, 116, 68, 0.20)', margin: '6px 0' }} />
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+          {INFO_LINES.map(({ label, value }) => (
+            <div key={label} style={{ display: 'flex', gap: '10px', fontSize: '13px' }}>
+              <span style={{
+                fontFamily: 'var(--dt-font-body, Georgia, serif)',
+                color: 'var(--dt-text-muted)',
+                minWidth: '80px',
+                flexShrink: 0,
+              }}>
+                {label}
+              </span>
+              <span style={{ color: 'var(--dt-text)' }}>{value}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Skills */}
+      <GhibliSection title="Skills">
+        {SKILL_CATEGORIES.map(({ label, key }) => {
+          const items = skills[key] || [];
+          return (
+            <div key={key} style={{ display: 'flex', gap: '10px', alignItems: 'flex-start', flexWrap: 'wrap' }}>
+              <span style={{
+                fontFamily: 'var(--dt-font-body, Georgia, serif)',
+                color: 'var(--dt-text-muted)',
+                fontSize: '12px',
+                minWidth: '80px',
+                paddingTop: '4px',
+                flexShrink: 0,
+              }}>
+                {label}
+              </span>
+              <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
+                {items.map((skill) => <GhibliTag key={skill}>{skill}</GhibliTag>)}
+              </div>
+            </div>
+          );
+        })}
+      </GhibliSection>
+
+      {/* Experience */}
+      <GhibliSection title="Experience">
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
+          {experience.map((job, i) => (
+            <div key={i} style={{ display: 'flex', gap: '14px' }}>
+              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', flexShrink: 0 }}>
+                <div style={{
+                  width: '8px',
+                  height: '8px',
+                  borderRadius: '50%',
+                  background: 'var(--dt-accent)',
+                  marginTop: '5px',
+                }} />
+                {i < experience.length - 1 && (
+                  <div style={{ width: '1px', flex: 1, background: 'rgba(138, 116, 68, 0.25)', marginTop: '4px' }} />
+                )}
+              </div>
+              <div style={{ flex: 1, paddingBottom: i < experience.length - 1 ? '8px' : 0 }}>
+                <div style={{ fontSize: '13px', color: 'var(--dt-text)', marginBottom: '2px', lineHeight: 1.4 }}>
+                  <span style={{ color: 'var(--dt-accent)' }}>{job.position}</span>
+                  <span style={{ color: 'var(--dt-text-muted)' }}> at </span>
+                  <span>{job.company}</span>
+                  <span style={{ color: 'var(--dt-text-muted)', marginLeft: '8px', fontSize: '11px' }}>
+                    {job.duration}
+                  </span>
+                </div>
+                {job.description && (
+                  <div style={{ color: 'var(--dt-text-muted)', fontSize: '12px', lineHeight: '1.6' }}>
+                    {job.description}
+                  </div>
+                )}
+              </div>
+            </div>
+          ))}
+        </div>
+      </GhibliSection>
+    </div>
+  );
+}
+
 export default function About() {
+  const [worldId, setWorldId] = useState(() => getCurrentWorldId());
+
+  useEffect(() => createWorldChangeListener(setWorldId), []);
+
+  if (worldId === 'ghibli') return <GhibliAbout />;
+
   return (
     <div style={{
       fontFamily: 'var(--dt-font-mono, monospace)',

@@ -23,6 +23,8 @@ export interface DockTile {
   appId: string | null;
   gradient: [string, string];
   glyph: string;
+  shadowTint?: string;
+  gloss?: boolean;
 }
 
 export const GHIBLI_WELCOME: WelcomeContent = {
@@ -50,16 +52,19 @@ export const GHIBLI_WELCOME: WelcomeContent = {
     memory: {
       label: 'A MEMORY',
       caption: 'Last evening, in the meadow',
-      imageSrc: '/images/worlds/ghibli/wallpaper.webp',
+      // user-supplied photo placeholder — swap this asset to personalise the memory widget
+      imageSrc: '/images/welcome/memory-placeholder.webp',
     },
   },
   poemFooter: 'the spirit garden remembers every visitor',
   dockTiles: [
-    { id: 'grove',      label: 'Grove',     appId: 'filemanager', gradient: ['#5a9268', '#3f6e4c'], glyph: '🌿' },
-    { id: 'atelier',    label: 'Atelier',   appId: 'gallery',     gradient: ['#7fb08a', '#4a7c59'], glyph: '🖼️' },
-    { id: 'almanac',    label: 'Almanac',   appId: 'journal',     gradient: ['#8aab6e', '#5a7a44'], glyph: '📖' },
-    { id: 'letters',    label: 'Letters',   appId: 'mail',        gradient: ['#6fa880', '#4a7c59'], glyph: '✉️' },
-    { id: 'whisperwell',label: 'Whisperwell',appId: 'whisperwell', gradient: ['#5a9268', '#3f6e4c'], glyph: '🌀' },
-    { id: 'compass',    label: 'Compass',   appId: 'terminal',    gradient: ['#7fb08a', '#4a7c59'], glyph: '🧭' },
+    { id: 'grove',       label: 'Grove',       appId: 'filemanager', gradient: ['#5fd97a', '#2ea84f'], shadowTint: '#2ea84f', gloss: true, glyph: '🌿' },
+    { id: 'compass',     label: 'Compass',     appId: 'terminal',    gradient: ['#3ad9c4', '#0e9488'], shadowTint: '#0e9488', gloss: true, glyph: '🧭' },
+    { id: 'letters',     label: 'Letters',     appId: 'mail',        gradient: ['#ff8a7a', '#ef4e3a'], shadowTint: '#ef4e3a', gloss: true, glyph: '✉️' },
+    { id: 'almanac',     label: 'Almanac',     appId: 'journal',     gradient: ['#ffc24d', '#f0921d'], shadowTint: '#f0921d', gloss: true, glyph: '📖' },
+    { id: 'atelier',     label: 'Atelier',     appId: 'gallery',     gradient: ['#c08cf5', '#8b3fe0'], shadowTint: '#8b3fe0', gloss: true, glyph: '🖼️' },
+    { id: 'whisperwell', label: 'Whisperwell', appId: 'whisperwell', gradient: ['#5bb8f5', '#1f7fd6'], shadowTint: '#1f7fd6', gloss: true, glyph: '🌀' },
+    { id: 'about',       label: 'About',       appId: 'about',       gradient: ['#e8c87a', '#c9a050'], shadowTint: '#c9a050', gloss: true, glyph: '👤' },
+    { id: 'resume',      label: 'Resume',      appId: 'resume',      gradient: ['#8cc4b8', '#5a8c84'], shadowTint: '#5a8c84', gloss: true, glyph: '📄' },
   ],
 };

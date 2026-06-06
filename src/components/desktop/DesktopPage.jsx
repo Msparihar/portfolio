@@ -25,11 +25,8 @@ export default function DesktopPage({ githubData }) {
   const [worldBootConfig, setWorldBootConfig] = useState(null);
   const [worldId, setWorldId] = useState(null);
   const [showWelcome, setShowWelcome] = useState(false);
-  const [isMobile, setIsMobile] = useState(false);
-
-  useEffect(() => {
-    setIsMobile(window.innerWidth < 768);
-  }, []);
+  const isMobile = typeof window !== 'undefined' ? window.innerWidth < 768 : false;
+  const [desktopReady, setDesktopReady] = useState(false);
 
   useEffect(() => {
     try {
@@ -74,11 +71,14 @@ export default function DesktopPage({ githubData }) {
           onBootComplete={() => setBooted(true)}
         />
       )}
-      <Desktop githubData={githubData} initialApp={initialApp} />
+      <Desktop githubData={githubData} initialApp={initialApp} autoOpen={desktopReady} />
       {showWelcome && (
         <WelcomeLanding
           worldSkin="ghibli"
-          onEnter={() => setShowWelcome(false)}
+          onEnter={() => {
+            setDesktopReady(true);
+            setShowWelcome(false);
+          }}
         />
       )}
     </>

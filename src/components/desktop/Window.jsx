@@ -162,7 +162,7 @@ export default function Window({ windowData, children }) {
         />
 
         <div
-          className="dark"
+          className="window-content-inner"
           style={{
             flex: 1,
             overflow: 'hidden',

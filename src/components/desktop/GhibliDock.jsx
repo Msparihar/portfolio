@@ -4,7 +4,6 @@ import { useWindowStore } from '@/store/windowStore';
 import GlassDock from '@/components/welcome/GlassDock';
 import { GHIBLI_WELCOME } from '@/config/welcomeContent';
 
-const ICON_STRIP_WIDTH = 64;
 const MASCOT_CLEARANCE = 140;
 
 export default function GhibliDock({ worldId }) {
@@ -13,16 +12,22 @@ export default function GhibliDock({ worldId }) {
   if (worldId !== 'ghibli') return null;
 
   const handleTileClick = (tile) => {
-    if (tile.appId) openWindow(tile.appId);
+    if (!tile.appId) return;
+    if (tile.appId === 'resume') {
+      window.open('/resume.pdf', '_blank', 'noopener,noreferrer');
+      return;
+    }
+    openWindow(tile.appId);
   };
 
   return (
     <div
+      data-kitsune-dock
       style={{
         position: 'fixed',
-        bottom: 16,
+        bottom: 96,
         left: 0,
-        right: ICON_STRIP_WIDTH,
+        right: 0,
         display: 'flex',
         justifyContent: 'center',
         pointerEvents: 'none',

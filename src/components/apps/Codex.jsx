@@ -41,12 +41,15 @@ function getSkin(worldId) {
   return SKINS[worldId] ?? DEFAULT_SKIN;
 }
 
+const GHIBLI_EMPTY = { categories: [], entries: [] };
+
 function getWorldData(worldId) {
+  if (worldId === 'ghibli') return CODEX_DATA['ghibli'] ?? GHIBLI_EMPTY;
   return CODEX_DATA[worldId] ?? CODEX_DATA['elden-ring'];
 }
 
 export default function Codex() {
-  const [worldId, setWorldId]               = useState(null);
+  const [worldId, setWorldId]               = useState(() => getCurrentWorldId());
   const [activeCategoryId, setActiveCategoryId] = useState(null);
   const [selectedEntryId, setSelectedEntryId]   = useState(null);
   const [search, setSearch]                 = useState('');
