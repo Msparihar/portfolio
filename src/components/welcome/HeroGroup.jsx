@@ -1,9 +1,10 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
+import Image from 'next/image';
 
-function getGreeting() {
-  const h = new Date().getHours();
+function getGreeting(d) {
+  const h = d.getHours();
   if (h < 5) return 'Good night, traveller';
   if (h < 12) return 'Good morning, traveller';
   if (h < 17) return 'Good afternoon, traveller';
@@ -22,6 +23,7 @@ function formatDate(d) {
 export default function HeroGroup({ onEnter }) {
   const [now, setNow] = useState(() => new Date());
   const timerRef = useRef(null);
+  const [avatarError, setAvatarError] = useState(false);
 
   useEffect(() => {
     const tick = () => {
@@ -42,7 +44,7 @@ export default function HeroGroup({ onEnter }) {
       gap: 0,
       userSelect: 'none',
     }}>
-      {/* Avatar */}
+      {/* Avatar — /images/welcome/avatar.webp is a user-supplied photo; falls back to frosted disc if absent */}
       <div
         aria-label="Manish Singh Parihar — Full Stack & AI Engineer"
         role="img"
@@ -54,8 +56,21 @@ export default function HeroGroup({ onEnter }) {
           WebkitBackdropFilter: 'blur(10px)',
           marginBottom: 8,
           flexShrink: 0,
+          overflow: 'hidden',
+          position: 'relative',
         }}
-      />
+      >
+        {!avatarError && (
+          <Image
+            src="/images/welcome/avatar.webp"
+            alt=""
+            fill
+            sizes="74px"
+            style={{ objectFit: 'cover', borderRadius: 999 }}
+            onError={() => setAvatarError(true)}
+          />
+        )}
+      </div>
 
       {/* Greeting */}
       <p style={{
@@ -67,7 +82,7 @@ export default function HeroGroup({ onEnter }) {
         margin: '0 0 4px 0',
         lineHeight: 1.2,
       }}>
-        {getGreeting()}
+        {getGreeting(now)}
       </p>
 
       {/* Clock */}

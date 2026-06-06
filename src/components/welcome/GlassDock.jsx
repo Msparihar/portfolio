@@ -17,9 +17,78 @@ function getMagnifiedSize(hoveredIndex, tileIndex) {
   return TILE_BASE;
 }
 
+const APP_ICONS = {
+  filemanager: (
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path d="M3 7a2 2 0 0 1 2-2h4.586a1 1 0 0 1 .707.293L11.707 6.7A1 1 0 0 0 12.414 7H19a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7Z" fill="#fff"/>
+    </svg>
+  ),
+  terminal: (
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path d="M4 17l5-5-5-5" stroke="#fff" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"/>
+      <path d="M12 19h8" stroke="#fff" strokeWidth="2.2" strokeLinecap="round"/>
+    </svg>
+  ),
+  mail: (
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <rect x="2" y="5" width="20" height="14" rx="2" fill="#fff"/>
+      <path d="M2 7l10 7 10-7" stroke="rgba(0,0,0,0.18)" strokeWidth="1.5" strokeLinejoin="round"/>
+    </svg>
+  ),
+  journal: (
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <rect x="4" y="2" width="14" height="20" rx="2" fill="#fff"/>
+      <rect x="3" y="2" width="2" height="20" rx="1" fill="rgba(0,0,0,0.15)"/>
+      <line x1="8" y1="8" x2="15" y2="8" stroke="rgba(0,0,0,0.18)" strokeWidth="1.3" strokeLinecap="round"/>
+      <line x1="8" y1="12" x2="15" y2="12" stroke="rgba(0,0,0,0.18)" strokeWidth="1.3" strokeLinecap="round"/>
+      <line x1="8" y1="16" x2="12" y2="16" stroke="rgba(0,0,0,0.18)" strokeWidth="1.3" strokeLinecap="round"/>
+    </svg>
+  ),
+  gallery: (
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <ellipse cx="17" cy="8" rx="3" ry="3" fill="#fff"/>
+      <path d="M2 20l5-6 4 4 3-3 5 5H2Z" fill="#fff"/>
+      <rect x="2" y="4" width="20" height="16" rx="2.5" stroke="#fff" strokeWidth="1.8" fill="none"/>
+    </svg>
+  ),
+  whisperwell: (
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path d="M20 2H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h3l2 3 2-3h9a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2Z" fill="#fff"/>
+      <circle cx="8" cy="10" r="1.3" fill="rgba(0,0,0,0.18)"/>
+      <circle cx="12" cy="10" r="1.3" fill="rgba(0,0,0,0.18)"/>
+      <circle cx="16" cy="10" r="1.3" fill="rgba(0,0,0,0.18)"/>
+    </svg>
+  ),
+  about: (
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <circle cx="12" cy="8" r="4" fill="#fff"/>
+      <path d="M4 20c0-4.418 3.582-8 8-8s8 3.582 8 8" fill="#fff"/>
+    </svg>
+  ),
+  resume: (
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path d="M6 2a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6H6Z" fill="#fff"/>
+      <path d="M14 2v5a1 1 0 0 0 1 1h5" fill="rgba(0,0,0,0.12)"/>
+      <line x1="8" y1="13" x2="16" y2="13" stroke="rgba(0,0,0,0.18)" strokeWidth="1.3" strokeLinecap="round"/>
+      <line x1="8" y1="16.5" x2="13" y2="16.5" stroke="rgba(0,0,0,0.18)" strokeWidth="1.3" strokeLinecap="round"/>
+    </svg>
+  ),
+};
+
+function TileIcon({ appId }) {
+  return APP_ICONS[appId] ?? (
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <rect x="4" y="4" width="16" height="16" rx="3" fill="#fff"/>
+    </svg>
+  );
+}
+
 function DockTile({ tile, size, isHovered, onMouseEnter, onMouseLeave, onClick, showLabel, prefersReducedMotion }) {
   const liftY = isHovered && !prefersReducedMotion ? -5 : 0;
   const scale = prefersReducedMotion ? 1 : size / TILE_BASE;
+  const shadow = tile.shadowTint
+    ? `0 6px 14px ${tile.shadowTint}88, 0 2px 4px rgba(0,0,0,0.20)`
+    : `0 3px 6px ${tile.gradient[1]}72`;
 
   return (
     <div style={{ position: 'relative', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
@@ -43,7 +112,6 @@ function DockTile({ tile, size, isHovered, onMouseEnter, onMouseLeave, onClick, 
             fontWeight: 500,
             color: '#ffffff',
           }}>{tile.label}</span>
-          {/* Triangle tip */}
           <div style={{
             position: 'absolute',
             bottom: -7,
@@ -69,7 +137,7 @@ function DockTile({ tile, size, isHovered, onMouseEnter, onMouseLeave, onClick, 
           borderRadius: 13,
           border: '1px solid rgba(255,255,255,0.30)',
           background: `linear-gradient(135deg, ${tile.gradient[0]}, ${tile.gradient[1]})`,
-          boxShadow: `0 3px 6px ${tile.gradient[1]}72`,
+          boxShadow: shadow,
           cursor: 'pointer',
           padding: 0,
           display: 'flex',
@@ -81,9 +149,26 @@ function DockTile({ tile, size, isHovered, onMouseEnter, onMouseLeave, onClick, 
             ? 'none'
             : 'transform 120ms cubic-bezier(0.2, 0.2, 0, 2.0), width 120ms cubic-bezier(0.2, 0.2, 0, 2.0), height 120ms cubic-bezier(0.2, 0.2, 0, 2.0)',
           flexShrink: 0,
+          position: 'relative',
+          overflow: 'hidden',
         }}
       >
-        <span style={{ fontSize: 22, lineHeight: 1 }} aria-hidden="true">{tile.glyph}</span>
+        {tile.gloss && (
+          <div
+            aria-hidden="true"
+            style={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              borderRadius: 13,
+              background: 'linear-gradient(180deg, rgba(255,255,255,0.40) 0%, rgba(255,255,255,0) 50%)',
+              pointerEvents: 'none',
+            }}
+          />
+        )}
+        <TileIcon appId={tile.appId} />
       </button>
     </div>
   );

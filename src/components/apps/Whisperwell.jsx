@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import { createWorldChangeListener, getGhibliPoemFooter } from '@/config/worldContent';
+import { getCurrentWorldId, createWorldChangeListener, getGhibliPoemFooter } from '@/config/worldContent';
 import PoemFooter from '@/components/welcome/PoemFooter';
 
 const GARDEN_REPLIES = [
@@ -340,7 +340,7 @@ function GhibliWhisperwell() {
 }
 
 export default function Whisperwell() {
-  const [worldId, setWorldId] = useState(null);
+  const [worldId, setWorldId] = useState(() => getCurrentWorldId());
 
   useEffect(() => createWorldChangeListener(setWorldId), []);
 

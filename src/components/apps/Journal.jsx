@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect, forwardRef } from 'react';
 import dynamic from 'next/dynamic';
-import { createWorldChangeListener, getGhibliPoemFooter } from '@/config/worldContent';
+import { getCurrentWorldId, createWorldChangeListener, getGhibliPoemFooter } from '@/config/worldContent';
 import PoemFooter from '@/components/welcome/PoemFooter';
 import JOURNAL_ENTRIES from '@/config/journal.js';
 
@@ -727,7 +727,7 @@ const EntryPage = forwardRef(function EntryPage({ entry, pageNum, skin, isLeft, 
 // ─── Main Journal component ────────────────────────────────────────────────
 
 export default function Journal() {
-  const [worldId, setWorldId] = useState(null);
+  const [worldId, setWorldId] = useState(() => getCurrentWorldId());
   const bookRef = useRef(null);
   const [currentPage, setCurrentPage] = useState(0);
 

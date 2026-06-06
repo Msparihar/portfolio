@@ -65,7 +65,7 @@ function AtmospherePlane({ fragmentShader, renderOrder, colorKey }) {
   );
 }
 
-export default function GhibliAtmosphereCanvas({ godRaysOnlyMode = false }) {
+export default function GhibliAtmosphereCanvas({ godRaysOnlyMode = true }) {
   return (
     <div
       aria-hidden="true"
@@ -79,8 +79,9 @@ export default function GhibliAtmosphereCanvas({ godRaysOnlyMode = false }) {
       <Canvas
         gl={{ alpha: true, antialias: false, powerPreference: 'low-power' }}
         camera={{ near: 0.1, far: 10 }}
-        style={{ width: '100%', height: '100%' }}
+        style={{ width: '100%', height: '100%', pointerEvents: 'none' }}
         dpr={[1, 1]}
+        events={false}
       >
         <AtmospherePlane fragmentShader={godraysGlsl} renderOrder={0} colorKey="godrays" />
         {!godRaysOnlyMode && (

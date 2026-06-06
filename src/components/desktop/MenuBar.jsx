@@ -4,12 +4,11 @@ import { useEffect, useState } from 'react';
 import * as Menubar from '@radix-ui/react-menubar';
 import { useWindowStore } from '@/store/windowStore';
 import { useUiStore } from '@/store/uiStore';
-import { WORLDS, WORLD_STORAGE_KEY } from '@/config/worlds';
+import { WORLDS } from '@/config/worlds';
 import {
   getWorldMenuBarNav,
   getWorldMenuBarCta,
   getWorldTaskbar,
-  getCurrentWorldId,
   createWorldChangeListener,
 } from '@/config/worldContent';
 import WorldPicker from './WorldPicker';
@@ -34,7 +33,7 @@ function useClock() {
   return time;
 }
 
-export default function MenuBar() {
+export default function MenuBar({ slimMode = false }) {
   const openWindow = useWindowStore((s) => s.openWindow);
   const windows = useWindowStore((s) => s.windows);
   const nextZIndex = useWindowStore((s) => s.nextZIndex);
@@ -175,114 +174,119 @@ export default function MenuBar() {
         </span>
       </div>
 
-      {/* Horizontal nav (Radix Menubar) */}
-      <Menubar.Root
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          gap: 2,
-          flex: 1,
-          minWidth: 0,
-        }}
-      >
-        {navItems.map((item) => (
-          <Menubar.Menu key={item.action}>
-            <Tooltip content={item.tooltip ?? item.label} side="bottom">
-            <Menubar.Trigger
-              onClick={() => handleNavClick(item.action)}
-              style={{
-                background: 'transparent',
-                border: 'none',
-                color: 'var(--dt-menubar-link)',
-                cursor: 'pointer',
-                fontFamily: 'var(--dt-font-body, sans-serif)',
-                fontSize: 13,
-                fontWeight: 500,
-                padding: '8px 12px',
-                borderRadius: 6,
-                whiteSpace: 'nowrap',
-                transition: 'background 0.12s ease, color 0.12s ease',
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.background = 'var(--dt-accent-soft)';
-                e.currentTarget.style.color = 'var(--dt-menubar-link-hover)';
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.background = 'transparent';
-                e.currentTarget.style.color = 'var(--dt-menubar-link)';
-              }}
-            >
-              {item.label}
-            </Menubar.Trigger>
-            </Tooltip>
-          </Menubar.Menu>
-        ))}
-
-        {/* Open-window list collapses into a "Windows" submenu when any are open */}
-        {windows.length > 0 && (
-          <Menubar.Menu>
-            <Menubar.Trigger
-              style={{
-                background: 'transparent',
-                border: 'none',
-                color: 'var(--dt-menubar-link-muted)',
-                cursor: 'pointer',
-                fontFamily: 'var(--dt-font-body, sans-serif)',
-                fontSize: 13,
-                fontWeight: 500,
-                padding: '8px 12px',
-                borderRadius: 6,
-                whiteSpace: 'nowrap',
-                transition: 'background 0.12s ease, color 0.12s ease',
-              }}
-            >
-              Windows ({windows.length})
-            </Menubar.Trigger>
-            <Menubar.Portal>
-              <Menubar.Content
-                align="start"
-                sideOffset={6}
+      {/* Horizontal nav (Radix Menubar) — hidden in slimMode */}
+      {!slimMode && (
+        <Menubar.Root
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: 2,
+            flex: 1,
+            minWidth: 0,
+          }}
+        >
+          {navItems.map((item) => (
+            <Menubar.Menu key={item.action}>
+              <Tooltip content={item.tooltip ?? item.label} side="bottom">
+              <Menubar.Trigger
+                onClick={() => handleNavClick(item.action)}
                 style={{
-                  background: 'var(--dt-context-bg)',
-                  backdropFilter: 'var(--dt-window-blur)',
-                  WebkitBackdropFilter: 'var(--dt-window-blur)',
-                  border: '1px solid var(--dt-accent-border-strong)',
-                  borderRadius: 'var(--dt-window-radius, 8px)',
-                  padding: 6,
-                  minWidth: 220,
-                  boxShadow: 'var(--dt-shadow-focused)',
-                  zIndex: 300,
+                  background: 'transparent',
+                  border: 'none',
+                  color: 'var(--dt-menubar-link)',
+                  cursor: 'pointer',
+                  fontFamily: 'var(--dt-font-body, sans-serif)',
+                  fontSize: 13,
+                  fontWeight: 500,
+                  padding: '8px 12px',
+                  borderRadius: 6,
+                  whiteSpace: 'nowrap',
+                  transition: 'background 0.12s ease, color 0.12s ease',
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.background = 'var(--dt-accent-soft)';
+                  e.currentTarget.style.color = 'var(--dt-menubar-link-hover)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.background = 'transparent';
+                  e.currentTarget.style.color = 'var(--dt-menubar-link)';
                 }}
               >
-                {windows.map((win) => (
-                  <Menubar.Item
-                    key={win.id}
-                    onSelect={() => handleWindowItemClick(win)}
-                    style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: 8,
-                      padding: '6px 10px',
-                      borderRadius: 4,
-                      cursor: 'pointer',
-                      outline: 'none',
-                      fontFamily: 'var(--dt-font-mono)',
-                      fontSize: 12,
-                      color: win.isMinimized ? 'var(--dt-text-muted)' : 'var(--dt-text)',
-                      fontStyle: win.isMinimized ? 'italic' : 'normal',
-                    }}
-                  >
-                    <span style={{ flex: 1 }}>{win.title}</span>
-                    {win.id === focusedId && !win.isMinimized && (
-                      <span style={{ color: 'var(--dt-accent)', fontSize: 10 }}>●</span>
-                    )}
-                  </Menubar.Item>
-                ))}
-              </Menubar.Content>
-            </Menubar.Portal>
-          </Menubar.Menu>
-        )}
-      </Menubar.Root>
+                {item.label}
+              </Menubar.Trigger>
+              </Tooltip>
+            </Menubar.Menu>
+          ))}
+
+          {/* Open-window list collapses into a "Windows" submenu when any are open */}
+          {windows.length > 0 && (
+            <Menubar.Menu>
+              <Menubar.Trigger
+                style={{
+                  background: 'transparent',
+                  border: 'none',
+                  color: 'var(--dt-menubar-link-muted)',
+                  cursor: 'pointer',
+                  fontFamily: 'var(--dt-font-body, sans-serif)',
+                  fontSize: 13,
+                  fontWeight: 500,
+                  padding: '8px 12px',
+                  borderRadius: 6,
+                  whiteSpace: 'nowrap',
+                  transition: 'background 0.12s ease, color 0.12s ease',
+                }}
+              >
+                Windows ({windows.length})
+              </Menubar.Trigger>
+              <Menubar.Portal>
+                <Menubar.Content
+                  align="start"
+                  sideOffset={6}
+                  style={{
+                    background: 'var(--dt-context-bg)',
+                    backdropFilter: 'var(--dt-window-blur)',
+                    WebkitBackdropFilter: 'var(--dt-window-blur)',
+                    border: '1px solid var(--dt-accent-border-strong)',
+                    borderRadius: 'var(--dt-window-radius, 8px)',
+                    padding: 6,
+                    minWidth: 220,
+                    boxShadow: 'var(--dt-shadow-focused)',
+                    zIndex: 300,
+                  }}
+                >
+                  {windows.map((win) => (
+                    <Menubar.Item
+                      key={win.id}
+                      onSelect={() => handleWindowItemClick(win)}
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: 8,
+                        padding: '6px 10px',
+                        borderRadius: 4,
+                        cursor: 'pointer',
+                        outline: 'none',
+                        fontFamily: 'var(--dt-font-mono)',
+                        fontSize: 12,
+                        color: win.isMinimized ? 'var(--dt-text-muted)' : 'var(--dt-text)',
+                        fontStyle: win.isMinimized ? 'italic' : 'normal',
+                      }}
+                    >
+                      <span style={{ flex: 1 }}>{win.title}</span>
+                      {win.id === focusedId && !win.isMinimized && (
+                        <span style={{ color: 'var(--dt-accent)', fontSize: 10 }}>●</span>
+                      )}
+                    </Menubar.Item>
+                  ))}
+                </Menubar.Content>
+              </Menubar.Portal>
+            </Menubar.Menu>
+          )}
+        </Menubar.Root>
+      )}
+
+      {/* Spacer so right cluster stays flush-right in slimMode */}
+      {slimMode && <div style={{ flex: 1 }} />}
 
       {/* Right cluster */}
       <div
@@ -297,28 +301,30 @@ export default function MenuBar() {
           flexShrink: 0,
         }}
       >
-        <Tooltip content={cta.label} side="bottom">
-        <button
-          onClick={() => openWindow(cta.target)}
-          style={{
-            background: 'var(--dt-accent)',
-            color: 'var(--dt-bg)',
-            border: 'none',
-            cursor: 'pointer',
-            padding: '6px 14px',
-            borderRadius: 999,
-            fontFamily: 'var(--dt-font-body, sans-serif)',
-            fontSize: 12,
-            fontWeight: 600,
-            whiteSpace: 'nowrap',
-            transition: 'background 0.15s ease, transform 0.1s ease',
-          }}
-          onMouseEnter={(e) => { e.currentTarget.style.background = 'var(--dt-accent-hover)'; }}
-          onMouseLeave={(e) => { e.currentTarget.style.background = 'var(--dt-accent)'; }}
-        >
-          {cta.label}
-        </button>
-        </Tooltip>
+        {!slimMode && (
+          <Tooltip content={cta.label} side="bottom">
+          <button
+            onClick={() => openWindow(cta.target)}
+            style={{
+              background: 'var(--dt-accent)',
+              color: 'var(--dt-bg)',
+              border: 'none',
+              cursor: 'pointer',
+              padding: '6px 14px',
+              borderRadius: 999,
+              fontFamily: 'var(--dt-font-body, sans-serif)',
+              fontSize: 12,
+              fontWeight: 600,
+              whiteSpace: 'nowrap',
+              transition: 'background 0.15s ease, transform 0.1s ease',
+            }}
+            onMouseEnter={(e) => { e.currentTarget.style.background = 'var(--dt-accent-hover)'; }}
+            onMouseLeave={(e) => { e.currentTarget.style.background = 'var(--dt-accent)'; }}
+          >
+            {cta.label}
+          </button>
+          </Tooltip>
+        )}
 
         <WorldPicker />
 

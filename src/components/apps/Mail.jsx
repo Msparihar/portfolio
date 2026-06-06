@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import portfolioData from '@/config/portfolio.json';
-import { createWorldChangeListener, getGhibliPoemFooter } from '@/config/worldContent';
+import { getCurrentWorldId, createWorldChangeListener, getGhibliPoemFooter } from '@/config/worldContent';
 import PoemFooter from '@/components/welcome/PoemFooter';
 
 const GREEN = 'var(--dt-accent)';
@@ -826,7 +826,7 @@ function GhibliCompose({ form, setForm, sendStatus, sendError, focusedField, set
 // ─── Default Mail (non-Ghibli worlds) ─────────────────────────────────────
 
 export default function Mail() {
-  const [worldId, setWorldId] = useState(null);
+  const [worldId, setWorldId] = useState(() => getCurrentWorldId());
 
   useEffect(() => createWorldChangeListener(setWorldId), []);
 
