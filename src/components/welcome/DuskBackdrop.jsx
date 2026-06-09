@@ -4,10 +4,11 @@ import Image from 'next/image';
 
 export default function DuskBackdrop({
   wallpaperSrc = '/images/worlds/ghibli/wallpaper.webp',
+  style,
 }) {
   return (
     <div
-      style={{ position: 'absolute', inset: 0, overflow: 'hidden', zIndex: 0 }}
+      style={{ position: 'absolute', inset: 0, overflow: 'hidden', zIndex: 0, ...style }}
       aria-hidden="true"
     >
       <Image
