@@ -132,8 +132,8 @@ function DockTile({ tile, size, isHovered, onMouseEnter, onMouseLeave, onClick, 
         onMouseEnter={onMouseEnter}
         onMouseLeave={onMouseLeave}
         style={{
-          width: prefersReducedMotion ? TILE_BASE : size,
-          height: prefersReducedMotion ? TILE_BASE : size,
+          width: TILE_BASE,
+          height: TILE_BASE,
           borderRadius: 13,
           border: '1px solid rgba(255,255,255,0.30)',
           background: `linear-gradient(135deg, ${tile.gradient[0]}, ${tile.gradient[1]})`,
@@ -147,7 +147,7 @@ function DockTile({ tile, size, isHovered, onMouseEnter, onMouseLeave, onClick, 
           transformOrigin: 'bottom center',
           transition: prefersReducedMotion
             ? 'none'
-            : 'transform 120ms cubic-bezier(0.2, 0.2, 0, 2.0), width 120ms cubic-bezier(0.2, 0.2, 0, 2.0), height 120ms cubic-bezier(0.2, 0.2, 0, 2.0)',
+            : 'transform 120ms cubic-bezier(0.2, 0.2, 0, 2.0)',
           flexShrink: 0,
           position: 'relative',
           overflow: 'hidden',
