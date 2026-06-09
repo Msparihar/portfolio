@@ -106,6 +106,9 @@ export default function WelcomeLanding({ onEnter }) {
         <GlslCanvas showPollen showSoot zIndex={15} />
       )}
 
+      {/* Full-viewport meadow — behind the stage and shaders so no dark bars on wide/tall viewports */}
+      <DuskBackdrop style={{ position: 'fixed', inset: 0, zIndex: 1 }} />
+
       {/* 1440×900 stage — uniformly scaled to fit any desktop viewport */}
       <div
         style={{
@@ -116,11 +119,9 @@ export default function WelcomeLanding({ onEnter }) {
           left: '50%',
           transform: `translate(-50%, -50%) scale(${scale})`,
           transformOrigin: 'center center',
+          zIndex: 5,
         }}
       >
-        {/* Layer 1-3: Backdrop (wallpaper + dusk grade + horizon bloom) */}
-        <DuskBackdrop />
-
         {/* Layer 4: Mascot contact shadow */}
         <div style={{
           position: 'absolute',
