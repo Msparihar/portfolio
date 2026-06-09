@@ -212,6 +212,13 @@ export const WORLDS = [
       '--dt-tint-color':           'linear-gradient(135deg, rgba(255, 244, 214, 0.9) 0%, rgba(180, 210, 180, 0.7) 100%)',
       '--dt-tint-opacity':         '0.06',
       '--dt-mascot-shadow':        'drop-shadow(0 4px 8px rgba(45,52,54,0.18)) drop-shadow(0 8px 16px rgba(45,52,54,0.12))',
+      '--dt-menubar-bg':           'rgba(253, 250, 242, 0.82)',
+      '--dt-menubar-border':       'rgba(255, 255, 255, 0.60)',
+      '--dt-menubar-link':         '#33442f',
+      '--dt-menubar-link-muted':   '#6f7e63',
+      '--dt-menubar-link-hover':   '#3a6a49',
+      '--dt-menubar-text-glow':    'none',
+      '--dt-menubar-font-tray':    'Geist, sans-serif',
     },
     mascot: {
       poses: {

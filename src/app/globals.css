@@ -131,6 +131,8 @@
   --dt-menubar-link:        var(--dt-text);
   --dt-menubar-link-muted:  var(--dt-text-muted);
   --dt-menubar-link-hover:  var(--dt-accent);
+  --dt-menubar-text-glow:   0 0 8px var(--dt-accent-30);
+  --dt-menubar-font-tray:   var(--dt-font-mono);
 
   /* Icon strip — slim right-side system icons. Inherits world taskbar tokens. */
   --dt-iconstrip-width:     64px;
@@ -773,6 +775,15 @@
   --sg-z-mascot:             11;
   --sg-z-dock:               14;
   --sg-z-soot:               15;
+
+  /* MenuBar glass overrides — frosted cream, garden typography */
+  --dt-menubar-bg:           rgba(253, 250, 242, 0.82);
+  --dt-menubar-border:       rgba(255, 255, 255, 0.60);
+  --dt-menubar-link:         #33442f;
+  --dt-menubar-link-muted:   #6f7e63;
+  --dt-menubar-link-hover:   #3a6a49;
+  --dt-menubar-text-glow:    none;
+  --dt-menubar-font-tray:    var(--dt-font-body, sans-serif);
 }
 
 /* Ghibli dusk wallpaper treatment — blur + gradient tint, Ghibli only */
