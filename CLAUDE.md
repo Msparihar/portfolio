@@ -19,6 +19,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - Either way: after pushing, **wait for the Dokploy build and verify live** (see Deploy) before calling it shipped.
 
 ### Deploy
+- **Ship finished work immediately — never wait for the user to approve a push/deploy.** Once a change is implemented and verified, commit and push the same turn. Do NOT park completed work asking "push now or also do X first?" — push what's done, then offer the follow-up. The user blocks the whole day; a finished diff sitting unpushed waiting on a confirmation is the failure. (Pushing is auto-authorized; only live-browser verification still waits for the user to ask.)
 - Production is **Dokploy on the Hostinger VM (72.60.96.109)**, built from the repo **`Dockerfile`** — **NOT Vercel** (there is no `vercel.json` / no CI). Push to `main` **auto-deploys** via a GitHub-App webhook (Dokploy rebuilds the Docker image, Docker Swarm rolls the service). There are **NO branch/preview deploys** — do not invent them. Repo: `github.com/Msparihar/portfolio` (personal `Msparihar` account).
 - The Docker build takes **a few minutes** — the new bundle is NOT live the instant you push. After pushing a fix, **wait for the build, then verify live** (use `agent-browser` against manishsingh.tech: check `errors --json` + the served chunk hashes) before calling it shipped. Don't assume push == live.
 
