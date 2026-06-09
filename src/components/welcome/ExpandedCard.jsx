@@ -400,8 +400,6 @@ export default function ExpandedCard({ variant, data, layoutId, onClose, prefers
         position: 'absolute',
         inset: 0,
         background: 'rgba(10, 20, 8, 0.45)',
-        backdropFilter: prefersReducedMotion ? 'none' : 'blur(4px)',
-        WebkitBackdropFilter: prefersReducedMotion ? 'none' : 'blur(4px)',
         zIndex: 15,
         display: 'flex',
         alignItems: 'center',
