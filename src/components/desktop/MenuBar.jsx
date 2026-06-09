@@ -151,7 +151,7 @@ export default function MenuBar({ slimMode = false }) {
               height: 18,
               borderRadius: 4,
               background: world?.swatch ?? 'var(--dt-accent)',
-              boxShadow: `0 0 8px ${world?.swatch ?? 'var(--dt-accent)'}66`,
+              boxShadow: worldId === 'ghibli' ? 'none' : `0 0 8px ${world?.swatch ?? 'var(--dt-accent)'}66`,
               flexShrink: 0,
               display: 'inline-block',
               outline: 'none',
@@ -167,7 +167,7 @@ export default function MenuBar({ slimMode = false }) {
             color: 'var(--dt-accent-70)',
             userSelect: 'none',
             whiteSpace: 'nowrap',
-            textShadow: '0 0 8px var(--dt-accent-30)',
+            textShadow: 'var(--dt-menubar-text-glow)',
           }}
         >
           {world?.brandText || '>_ manish@portfolio'}
@@ -351,13 +351,13 @@ export default function MenuBar({ slimMode = false }) {
 
         <span
           aria-label={taskbarLabels.wifiLabel}
-          style={{ color: 'var(--dt-accent-70)', fontSize: 11, letterSpacing: 1, fontFamily: 'var(--dt-font-mono)', whiteSpace: 'nowrap' }}
+          style={{ color: 'var(--dt-accent-70)', fontSize: 11, letterSpacing: 1, fontFamily: 'var(--dt-menubar-font-tray)', whiteSpace: 'nowrap' }}
         >
           {taskbarLabels.wifiLabel}
         </span>
         <span
           aria-label="Clock"
-          style={{ color: 'var(--dt-accent-dim)', fontSize: 12, fontFamily: 'var(--dt-font-mono)', whiteSpace: 'nowrap' }}
+          style={{ color: 'var(--dt-accent-dim)', fontSize: 12, fontFamily: 'var(--dt-menubar-font-tray)', whiteSpace: 'nowrap' }}
         >
           {clock}
         </span>
