@@ -117,14 +117,35 @@ export const useWindowStore = create(
       : defaults.defaultSize;
 
     const saved = get().savedPositions[appId];
+    const resolvedSize = opts.size ?? saved?.size ?? { ...worldSize };
+
+    let resolvedPosition;
+    if (opts.position) {
+      resolvedPosition = opts.position;
+    } else if (saved?.position) {
+      resolvedPosition = saved.position;
+    } else if (typeof window !== 'undefined') {
+      const { innerWidth, innerHeight } = window;
+      const openCount = windows.length;
+      const cascade = openCount * 24;
+      const cx = Math.round((innerWidth - resolvedSize.width) / 2) + cascade;
+      const cy = Math.round((innerHeight - resolvedSize.height) / 2) + cascade;
+      resolvedPosition = {
+        x: Math.max(12, Math.min(cx, innerWidth - resolvedSize.width - 12)),
+        y: Math.max(48, Math.min(cy, innerHeight - resolvedSize.height - 12)),
+      };
+    } else {
+      resolvedPosition = { ...defaults.defaultPos };
+    }
+
     const newWindow = {
       id: `${appId}-${Date.now()}`,
       appId,
       title: opts.title ?? themedTitle,
       isMinimized: false,
       isMaximized: false,
-      position: opts.position ?? saved?.position ?? { ...defaults.defaultPos },
-      size: opts.size ?? saved?.size ?? { ...worldSize },
+      position: resolvedPosition,
+      size: resolvedSize,
       zIndex: nextZIndex + 1,
       prevPosition: null,
       prevSize: null,

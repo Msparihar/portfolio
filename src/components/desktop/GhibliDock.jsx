@@ -25,7 +25,7 @@ export default function GhibliDock({ worldId }) {
       data-kitsune-dock
       style={{
         position: 'fixed',
-        bottom: 96,
+        bottom: 20,
         left: 0,
         right: 0,
         display: 'flex',
