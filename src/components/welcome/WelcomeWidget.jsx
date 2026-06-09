@@ -1,6 +1,7 @@
 'use client';
 
 import Image from 'next/image';
+import { motion } from 'framer-motion';
 
 const GLASS = {
   background: 'rgba(253, 250, 242, 0.90)',
@@ -29,9 +30,21 @@ function Label({ children }) {
   );
 }
 
-function WeatherWidget({ data }) {
+function WeatherWidget({ data, layoutId, onClick, isOpen }) {
   return (
-    <div style={{ ...GLASS, width: 212 }}>
+    <motion.div
+      layoutId={layoutId}
+      onClick={onClick}
+      role="button"
+      tabIndex={0}
+      aria-label="Weather — click to expand"
+      aria-expanded={isOpen}
+      onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onClick(); } }}
+      style={{ ...GLASS, width: 212, cursor: 'pointer', outline: 'none', pointerEvents: isOpen ? 'none' : undefined }}
+      whileHover={{ scale: 1.025, boxShadow: '0 14px 32px rgba(75, 94, 61, 0.28)' }}
+      whileTap={{ scale: 0.98 }}
+      transition={{ duration: 0.18 }}
+    >
       <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 12 }}>
         <span style={{ fontSize: 20 }}>{data.icon}</span>
         <span style={{
@@ -54,13 +67,25 @@ function WeatherWidget({ data }) {
           color: '#52634a',
         }}>{data.sub}</span>
       </div>
-    </div>
+    </motion.div>
   );
 }
 
-function NowPlayingWidget({ data }) {
+function NowPlayingWidget({ data, layoutId, onClick, isOpen }) {
   return (
-    <div style={{ ...GLASS, width: 268 }}>
+    <motion.div
+      layoutId={layoutId}
+      onClick={onClick}
+      role="button"
+      tabIndex={0}
+      aria-label="Now Playing — click to expand"
+      aria-expanded={isOpen}
+      onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onClick(); } }}
+      style={{ ...GLASS, width: 268, cursor: 'pointer', outline: 'none', pointerEvents: isOpen ? 'none' : undefined }}
+      whileHover={{ scale: 1.025, boxShadow: '0 14px 32px rgba(75, 94, 61, 0.28)' }}
+      whileTap={{ scale: 0.98 }}
+      transition={{ duration: 0.18 }}
+    >
       <Label>{data.label}</Label>
       <div style={{ display: 'flex', gap: 12, alignItems: 'flex-start', marginBottom: 12 }}>
         <div style={{
@@ -111,13 +136,25 @@ function NowPlayingWidget({ data }) {
         <span style={{ fontFamily: 'var(--font-geist, Geist, sans-serif)', fontSize: 10, color: '#6f7e63' }}>{data.elapsed}</span>
         <span style={{ fontFamily: 'var(--font-geist, Geist, sans-serif)', fontSize: 10, color: '#6f7e63' }}>{data.duration}</span>
       </div>
-    </div>
+    </motion.div>
   );
 }
 
-function IntentionWidget({ data }) {
+function IntentionWidget({ data, layoutId, onClick, isOpen }) {
   return (
-    <div style={{ ...GLASS, width: 212 }}>
+    <motion.div
+      layoutId={layoutId}
+      onClick={onClick}
+      role="button"
+      tabIndex={0}
+      aria-label="Today's Intention — click to expand"
+      aria-expanded={isOpen}
+      onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onClick(); } }}
+      style={{ ...GLASS, width: 212, cursor: 'pointer', outline: 'none', pointerEvents: isOpen ? 'none' : undefined }}
+      whileHover={{ scale: 1.025, boxShadow: '0 14px 32px rgba(75, 94, 61, 0.28)' }}
+      whileTap={{ scale: 0.98 }}
+      transition={{ duration: 0.18 }}
+    >
       <Label>{data.label}</Label>
       <p style={{
         fontFamily: 'var(--font-newsreader, Newsreader, serif)',
@@ -143,13 +180,25 @@ function IntentionWidget({ data }) {
           color: '#3f6e4c',
         }}>in progress</span>
       </div>
-    </div>
+    </motion.div>
   );
 }
 
-function MemoryWidget({ data }) {
+function MemoryWidget({ data, layoutId, onClick, isOpen }) {
   return (
-    <div style={{ ...GLASS, width: 212, padding: 12 }}>
+    <motion.div
+      layoutId={layoutId}
+      onClick={onClick}
+      role="button"
+      tabIndex={0}
+      aria-label="A Memory — click to expand"
+      aria-expanded={isOpen}
+      onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onClick(); } }}
+      style={{ ...GLASS, width: 212, padding: 12, cursor: 'pointer', outline: 'none', pointerEvents: isOpen ? 'none' : undefined }}
+      whileHover={{ scale: 1.025, boxShadow: '0 14px 32px rgba(75, 94, 61, 0.28)' }}
+      whileTap={{ scale: 0.98 }}
+      transition={{ duration: 0.18 }}
+    >
       <Label>{data.label}</Label>
       <div style={{
         width: '100%',
@@ -174,14 +223,14 @@ function MemoryWidget({ data }) {
         color: '#33442f',
         margin: 0,
       }}>{data.caption}</p>
-    </div>
+    </motion.div>
   );
 }
 
-export default function WelcomeWidget({ variant, data }) {
-  if (variant === 'weather') return <WeatherWidget data={data} />;
-  if (variant === 'nowPlaying') return <NowPlayingWidget data={data} />;
-  if (variant === 'intention') return <IntentionWidget data={data} />;
-  if (variant === 'memory') return <MemoryWidget data={data} />;
+export default function WelcomeWidget({ variant, data, layoutId, onClick, isOpen }) {
+  if (variant === 'weather')    return <WeatherWidget    data={data} layoutId={layoutId} onClick={onClick} isOpen={isOpen} />;
+  if (variant === 'nowPlaying') return <NowPlayingWidget data={data} layoutId={layoutId} onClick={onClick} isOpen={isOpen} />;
+  if (variant === 'intention')  return <IntentionWidget  data={data} layoutId={layoutId} onClick={onClick} isOpen={isOpen} />;
+  if (variant === 'memory')     return <MemoryWidget     data={data} layoutId={layoutId} onClick={onClick} isOpen={isOpen} />;
   return null;
 }

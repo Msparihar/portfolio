@@ -3,9 +3,11 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import dynamic from 'next/dynamic';
 import Image from 'next/image';
+import { AnimatePresence } from 'framer-motion';
 import DuskBackdrop from './DuskBackdrop';
 import HeroGroup from './HeroGroup';
 import WelcomeWidget from './WelcomeWidget';
+import ExpandedCard from './ExpandedCard';
 import GlassDock from './GlassDock';
 import { GHIBLI_WELCOME } from '@/config/welcomeContent';
 
@@ -20,6 +22,7 @@ export default function WelcomeLanding({ onEnter }) {
   const [leaving, setLeaving] = useState(false);
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
   const [scale, setScale] = useState(1);
+  const [openCard, setOpenCard] = useState(null);
   const enterFiredRef = useRef(false);
   const leaveTimerRef = useRef(null);
 
@@ -54,11 +57,13 @@ export default function WelcomeLanding({ onEnter }) {
 
   useEffect(() => {
     const onKey = (e) => {
+      if (openCard) return;
+      if (e.target !== document.body) return;
       if (e.key === 'Enter' || e.key === ' ') handleEnter();
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, [handleEnter]);
+  }, [handleEnter, openCard]);
 
   const content = GHIBLI_WELCOME;
 
@@ -72,7 +77,7 @@ export default function WelcomeLanding({ onEnter }) {
   };
 
   return (
-    <div
+    <main
       aria-label="Spirit Garden welcome screen"
       style={{
         position: 'fixed',
@@ -145,18 +150,36 @@ export default function WelcomeLanding({ onEnter }) {
         </div>
 
         {/* Layer 7: Weather widget */}
-        <div style={{ position: 'absolute', left: 72, top: 96, zIndex: 7 }}>
-          <WelcomeWidget variant="weather" data={content.widgets.weather} />
+        <div style={{ position: 'absolute', left: 72, top: 96, zIndex: openCard === 'weather' ? 1 : 7 }}>
+          <WelcomeWidget
+            variant="weather"
+            data={content.widgets.weather}
+            layoutId="widget-weather"
+            onClick={() => setOpenCard('weather')}
+            isOpen={openCard === 'weather'}
+          />
         </div>
 
         {/* Layer 8: Now-playing widget */}
-        <div style={{ position: 'absolute', left: 72, top: 560, zIndex: 8 }}>
-          <WelcomeWidget variant="nowPlaying" data={content.widgets.nowPlaying} />
+        <div style={{ position: 'absolute', left: 72, top: 560, zIndex: openCard === 'nowPlaying' ? 1 : 8 }}>
+          <WelcomeWidget
+            variant="nowPlaying"
+            data={content.widgets.nowPlaying}
+            layoutId="widget-nowPlaying"
+            onClick={() => setOpenCard('nowPlaying')}
+            isOpen={openCard === 'nowPlaying'}
+          />
         </div>
 
         {/* Layer 9: Intention widget */}
-        <div style={{ position: 'absolute', left: 1156, top: 128, zIndex: 9 }}>
-          <WelcomeWidget variant="intention" data={content.widgets.intention} />
+        <div style={{ position: 'absolute', left: 1156, top: 128, zIndex: openCard === 'intention' ? 1 : 9 }}>
+          <WelcomeWidget
+            variant="intention"
+            data={content.widgets.intention}
+            layoutId="widget-intention"
+            onClick={() => setOpenCard('intention')}
+            isOpen={openCard === 'intention'}
+          />
         </div>
 
         {/* Layer 10: Poem footer */}
@@ -198,9 +221,29 @@ export default function WelcomeLanding({ onEnter }) {
         </div>
 
         {/* Layer 12: Memory widget */}
-        <div style={{ position: 'absolute', left: 1156, top: 300, zIndex: 12 }}>
-          <WelcomeWidget variant="memory" data={content.widgets.memory} />
+        <div style={{ position: 'absolute', left: 1156, top: 300, zIndex: openCard === 'memory' ? 1 : 12 }}>
+          <WelcomeWidget
+            variant="memory"
+            data={content.widgets.memory}
+            layoutId="widget-memory"
+            onClick={() => setOpenCard('memory')}
+            isOpen={openCard === 'memory'}
+          />
         </div>
+
+        {/* Layer 16: Expanded card overlay — sits above everything inside the stage */}
+        <AnimatePresence>
+          {openCard && (
+            <ExpandedCard
+              key={openCard}
+              variant={openCard}
+              data={content.widgets[openCard]}
+              layoutId={`widget-${openCard}`}
+              onClose={() => setOpenCard(null)}
+              prefersReducedMotion={prefersReducedMotion}
+            />
+          )}
+        </AnimatePresence>
 
         {/* Decorative dandelions */}
         <div aria-hidden="true" style={{ position: 'absolute', left: 432, top: 298, zIndex: 13, width: 16, height: 16, transform: 'rotate(16deg)', pointerEvents: 'none' }}>
@@ -230,6 +273,6 @@ export default function WelcomeLanding({ onEnter }) {
 
       {/* SEO: sr-only heading always in DOM */}
       <h1 className="sr-only">Manish Singh Parihar — Full Stack &amp; AI Engineer</h1>
-    </div>
+    </main>
   );
 }
