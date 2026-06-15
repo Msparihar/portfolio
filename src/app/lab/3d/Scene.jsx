@@ -1,14 +1,14 @@
 'use client';
 
-import { useMemo, Suspense } from 'react';
+import { Suspense } from 'react';
 import { Canvas } from '@react-three/fiber';
 import { OrbitControls, PerspectiveCamera } from '@react-three/drei';
-import { EffectComposer, Bloom, Vignette, BrightnessContrast } from '@react-three/postprocessing';
 import * as THREE from 'three';
 
+import { SkyDome, SUN_DIR } from './components/SkyDome';
 import { Island } from './components/Island';
 import { GrassField } from './components/GrassField';
-import { Clouds } from './components/Clouds';
+import { PuffCloud } from './components/PuffCloud';
 import { Kodama } from "./components/Kodama";
 import { Torii } from './components/Torii';
 import { Cottage } from "./components/Cottage";
@@ -25,7 +25,9 @@ import { HakuDragon } from "./components/HakuDragon";
 import { ForestSpirit } from "./components/ForestSpirit";
 import { StoneLantern } from './components/StoneLantern';
 import { TallGrass } from './components/TallGrass';
-import { Fireflies } from './components/Fireflies';
+import { FireflySwarm } from './components/FireflySwarm';
+import { SpiritWisps } from './components/SpiritWisps';
+import { DriftingSpores } from './components/DriftingSpores';
 import { Bridge } from './components/Bridge';
 import { SteppingStones } from './components/SteppingStones';
 import { Moon } from './components/Moon';
@@ -44,43 +46,11 @@ import { PerchedCrane } from './components/PerchedCrane';
 import { DistantMountains } from './components/DistantMountains';
 import { Airship } from './components/Airship';
 
-function SkyDome() {
-  const geometry = useMemo(() => {
-    const geom = new THREE.SphereGeometry(80, 64, 32);
-    const cZenith = new THREE.Color('#3C5378');   // deep dusky night-blue at top
-    const cMid = new THREE.Color('#D89A7C');      // cool sunset peach band
-    const cHorizon = new THREE.Color('#EDC4A8');  // dusty rose horizon
-    const cBelow = new THREE.Color('#6B5878');    // deep mauve below horizon
-    const positions = geom.attributes.position;
-    const colors = new Float32Array(positions.count * 3);
-    for (let i = 0; i < positions.count; i++) {
-      const y = positions.getY(i) / 80;
-      let c;
-      if (y > 0.45) {
-        c = cMid.clone().lerp(cZenith, (y - 0.45) / 0.55);
-      } else if (y > 0) {
-        c = cHorizon.clone().lerp(cMid, y / 0.45);
-      } else {
-        c = cHorizon.clone().lerp(cBelow, -y);
-      }
-      colors[i * 3] = c.r;
-      colors[i * 3 + 1] = c.g;
-      colors[i * 3 + 2] = c.b;
-    }
-    geom.setAttribute('color', new THREE.BufferAttribute(colors, 3));
-    return geom;
-  }, []);
-
-  return (
-    <mesh geometry={geometry}>
-      <meshBasicMaterial vertexColors side={THREE.BackSide} fog={false} depthWrite={false} />
-    </mesh>
-  );
-}
+const SUN_DISC_POS = SUN_DIR.clone().multiplyScalar(56);
 
 function SunDisc() {
   return (
-    <mesh position={[18, 6, -30]}>
+    <mesh position={[SUN_DISC_POS.x, SUN_DISC_POS.y, SUN_DISC_POS.z]}>
       <sphereGeometry args={[2.2, 24, 16]} />
       <meshStandardMaterial
         color="#FFE0A0"
@@ -122,7 +92,7 @@ export default function Scene() {
       <DistantMountains />
       <SunDisc />
       <Moon />
-      <fog attach="fog" args={['#C29A8A', 25, 80]} />
+      <fog attach="fog" args={['#EDC4A8', 25, 80]} />
 
       <ambientLight intensity={0.55} color="#FFE9CF" />
       <hemisphereLight args={['#FFE6D0', '#7BA85A', 0.45]} />
@@ -160,7 +130,9 @@ export default function Scene() {
         <Lake />
         <Cottage />
         <Torii />
-        <Clouds />
+        <group position={[-22, 5, -10]} scale={1.4}><PuffCloud selfLit={false} opacity={0.5} /></group>
+        <group position={[20,  6,  12]} scale={1.8}><PuffCloud selfLit={false} opacity={0.45} /></group>
+        <group position={[-8,  4, -28]} scale={1.2}><PuffCloud selfLit={false} opacity={0.4} /></group>
         <DistantClouds />
         <Kodama />
         <SakuraPetals />
@@ -169,7 +141,9 @@ export default function Scene() {
         <StoneLantern position={[-2.25, 0.55, 0.8]} scale={1.1} />
         <StoneLantern position={[1.4, 0.55, -1.9]} scale={0.85} />
         <TallGrass />
-        <Fireflies />
+        <group position={[0, 0.8, 0]}><FireflySwarm count={85} radius={3.5} height={2.0} /></group>
+        <group position={[0, 0.3, 0]}><SpiritWisps count={50} radius={3} height={3} /></group>
+        <group position={[0, 0.5, 0]}><DriftingSpores count={60} radius={4} height={3} /></group>
         <Bridge position={[-1.5, 0.5, 1.6]} rotationY={1.0} scale={0.85} />
         <SteppingStones />
         <Birds />

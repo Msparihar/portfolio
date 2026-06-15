@@ -1,13 +1,37 @@
 'use client';
 
-import { Suspense } from 'react';
-import { Canvas } from '@react-three/fiber';
+import { Suspense, useMemo } from 'react';
+import { Canvas, useThree } from '@react-three/fiber';
 import { OrbitControls, PerspectiveCamera } from '@react-three/drei';
 import * as THREE from 'three';
 import { WindProvider } from '../components/WindContext';
 
-// Standalone Canvas for rendering one component in isolation.
-// Used both by the hover tile preview and the fullscreen modal.
+const HORIZON_COLOR = '#F2DCC8';
+
+function SceneBackground() {
+  const { scene } = useThree();
+
+  const texture = useMemo(() => {
+    const c = document.createElement('canvas');
+    c.width = 2;
+    c.height = 256;
+    const ctx = c.getContext('2d');
+    const grad = ctx.createLinearGradient(0, 0, 0, 256);
+    grad.addColorStop(0,    '#B0BADC');
+    grad.addColorStop(0.45, '#D9C9E2');
+    grad.addColorStop(0.78, '#EDD6C4');
+    grad.addColorStop(1,    HORIZON_COLOR);
+    ctx.fillStyle = grad;
+    ctx.fillRect(0, 0, 2, 256);
+    const tex = new THREE.CanvasTexture(c);
+    tex.needsUpdate = true;
+    return tex;
+  }, []);
+
+  scene.background = texture;
+  return null;
+}
+
 export function PartCanvas({ part, controls = true, autoRotate = false, dpr = [1, 1.5], shadows = false }) {
   const {
     render,
@@ -23,8 +47,8 @@ export function PartCanvas({ part, controls = true, autoRotate = false, dpr = [1
       style={{ width: '100%', height: '100%' }}
       gl={{ antialias: true, toneMapping: THREE.ACESFilmicToneMapping, toneMappingExposure: 1.05 }}
     >
-      <color attach="background" args={['#E8C8B0']} />
-      <fog attach="fog" args={['#E8C8B0', 8, 30]} />
+      <SceneBackground />
+      <fog attach="fog" args={[HORIZON_COLOR, 8, 30]} />
 
       <PerspectiveCamera makeDefault position={cameraPos} fov={42} />
       {controls && (

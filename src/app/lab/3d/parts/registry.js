@@ -1,6 +1,7 @@
 // Each entry: { slug, label, category, render: () => JSX, cameraPos?, targetY?, showGround?, autoRotate? }
 // Components render at neutral position (origin) so the frame's camera/orbit works for all of them.
 
+import { SkyDome } from '../components/SkyDome';
 import { Island } from '../components/Island';
 import { GrassField } from '../components/GrassField';
 import { Clouds } from '../components/Clouds';
@@ -11,6 +12,8 @@ import { GLBTrees } from '../components/GLBTrees';
 import { GLBMushrooms, GLBFlowers, GLBStumps } from '../components/GLBScatter';
 import { GLBRocks, GLBCliffs, GLBCrops, GLBFences, GLBPaths, GLBDecoProps } from '../components/GLBNewParts';
 import { Waterfall } from '../components/Waterfall';
+import { AnimeWater } from '../components/AnimeWater';
+import { CalmPond } from '../components/CalmPond';
 import { Campfire } from '../components/Campfire';
 import { Lake } from '../components/Lake';
 import { CherryBlossoms } from '../components/CherryBlossoms';
@@ -36,6 +39,16 @@ import { Cattails } from '../components/Cattails';
 import { PerchedCrane } from '../components/PerchedCrane';
 import { DistantMountains } from '../components/DistantMountains';
 import { Airship } from '../components/Airship';
+import { VolumetricCloud } from '../components/VolumetricCloud';
+import { PuffCloud } from '../components/PuffCloud';
+import { FireflySwarm } from '../components/FireflySwarm';
+import { SpiritWisps } from '../components/SpiritWisps';
+import { MossRock } from '../components/MossRock';
+import { LushTree } from '../components/LushTree';
+import { LightShafts } from '../components/LightShafts';
+import { GlowMushrooms } from '../components/GlowMushrooms';
+import { DriftingSpores } from '../components/DriftingSpores';
+import { KoiSchool } from '../components/KoiSchool';
 
 export const PARTS = [
   // === Landscape ===
@@ -99,7 +112,21 @@ export const PARTS = [
     <group position={[-3.05, 1.05, 0.4]}><Waterfall /></group>
   ) },
 
+  { slug: 'anime-water', label: 'Anime Water (toon)', category: 'Water', cameraPos: [0, 3.5, 3.8], targetY: 0, showGround: false, render: () => (
+    <>
+      <SkyDome radius={10} />
+      <AnimeWater radius={2.2} />
+    </>
+  ) },
+  { slug: 'calm-pond', label: 'Calm Pond (painterly)', category: 'Water', cameraPos: [0, 3.5, 3.8], targetY: 0, showGround: false, render: () => (
+    <>
+      <SkyDome radius={10} />
+      <CalmPond radius={2.2} />
+    </>
+  ) },
+
   // === Sky ===
+  { slug: 'dusk-sky', label: 'Atmosphere — Dusk Sky', category: 'Sky', cameraPos: [-3, 0.5, -2], targetY: 2.5, showGround: false, render: () => <SkyDome radius={10} /> },
   { slug: 'clouds-near', label: 'Cloud Decks', category: 'Sky', cameraPos: [12, 3, 12], targetY: 0, showGround: false, render: () => (
     <group position={[-1, -5, 1]}><Clouds /></group>
   ) },
@@ -109,7 +136,19 @@ export const PARTS = [
   { slug: 'moon', label: 'Moon', category: 'Sky', cameraPos: [0, 0, 5], targetY: 0, showGround: false, render: () => (
     <group position={[22, -12, -25]}><Moon /></group>
   ) },
-  { slug: 'airship-chunky', label: "Howl’s Airship (chunky)", category: 'Sky', cameraPos: [3, 1, 3], targetY: 0, showGround: false, render: () => <Airship variant="chunky" radius={0} altitude={0} speed={0} scale={0.005} /> },
+  { slug: 'volumetric-cloud', label: 'Volumetric Cloud (soft)', category: 'Sky', cameraPos: [0, -0.4, 6], targetY: 0.3, showGround: false, render: () => (
+    <>
+      <SkyDome radius={10} />
+      <VolumetricCloud position={[0, 0, 0]} />
+    </>
+  ) },
+  { slug: 'puff-cloud', label: 'Puff Cloud (painterly)', category: 'Sky', cameraPos: [0, 0.5, 9], targetY: 0.5, showGround: false, render: () => (
+    <>
+      <SkyDome radius={10} />
+      <PuffCloud position={[0, 0, 0]} />
+    </>
+  ) },
+  { slug: 'airship-chunky', label: "Howl's Airship (chunky)", category: 'Sky', cameraPos: [3, 1, 3], targetY: 0, showGround: false, render: () => <Airship variant="chunky" radius={0} altitude={0} speed={0} scale={0.005} /> },
   { slug: 'airship-prop', label: 'Propeller Airship', category: 'Sky', cameraPos: [2, 0.5, 2], targetY: 0, showGround: false, render: () => <Airship variant="prop" radius={0} altitude={0} speed={0} scale={0.003} /> },
 
   // === Spirits & Creatures ===
@@ -128,6 +167,38 @@ export const PARTS = [
   { slug: 'sakura-petals', label: 'Sakura Petals', category: 'Effects', cameraPos: [5, 3, 5], targetY: 1.5, showGround: false, render: () => <SakuraPetals /> },
   { slug: 'fireflies', label: 'Fireflies', category: 'Effects', cameraPos: [5, 2.5, 5], targetY: 2, showGround: false, render: () => <Fireflies /> },
   { slug: 'underside-mist', label: 'Underside Mist', category: 'Effects', cameraPos: [0, 3, 5], targetY: -2, showGround: false, render: () => <UndersideMist /> },
+
+  // === Harvest batch 1 (2026-06-06) ===
+  { slug: 'firefly-swarm', label: 'Firefly Swarm', category: 'Spirits', cameraPos: [3, 2, 5], targetY: 1.0, showGround: false, render: () => (
+    <>
+      <SkyDome radius={12} />
+      <FireflySwarm />
+    </>
+  ) },
+  { slug: 'spirit-wisps', label: 'Spirit Wisps (rising motes)', category: 'Spirits', cameraPos: [3, 2.5, 5], targetY: 2.0, showGround: false, render: () => (
+    <>
+      <SkyDome radius={12} />
+      <SpiritWisps />
+    </>
+  ) },
+  { slug: 'moss-rock', label: 'Mossy Rock', category: 'Flora', cameraPos: [2, 1.4, 2], targetY: 0.2, showGround: true, render: () => <MossRock /> },
+  { slug: 'lush-tree', label: 'Lush Tree', category: 'Flora', cameraPos: [0, 1.8, 4.2], targetY: 1.4, showGround: true, render: () => <LushTree /> },
+
+  // === Harvest batch 2 (2026-06-06) ===
+  { slug: 'light-shafts', label: 'Light Shafts', category: 'Effects', cameraPos: [0, 6, 10], targetY: 3, showGround: false, render: () => (
+    <>
+      <SkyDome radius={20} />
+      <LightShafts />
+    </>
+  ) },
+  { slug: 'drifting-spores', label: 'Drifting Spores', category: 'Effects', cameraPos: [0, 1.5, 6], targetY: 0.5, showGround: false, render: () => (
+    <>
+      <SkyDome radius={12} />
+      <DriftingSpores />
+    </>
+  ) },
+  { slug: 'glow-mushrooms', label: 'Glow Mushrooms (bioluminescent)', category: 'Flora', cameraPos: [2.2, 1.4, 2.2], targetY: 0.6, showGround: true, render: () => <GlowMushrooms /> },
+  { slug: 'koi-school', label: 'Koi School', category: 'Spirits', cameraPos: [0, 4.5, 3], targetY: -0.15, showGround: false, render: () => <KoiSchool /> },
 ];
 
 export const CATEGORIES = [...new Set(PARTS.map((p) => p.category))];
