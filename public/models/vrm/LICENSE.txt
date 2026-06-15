@@ -1,0 +1,15 @@
+Sample avatar and motion shipped with this demo
+================================================
+
+avatar.vrm
+  Source: VRM1_Constraint_Twist_Sample.vrm
+  From:   pixiv/three-vrm (https://github.com/pixiv/three-vrm), MIT-licensed repository,
+          packages/three-vrm-animation/examples/models/
+  Use:    Official sample model provided by the three-vrm project for demos.
+
+../vrma/test.vrma
+  Source: test.vrma
+  From:   pixiv/three-vrm, packages/three-vrm-animation/examples/models/
+  Use:    Official sample VRM Animation clip provided for demos.
+
+three-vrm itself (@pixiv/three-vrm, @pixiv/three-vrm-animation) is MIT licensed.

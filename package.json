@@ -16,6 +16,8 @@
   "dependencies": {
     "@gsap/react": "^2.1.2",
     "@next/bundle-analyzer": "^16.0.0",
+    "@pixiv/three-vrm": "^3.5.2",
+    "@pixiv/three-vrm-animation": "^3.5.2",
     "@prisma/client": "5.22.0",
     "@radix-ui/react-menubar": "^1.1.16",
     "@radix-ui/react-slot": "^1.1.2",
