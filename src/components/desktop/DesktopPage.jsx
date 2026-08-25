@@ -23,15 +23,12 @@ export default function DesktopPage({ githubData }) {
   const [initialApp, setInitialApp] = useState(null);
   const websiteMode = useUiStore((s) => s.websiteMode);
   const [worldBootConfig, setWorldBootConfig] = useState(null);
-  const [worldId, setWorldId] = useState(null);
-  const [showWelcome, setShowWelcome] = useState(false);
-  const isMobile = typeof window !== 'undefined' ? window.innerWidth < 768 : false;
-  const [desktopReady, setDesktopReady] = useState(false);
+  const [entrySurface, setEntrySurface] = useState(null);
 
   useEffect(() => {
+    let savedWorldId = 'ghibli';
     try {
-      const savedWorldId = localStorage.getItem(WORLD_STORAGE_KEY) || 'ghibli';
-      setWorldId(savedWorldId);
+      savedWorldId = localStorage.getItem(WORLD_STORAGE_KEY) || savedWorldId;
       const world = WORLDS.find(w => w.id === savedWorldId);
       if (world?.bootLines) {
         setWorldBootConfig({
@@ -39,16 +36,19 @@ export default function DesktopPage({ githubData }) {
           bootAccentColor: world.bootAccentColor ?? null,
         });
       }
-    } catch { /* localStorage unavailable */ }
-  }, []);
 
-  useEffect(() => {
-    if (!booted || isMobile || worldId !== 'ghibli') return;
-    try {
-      const entered = localStorage.getItem(SG_ENTERED_KEY) === '1';
-      if (!entered) setShowWelcome(true);
-    } catch { /* storage unavailable */ }
-  }, [booted, isMobile, worldId]);
+      if (window.innerWidth >= 768 && savedWorldId === 'ghibli') {
+        const entered = localStorage.getItem(SG_ENTERED_KEY) === '1';
+        setEntrySurface(entered ? 'desktop' : 'welcome');
+      } else {
+        setEntrySurface('desktop');
+      }
+    } catch {
+      // If storage is unavailable, preserve the existing fallback of entering
+      // the desktop instead of trapping the visitor at an unpersistable gate.
+      setEntrySurface('desktop');
+    }
+  }, []);
 
   // Read ?app= from URL on mount (client-side, compatible with ISR pages)
   useEffect(() => {
@@ -62,25 +62,28 @@ export default function DesktopPage({ githubData }) {
     return <WebsiteMode />;
   }
 
-  return (
-    <>
-      {!booted && (
-        <BootOverlay
-          bootLines={worldBootConfig?.bootLines ?? null}
-          bootAccentColor={worldBootConfig?.bootAccentColor ?? null}
-          onBootComplete={() => setBooted(true)}
-        />
-      )}
-      <Desktop githubData={githubData} initialApp={initialApp} autoOpen={desktopReady} />
-      {showWelcome && (
-        <WelcomeLanding
-          worldSkin="ghibli"
-          onEnter={() => {
-            setDesktopReady(true);
-            setShowWelcome(false);
-          }}
-        />
-      )}
-    </>
-  );
+  if (!booted) {
+    return (
+      <BootOverlay
+        bootLines={worldBootConfig?.bootLines ?? null}
+        bootAccentColor={worldBootConfig?.bootAccentColor ?? null}
+        onBootComplete={() => setBooted(true)}
+      />
+    );
+  }
+
+  if (entrySurface === 'welcome') {
+    return (
+      <WelcomeLanding
+        worldSkin="ghibli"
+        onEnter={() => setEntrySurface('desktop')}
+      />
+    );
+  }
+
+  if (entrySurface === 'desktop') {
+    return <Desktop githubData={githubData} initialApp={initialApp} />;
+  }
+
+  return null;
 }
