@@ -4,7 +4,7 @@ import { useWindowStore } from '@/store/windowStore';
 import GlassDock from '@/components/welcome/GlassDock';
 import { GHIBLI_WELCOME } from '@/config/welcomeContent';
 
-const MASCOT_CLEARANCE = 140;
+const MASCOT_CLEARANCE = 158;
 
 export default function GhibliDock({ worldId }) {
   const openWindow = useWindowStore((s) => s.openWindow);
@@ -25,7 +25,7 @@ export default function GhibliDock({ worldId }) {
       data-kitsune-dock
       style={{
         position: 'fixed',
-        bottom: 20,
+        bottom: 12,
         left: 0,
         right: 0,
         display: 'flex',

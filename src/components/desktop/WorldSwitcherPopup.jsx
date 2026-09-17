@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { WORLDS, applyWorldWithTransition } from '@/config/worlds';
+import { WORLDS, applyWorldWithTransition, normalizeWallpaper } from '@/config/worlds';
 import { getCurrentWorldId, getWorldCta, getWorldEmoji, createWorldChangeListener } from '@/config/worldContent';
 
 const CARD_WIDTH = 280; // px including gap
@@ -340,6 +340,7 @@ export default function WorldSwitcherPopup({ isOpen, onClose, onDontShowAgain })
             {WORLDS.map((world) => {
               const isCurrent = world.id === currentWorldId;
               const isActive = world.active !== false;
+              const previewSrc = normalizeWallpaper(world.wallpaper).src;
 
               return (
                 <div
@@ -379,8 +380,13 @@ export default function WorldSwitcherPopup({ isOpen, onClose, onDontShowAgain })
                   {/* Card header */}
                   <div
                     style={{
-                      height: '80px',
-                      background: `linear-gradient(135deg, ${world.swatch}33 0%, ${world.swatch}11 100%)`,
+                      height: '124px',
+                      backgroundColor: `${world.swatch}22`,
+                      backgroundImage: previewSrc
+                        ? `linear-gradient(180deg, rgba(8,12,10,.08) 0%, rgba(8,12,10,.50) 100%), url(${previewSrc})`
+                        : `linear-gradient(135deg, ${world.swatch}55 0%, ${world.swatch}18 100%)`,
+                      backgroundSize: 'cover',
+                      backgroundPosition: 'center',
                       borderBottom: '1px solid var(--dt-accent-border)',
                       display: 'flex',
                       alignItems: 'center',
@@ -400,7 +406,22 @@ export default function WorldSwitcherPopup({ isOpen, onClose, onDontShowAgain })
                         boxShadow: `0 0 8px ${world.swatch}88`,
                       }}
                     />
-                    <span style={{ fontSize: '32px', lineHeight: 1 }}>
+                    <span style={{
+                      position: 'relative',
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      width: 58,
+                      height: 58,
+                      borderRadius: 18,
+                      fontSize: '30px',
+                      lineHeight: 1,
+                      background: 'rgba(248,246,238,.30)',
+                      border: '1px solid rgba(255,255,255,.58)',
+                      backdropFilter: 'blur(12px) saturate(1.3)',
+                      WebkitBackdropFilter: 'blur(12px) saturate(1.3)',
+                      boxShadow: '0 12px 30px rgba(0,0,0,.26), inset 0 1px 0 rgba(255,255,255,.7)',
+                    }}>
                       {getWorldEmoji(world.id)}
                     </span>
                   </div>

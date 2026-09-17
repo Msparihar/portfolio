@@ -91,18 +91,21 @@ export default function ParticleCanvas({ config, enabled }) {
   const poolRef    = useRef([]);
   const rafRef     = useRef(null);
   const configRef  = useRef(config);
-  const enabledRef = useRef(enabled);
   const sizeRef    = useRef({ W: 0, H: 0, dpr: 1 });
 
   // Keep refs in sync with props without restarting the loop
   useEffect(() => { configRef.current  = config;  }, [config]);
-  useEffect(() => { enabledRef.current = enabled; }, [enabled]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
 
     const ctx = canvas.getContext('2d');
+
+    if (!enabled) {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      return undefined;
+    }
 
     // ── Resize ────────────────────────────────────────────────────────────────
     function applySize() {
@@ -131,12 +134,6 @@ export default function ParticleCanvas({ config, enabled }) {
     // ── rAF loop ──────────────────────────────────────────────────────────────
     function tickParticles() {
       rafRef.current = requestAnimationFrame(tickParticles);
-
-      if (!enabledRef.current) {
-        ctx.clearRect(0, 0, sizeRef.current.W, sizeRef.current.H);
-        return;
-      }
-
       const { W, H }  = sizeRef.current;
       const cfg       = configRef.current;
       const renderer  = RENDERERS[cfg.type] ?? drawDust;
@@ -181,8 +178,7 @@ export default function ParticleCanvas({ config, enabled }) {
       window.removeEventListener('resize', onResize);
       document.removeEventListener('visibilitychange', onVisibilityChange);
     };
-    // Intentionally no deps — loop lifecycle is self-contained, config/enabled read via refs
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [enabled]);
 
   return (
     <canvas

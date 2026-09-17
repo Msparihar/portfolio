@@ -24,6 +24,7 @@ export default function GhibliSootCanvas() {
 				camera={{ near: 0.1, far: 10 }}
 				style={{ width: "100%", height: "100%", pointerEvents: "none" }}
 				dpr={[1, 1]}
+				frameloop="demand"
 				events={false}
 			>
 				<InteractiveSootField renderOrder={0} spriteStates={spriteStates} />

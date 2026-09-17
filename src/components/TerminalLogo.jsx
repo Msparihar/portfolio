@@ -4,20 +4,28 @@ const TerminalLogo = ({ size = 32, className = '' }) => {
   return (
     <div
       className={`relative flex items-center justify-center ${className}`}
-      style={{ width: size, height: size }}
+      style={{
+        width: size,
+        height: size,
+        borderRadius: Math.max(8, Math.round(size * 0.24)),
+        color: 'var(--dt-accent)',
+        background: 'linear-gradient(145deg, rgba(255,255,255,.64), rgba(226,238,224,.30))',
+        border: '1px solid rgba(255,255,255,.78)',
+        boxShadow: '0 7px 18px rgba(45,82,55,.16), inset 0 1px 0 rgba(255,255,255,.9)',
+        backdropFilter: 'blur(10px) saturate(1.25)',
+        WebkitBackdropFilter: 'blur(10px) saturate(1.25)',
+      }}
     >
-      {/* Terminal body */}
-      <div className="absolute inset-0 border-2 rounded-md overflow-hidden" style={{ borderColor: 'var(--dt-accent)', background: 'var(--dt-bg)' }}>
-        {/* Terminal header */}
-        <div className="h-1/4 flex items-center justify-start px-1" style={{ background: 'var(--dt-accent)' }}>
-          <div className="w-1 h-1 rounded-full mr-0.5" style={{ background: 'var(--dt-on-accent, #fff)' }}></div>
-          <div className="w-1 h-1 rounded-full mr-0.5" style={{ background: 'var(--dt-on-accent, #fff)' }}></div>
-          <div className="w-1 h-1 rounded-full" style={{ background: 'var(--dt-on-accent, #fff)' }}></div>
-        </div>
-
-        {/* Terminal content - command line */}
-        <div className="absolute left-1 bottom-1.5 w-2/3 h-1 animate-pulse" style={{ background: 'var(--dt-accent)' }}></div>
-      </div>
+      <svg
+        width={Math.round(size * 0.58)}
+        height={Math.round(size * 0.58)}
+        viewBox="0 0 24 24"
+        fill="none"
+        aria-hidden="true"
+      >
+        <path d="M5.5 7.5 9.5 12l-4 4.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+        <path d="M12 17h6.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+      </svg>
     </div>
   );
 };

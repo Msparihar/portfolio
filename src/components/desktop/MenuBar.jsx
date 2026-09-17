@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import * as Menubar from '@radix-ui/react-menubar';
+import { LayoutGrid, Wind } from 'lucide-react';
 import { useWindowStore } from '@/store/windowStore';
 import { useUiStore } from '@/store/uiStore';
 import { WORLDS } from '@/config/worlds';
@@ -27,10 +28,28 @@ function useClock() {
       return `${String(h).padStart(2, '0')}:${m} ${ampm}`;
     };
     setTime(fmt());
-    const id = setInterval(() => setTime(fmt()), 1000);
-    return () => clearInterval(id);
+    const msUntilNextMinute = 60_000 - (Date.now() % 60_000);
+    let intervalId = null;
+    const timeoutId = setTimeout(() => {
+      setTime(fmt());
+      intervalId = setInterval(() => setTime(fmt()), 60_000);
+    }, msUntilNextMinute);
+    return () => {
+      clearTimeout(timeoutId);
+      if (intervalId !== null) clearInterval(intervalId);
+    };
   }, []);
   return time;
+}
+
+function GhibliLeafMark() {
+  return (
+    <svg width="25" height="25" viewBox="0 0 28 28" fill="none" aria-hidden="true">
+      <path d="M14.1 23.8c-.2-5.4 1.3-10.2 4.5-14.4" stroke="currentColor" strokeWidth="2.1" strokeLinecap="round" />
+      <path d="M14.8 15.2C8.1 15.6 4.2 12.5 4 6.4c6.3-.5 10.5 2.6 10.8 8.8Z" fill="currentColor" />
+      <path d="M17.1 11.7c.5-5.2 3.6-8 8.2-7.5.3 5-2.7 7.8-8.2 7.5Z" fill="currentColor" opacity=".78" />
+    </svg>
+  );
 }
 
 export default function MenuBar({ slimMode = false }) {
@@ -50,6 +69,7 @@ export default function MenuBar({ slimMode = false }) {
   const navItems = getWorldMenuBarNav(worldId);
   const cta = getWorldMenuBarCta(worldId);
   const taskbarLabels = getWorldTaskbar(worldId);
+  const isGhibli = worldId === 'ghibli';
 
   // Brand-swatch easter egg: click 3 times in 3s for the founder mark.
   const [brandClicks, setBrandClicks] = useState([]);
@@ -112,6 +132,7 @@ export default function MenuBar({ slimMode = false }) {
     <div
       role="banner"
       data-kitsune-platform="menubar"
+      className={`dt-menubar${isGhibli ? ' dt-menubar--ghibli' : ''}`}
       style={{
         position: 'fixed',
         top: 0,
@@ -147,17 +168,22 @@ export default function MenuBar({ slimMode = false }) {
             onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleBrandClick(); } }}
             className={`menubar-brand-swatch${brandPulse || foundMark || timePulse ? ' is-pulsing' : ''}`}
             style={{
-              width: 18,
-              height: 18,
-              borderRadius: 4,
-              background: world?.swatch ?? 'var(--dt-accent)',
+              width: isGhibli ? 30 : 18,
+              height: isGhibli ? 30 : 18,
+              borderRadius: isGhibli ? 0 : 4,
+              background: isGhibli ? 'transparent' : (world?.swatch ?? 'var(--dt-accent)'),
+              border: 'none',
               boxShadow: worldId === 'ghibli' ? 'none' : `0 0 8px ${world?.swatch ?? 'var(--dt-accent)'}66`,
               flexShrink: 0,
-              display: 'inline-block',
+              display: 'inline-flex',
+              alignItems: 'center',
+              justifyContent: 'center',
               outline: 'none',
               cursor: 'pointer',
             }}
-          />
+          >
+            {isGhibli && <GhibliLeafMark />}
+          </span>
         </Tooltip>
         <span
           style={{
@@ -332,28 +358,29 @@ export default function MenuBar({ slimMode = false }) {
         <button
           onClick={toggleWebsiteMode}
           aria-label="Switch to Website Mode"
+          className="dt-menubar-icon-button"
           style={{
             background: 'none',
             border: 'none',
             color: 'var(--dt-text-muted)',
             cursor: 'pointer',
             fontSize: 14,
-            fontFamily: 'var(--dt-font-mono)',
-            padding: '4px 6px',
-            transition: 'color 0.15s ease',
+            padding: 6,
+            transition: 'color 0.15s ease, background 0.15s ease',
           }}
-          onMouseEnter={(e) => { e.currentTarget.style.color = 'var(--dt-accent)'; }}
-          onMouseLeave={(e) => { e.currentTarget.style.color = 'var(--dt-text-muted)'; }}
         >
-          ⊞
+          <LayoutGrid size={15} strokeWidth={2} aria-hidden="true" />
         </button>
         </Tooltip>
 
         <span
           aria-label={taskbarLabels.wifiLabel}
+          className={isGhibli ? 'dt-wind-status' : undefined}
           style={{ color: 'var(--dt-accent-70)', fontSize: 11, letterSpacing: 1, fontFamily: 'var(--dt-menubar-font-tray)', whiteSpace: 'nowrap' }}
         >
-          {taskbarLabels.wifiLabel}
+          {isGhibli ? (
+            <><Wind className="dt-wind-glyph" size={15} strokeWidth={2} aria-hidden="true" /><span>breeze</span></>
+          ) : taskbarLabels.wifiLabel}
         </span>
         <span
           aria-label="Clock"
