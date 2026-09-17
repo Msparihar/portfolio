@@ -2,8 +2,8 @@
 
 import { useRef, useState, useEffect, useCallback } from 'react';
 
-const TILE_BASE = 50;
-const TILE_MAX = 80;
+const TILE_BASE = 60;
+const TILE_MAX = 86;
 const MAGNIFY_RADIUS = 2;
 
 function getMagnifiedSize(hoveredIndex, tileIndex) {
@@ -84,7 +84,7 @@ function TileIcon({ appId }) {
 }
 
 function DockTile({ tile, size, isHovered, onMouseEnter, onMouseLeave, onClick, showLabel, prefersReducedMotion }) {
-  const liftY = isHovered && !prefersReducedMotion ? -5 : 0;
+  const liftY = isHovered && !prefersReducedMotion ? -9 : 0;
   const scale = prefersReducedMotion ? 1 : size / TILE_BASE;
   const shadow = tile.shadowTint
     ? `0 6px 14px ${tile.shadowTint}88, 0 2px 4px rgba(0,0,0,0.20)`
@@ -95,13 +95,13 @@ function DockTile({ tile, size, isHovered, onMouseEnter, onMouseLeave, onClick, 
       {showLabel && (
         <div style={{
           position: 'absolute',
-          bottom: size + 10,
+          bottom: size + 12,
           left: '50%',
           transform: 'translateX(-50%)',
           background: 'rgba(15, 28, 20, 0.95)',
           boxShadow: '0 4px 12px rgba(0,0,0,0.35)',
-          borderRadius: 10,
-          padding: '5px 13px',
+          borderRadius: 9,
+          padding: '6px 12px',
           whiteSpace: 'nowrap',
           pointerEvents: 'none',
           zIndex: 10,
@@ -134,8 +134,8 @@ function DockTile({ tile, size, isHovered, onMouseEnter, onMouseLeave, onClick, 
         style={{
           width: TILE_BASE,
           height: TILE_BASE,
-          borderRadius: 13,
-          border: '1px solid rgba(255,255,255,0.30)',
+          borderRadius: 15,
+          border: '1px solid rgba(255,255,255,0.58)',
           background: `linear-gradient(135deg, ${tile.gradient[0]}, ${tile.gradient[1]})`,
           boxShadow: shadow,
           cursor: 'pointer',
@@ -147,7 +147,7 @@ function DockTile({ tile, size, isHovered, onMouseEnter, onMouseLeave, onClick, 
           transformOrigin: 'bottom center',
           transition: prefersReducedMotion
             ? 'none'
-            : 'transform 120ms cubic-bezier(0.2, 0.2, 0, 2.0)',
+            : 'transform 160ms cubic-bezier(0.16, 1, 0.3, 1), filter 160ms ease',
           flexShrink: 0,
           position: 'relative',
           overflow: 'hidden',
@@ -162,13 +162,13 @@ function DockTile({ tile, size, isHovered, onMouseEnter, onMouseLeave, onClick, 
               left: 0,
               right: 0,
               bottom: 0,
-              borderRadius: 13,
-              background: 'linear-gradient(180deg, rgba(255,255,255,0.40) 0%, rgba(255,255,255,0) 50%)',
+              borderRadius: 15,
+              background: 'linear-gradient(180deg, rgba(255,255,255,0.52) 0%, rgba(255,255,255,0.08) 48%, rgba(255,255,255,0) 66%)',
               pointerEvents: 'none',
             }}
           />
         )}
-        <TileIcon appId={tile.appId} />
+        <span className="ghibli-dock-icon"><TileIcon appId={tile.appId} /></span>
       </button>
     </div>
   );
@@ -207,15 +207,15 @@ export default function GlassDock({ tiles, onTileClick, style }) {
       style={{
         display: 'inline-flex',
         alignItems: 'flex-end',
-        gap: 12,
-        borderRadius: 24,
-        background: 'rgba(255,255,255,0.12)',
-        backgroundImage: 'linear-gradient(120deg, rgba(255,255,255,0.40) 0%, rgba(255,255,255,0.08) 45%, rgba(255,255,255,0.00) 100%)',
-        border: '1px solid rgba(255,255,255,0.70)',
-        backdropFilter: 'blur(10px)',
-        WebkitBackdropFilter: 'blur(10px)',
-        boxShadow: '0 14px 30px rgba(0,0,0,0.22)',
-        padding: '10px 14px',
+        gap: 9,
+        borderRadius: 22,
+        background: 'rgba(244, 247, 238, 0.24)',
+        backgroundImage: 'linear-gradient(135deg, rgba(255,255,255,0.52) 0%, rgba(255,255,255,0.15) 48%, rgba(216,233,215,0.10) 100%)',
+        border: '1px solid rgba(255,255,255,0.76)',
+        backdropFilter: 'none',
+        WebkitBackdropFilter: 'none',
+        boxShadow: '0 18px 42px rgba(31, 54, 37, 0.24), inset 0 1px 0 rgba(255,255,255,0.72), inset 0 -1px 0 rgba(79,112,84,0.10)',
+        padding: '8px 10px',
         opacity: mounted ? 1 : 0,
         transform: mounted ? 'translateY(0)' : 'translateY(24px)',
         transition: prefersReducedMotion

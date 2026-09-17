@@ -786,14 +786,33 @@
   --dt-menubar-font-tray:    var(--dt-font-body, sans-serif);
 }
 
+/* The Ghibli window is a light surface even though the desktop shell carries
+   the dark class. Keep terminal copy dark enough to scan at a glance. */
+.world-ghibli .window-content-inner {
+  --foreground: 130 24% 22%;
+  --muted-foreground: 112 11% 38%;
+}
+
+.world-ghibli .terminal-container {
+  color: #285d3c;
+  font-size: 15px;
+}
+
 /* Ghibli dusk wallpaper treatment — blur + gradient tint, Ghibli only */
 /* Oversized to 116%/−8% so the blurred fringe is pushed off-screen */
 .world-ghibli .wallpaper-layer {
-  filter: blur(13px);
+  filter: none;
   width: 116%;
   height: 116%;
   top: -8%;
   left: -8%;
+}
+
+/* One static blurred layer avoids continuously compositing duplicate full-screen images. */
+.world-ghibli .wallpaper-layer-b { display: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  .dt-wind-glyph { animation: none; }
 }
 
 .world-ghibli {
@@ -837,6 +856,59 @@
 }
 .menubar-brand-swatch.is-pulsing {
   animation: dt-brand-pulse 1s ease-in-out infinite;
+}
+
+/* Ghibli shell material: one restrained glass layer for navigation. */
+.dt-menubar--ghibli {
+  background: linear-gradient(180deg, rgba(255,255,255,.66) 0%, rgba(250,248,239,.46) 100%) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  border-bottom-color: rgba(255,255,255,.72) !important;
+  box-shadow: 0 8px 26px rgba(39,68,47,.10), inset 0 1px 0 rgba(255,255,255,.86), inset 0 -1px 0 rgba(70,103,77,.08);
+}
+
+.dt-menubar--ghibli .menubar-brand-swatch {
+  color: #2f6942;
+  filter: drop-shadow(0 2px 3px rgba(34,83,49,.2));
+  box-shadow: none !important;
+}
+
+.dt-menubar-icon-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+}
+.dt-menubar-icon-button:hover,
+.dt-menubar-icon-button:focus-visible {
+  color: var(--dt-accent) !important;
+  background: var(--dt-accent-soft) !important;
+}
+
+.dt-wind-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.dt-wind-glyph {
+  transform-origin: 35% 50%;
+  animation: dt-wind-breathe 2.8s ease-in-out 3;
+}
+@keyframes dt-wind-breathe {
+  0%, 100% { transform: translateX(0); opacity: .72; }
+  45% { transform: translateX(2px); opacity: 1; }
+  65% { transform: translateX(-1px); opacity: .84; }
+}
+
+.ghibli-dock-icon {
+  position: relative;
+  z-index: 1;
+  display: inline-flex;
+}
+.ghibli-dock-icon svg {
+  width: 31px;
+  height: 31px;
+  filter: drop-shadow(0 1px 1px rgba(0,0,0,.16));
 }
 
 /* Tooltip enter/exit polish */

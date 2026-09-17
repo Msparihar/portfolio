@@ -1,7 +1,6 @@
 'use client';
 
 import { useEffect, useState, useCallback, useRef, lazy, Suspense } from 'react';
-import dynamic from 'next/dynamic';
 import { useWindowStore } from '@/store/windowStore';
 import WindowManager from './WindowManager';
 import MenuBar from './MenuBar';
@@ -16,22 +15,10 @@ import { useUiStore } from '@/store/uiStore';
 import { useSeasonStore } from '@/store/seasonStore';
 import { usePrefsStore } from '@/store/prefsStore';
 import { TooltipProvider } from '@/components/ui/Tooltip';
-import { useConservatoryMode } from '@/hooks/useConservatoryMode';
-import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion';
 import GhibliDock from './GhibliDock';
 
 // Lazy-loaded — easter egg, not critical path. Silent Suspense fallback.
 const KitsuneMode = lazy(() => import('@/lib/kitsune-mode/KitsuneMode'));
-
-const GhibliAtmosphereCanvas = dynamic(
-  () => import('@/components/effects/GhibliAtmosphereCanvas'),
-  { ssr: false }
-);
-
-const GhibliSootCanvas = dynamic(
-  () => import('@/components/effects/GhibliSootCanvas'),
-  { ssr: false }
-);
 
 /**
  * Subtle moon at the top-right of the desktop, visible only in the Ghibli world.
@@ -104,11 +91,6 @@ export default function Desktop({ githubData, initialApp, autoOpen = true }) {
   const animateWallpaper   = usePrefsStore((s) => s.animateWallpaper);
   const mascotVisible      = usePrefsStore((s) => s.mascotVisible);
   const kitsuneModeEnabled = usePrefsStore((s) => s.kitsuneModeEnabled);
-  const atmosphereEnabled  = usePrefsStore((s) => s.atmosphereEnabled);
-
-  const conservatoryActive = useConservatoryMode();
-  const reducedMotion = usePrefersReducedMotion();
-
   const [isMobile, setIsMobile] = useState(false);
   const [contextMenu, setContextMenu] = useState(null);
   const [currentWorldId, setCurrentWorldId] = useState(() => {
@@ -525,18 +507,18 @@ export default function Desktop({ githubData, initialApp, autoOpen = true }) {
       {activeWallpaperSrc && (
         <>
           <div
-            className={`wallpaper-layer wallpaper-layer-a${animateWallpaper ? '' : ' kb-paused'}`}
+            className={`wallpaper-layer wallpaper-layer-a${animateWallpaper && currentWorldId !== 'ghibli' ? '' : ' kb-paused'}`}
             style={{ backgroundImage: `url(${activeWallpaperSrc})`, zIndex: 0 }}
           />
           <div
-            className={`wallpaper-layer wallpaper-layer-b${animateWallpaper ? '' : ' kb-paused'}`}
+            className={`wallpaper-layer wallpaper-layer-b${animateWallpaper && currentWorldId !== 'ghibli' ? '' : ' kb-paused'}`}
             style={{ backgroundImage: `url(${activeWallpaperSrc})`, zIndex: 0 }}
           />
         </>
       )}
 
       {/* Particle canvas overlay — single rAF loop, gated by animateWallpaper */}
-      <ParticleCanvas config={activeParticleConfig} enabled={animateWallpaper} />
+      <ParticleCanvas config={activeParticleConfig} enabled={animateWallpaper && currentWorldId !== 'ghibli'} />
 
       {/* World tint overlay — subtle mood layer above wallpaper, below windows */}
       <TintOverlay />
@@ -602,11 +584,6 @@ export default function Desktop({ githubData, initialApp, autoOpen = true }) {
         </div>
       )}
 
-      {/* Ghibli atmosphere canvas — godrays / mist / wisps, behind windows */}
-      {currentWorldId === 'ghibli' && conservatoryActive && !reducedMotion && atmosphereEnabled && (
-        <GhibliAtmosphereCanvas />
-      )}
-
       {/* Window Manager */}
       <WindowManager />
 
@@ -620,6 +597,7 @@ export default function Desktop({ githubData, initialApp, autoOpen = true }) {
       {activeMascot && mascotVisible && (
         <Mascot
           poses={activeMascot.poses}
+          idleFrames={activeMascot.idleFrames}
           alt={activeMascot.alt}
           size={activeMascot.size || 112}
         />
@@ -630,11 +608,6 @@ export default function Desktop({ githubData, initialApp, autoOpen = true }) {
 
       {/* Ghibli dock — fixed bottom-center, additive to IconStrip */}
       <GhibliDock worldId={currentWorldId} />
-
-      {/* Ghibli soot sprites — above windows, mouse-reactive */}
-      {currentWorldId === 'ghibli' && !reducedMotion && atmosphereEnabled && (
-        <GhibliSootCanvas />
-      )}
 
       {/* Context menu */}
       {contextMenu && (

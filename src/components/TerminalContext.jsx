@@ -572,7 +572,7 @@ export const Terminal = () => {
             transparent 2px
           )`,
           backgroundSize: '100% 4px',
-          animation: 'scanline 10s linear infinite'
+          animation: worldId === 'ghibli' ? 'none' : 'scanline 10s linear infinite'
         }}
       />
 
@@ -640,7 +640,7 @@ export const Terminal = () => {
                 color: 'var(--dt-text)',
               }}>
                 {input || <span className="text-muted-foreground">Type a command...</span>}
-                <span className="inline-block w-[2px] h-[1.1em] align-middle ml-[1px]" style={{background:"var(--dt-accent)", animation: 'terminal-blink 1s step-end infinite'}} />
+                <span className="inline-block w-[2px] h-[1.1em] align-middle ml-[1px]" style={{background:"var(--dt-accent)", animation: worldId === 'ghibli' ? 'none' : 'terminal-blink 1s step-end infinite'}} />
                 {suggestion && input && <span style={{color:"var(--dt-accent-30)"}}>{suggestion}</span>}
               </span>
             </div>
@@ -650,4 +650,3 @@ export const Terminal = () => {
     </div>
   );
 };
-

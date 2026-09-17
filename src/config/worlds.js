@@ -7,6 +7,11 @@ import { BASE_THEME_VARS } from './themes';
 
 export const WORLD_STORAGE_KEY = 'portfolio_world';
 
+const GHIBLI_IDLE_FRAMES = Array.from(
+  { length: 20 },
+  (_, index) => `/images/mascot/ghibli/idle-loop/frame-${String(index + 1).padStart(2, '0')}.png`
+);
+
 /**
  * Normalize a wallpaper entry to a full object shape.
  * Supports plain strings for backward compat.
@@ -175,10 +180,10 @@ export const WORLDS = [
       '--dt-surface-tertiary':     'rgba(233, 225, 208, 0.84)',
       '--dt-surface-deep':         'rgba(240, 232, 216, 0.86)',
       '--dt-surface-input':        'rgba(74, 124, 89, 0.06)',
-      '--dt-text':                 '#4a6b52',
-      '--dt-text-muted':           '#4f5b62',
-      '--dt-accent':               '#3a6a49',
-      '--dt-accent-hover':         '#2f5d3f',
+      '--dt-text':                 '#2f4937',
+      '--dt-text-muted':           '#59685a',
+      '--dt-accent':               '#285d3c',
+      '--dt-accent-hover':         '#204f32',
       '--dt-accent-dim':           'rgba(74, 124, 89, 0.5)',
       '--dt-accent-soft':          'rgba(74, 124, 89, 0.08)',
       '--dt-accent-soft-2':        'rgba(74, 124, 89, 0.12)',
@@ -187,7 +192,7 @@ export const WORLDS = [
       '--dt-accent-border-dim':    'rgba(224, 212, 192, 0.4)',
       '--dt-accent-glow':          'rgba(74, 124, 89, 0.3)',
       '--dt-accent-glow-soft':     'rgba(74, 124, 89, 0.08)',
-      '--dt-accent-70':            'rgba(74, 124, 89, 0.7)',
+      '--dt-accent-70':            'rgba(40, 93, 60, 0.86)',
       '--dt-accent-45':            'rgba(74, 124, 89, 0.45)',
       '--dt-accent-30':            'rgba(74, 124, 89, 0.3)',
       '--dt-accent-20':            'rgba(74, 124, 89, 0.2)',
@@ -203,9 +208,12 @@ export const WORLDS = [
       '--dt-wallpaper-dot':        'rgba(74, 124, 89, 0.0)',
       '--dt-scanline-color':       'rgba(0, 0, 0, 0.0)',
       '--dt-context-bg':           'rgba(250, 246, 237, 0.95)',
+      '--dt-tooltip-bg':           'rgba(28, 50, 34, 0.96)',
+      '--dt-tooltip-text':         '#fbf8ed',
+      '--dt-tooltip-border':       'rgba(255, 255, 255, 0.22)',
       '--dt-shadow-focused':       '0 2px 4px rgba(45, 52, 54, 0.08), 0 8px 32px rgba(45, 52, 54, 0.12), 0 0 0 1px rgba(224, 212, 192, 0.6)',
       '--dt-shadow-unfocused':     '0 2px 4px rgba(45, 52, 54, 0.05), 0 4px 16px rgba(45, 52, 54, 0.08), 0 0 0 1px rgba(224, 212, 192, 0.4)',
-      '--dt-window-blur':          'blur(16px) saturate(1.1)',
+      '--dt-window-blur':          'none',
       '--dt-wallpaper-gradient':   'radial-gradient(ellipse at 30% 40%, rgba(74, 124, 89, 0.12) 0%, transparent 55%), radial-gradient(ellipse at 75% 70%, rgba(240, 232, 216, 0.18) 0%, transparent 50%), radial-gradient(ellipse at 50% 100%, rgba(212, 232, 208, 0.10) 0%, transparent 45%), linear-gradient(160deg, rgba(212, 232, 208, 0.15) 0%, rgba(250, 246, 237, 0.10) 100%)',
       '--dt-wallpaper-gradient-size': '100% 100%, 100% 100%, 100% 100%, 100% 100%',
       '--dt-icon-text-shadow':     '0 1px 2px rgba(0,0,0,0.15)',
@@ -226,6 +234,7 @@ export const WORLDS = [
         blink: '/images/mascot/ghibli/blink.png',
         wave: '/images/mascot/ghibli/wave.png',
       },
+      idleFrames: GHIBLI_IDLE_FRAMES,
       alt: 'Forest spirit kitsune',
       size: 112,
     },

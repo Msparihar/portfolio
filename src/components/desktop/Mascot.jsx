@@ -36,8 +36,9 @@ function readWorldId() {
   return localStorage.getItem(WORLD_STORAGE_KEY) || null;
 }
 
-export default function Mascot({ poses, alt, size = 112 }) {
+export default function Mascot({ poses, idleFrames = [], alt, size = 112 }) {
   const [state, dispatch] = useReducer(reducer, { pose: 'idle' });
+  const [idleFrame, setIdleFrame] = useState(0);
   const timersRef = useRef([]);
   const prefersReducedRef = useRef(false);
   const lastInteractRef = useRef(0);
@@ -46,6 +47,48 @@ export default function Mascot({ poses, alt, size = 112 }) {
   const [hovered, setHovered] = useState(false);
 
   const reduced = useReducedMotion();
+  const hasIdleLoop = idleFrames.length > 1;
+
+  useEffect(() => {
+    if (!hasIdleLoop) return;
+    idleFrames.forEach((src) => {
+      const image = new window.Image();
+      image.src = src;
+    });
+  }, [hasIdleLoop, idleFrames]);
+
+  useEffect(() => {
+    if (!hasIdleLoop || reduced || state.pose !== 'idle') {
+      setIdleFrame(0);
+      return undefined;
+    }
+
+    let timer = null;
+    let frame = 0;
+    const stop = () => {
+      if (timer !== null) window.clearTimeout(timer);
+      timer = null;
+    };
+    const start = () => {
+      stop();
+      if (document.hidden) return;
+      frame = 0;
+      setIdleFrame(0);
+      const advance = () => {
+        frame = (frame + 1) % idleFrames.length;
+        setIdleFrame(frame);
+        timer = window.setTimeout(advance, frame === 0 ? 5_000 : 160);
+      };
+      timer = window.setTimeout(advance, 900);
+    };
+
+    start();
+    document.addEventListener('visibilitychange', start);
+    return () => {
+      stop();
+      document.removeEventListener('visibilitychange', start);
+    };
+  }, [hasIdleLoop, idleFrames, reduced, state.pose]);
 
   // Random blink / wave loop + speech bubble loop
   useEffect(() => {
@@ -104,7 +147,7 @@ export default function Mascot({ poses, alt, size = 112 }) {
       timersRef.current.push(t);
     };
 
-    scheduleBlink();
+    if (!hasIdleLoop) scheduleBlink();
     scheduleWave();
     scheduleBubble();
 
@@ -121,7 +164,7 @@ export default function Mascot({ poses, alt, size = 112 }) {
       window.removeEventListener('mascot-clicked', onExternalTrigger);
       mq?.removeEventListener?.('change', onChange);
     };
-  }, []);
+  }, [hasIdleLoop]);
 
   if (!poses || !poses.idle) return null;
 
@@ -194,11 +237,33 @@ export default function Mascot({ poses, alt, size = 112 }) {
           border: 'none',
           padding: 0,
           cursor: 'pointer',
-          animation: 'mascot-bob 3.6s ease-in-out infinite',
+          animation: hasIdleLoop ? 'none' : 'mascot-bob 3.6s ease-in-out infinite',
           filter: 'var(--dt-mascot-shadow, drop-shadow(0 6px 12px rgba(0,0,0,0.35)))',
         }}
       >
+        {hasIdleLoop && (
+          <Image
+            src={idleFrames[idleFrame]}
+            alt=""
+            width={size}
+            height={size}
+            priority
+            unoptimized
+            draggable={false}
+            style={{
+              position: 'absolute',
+              inset: 0,
+              width: '100%',
+              height: '100%',
+              objectFit: 'contain',
+              opacity: state.pose === 'idle' ? 1 : 0,
+              transition: 'opacity 100ms ease',
+              pointerEvents: 'none',
+            }}
+          />
+        )}
         {['idle', 'blink', 'wave'].map((pose) => {
+          if (pose === 'idle' && hasIdleLoop) return null;
           const src = poses[pose];
           if (!src) return null;
           const isActive = state.pose === pose;
