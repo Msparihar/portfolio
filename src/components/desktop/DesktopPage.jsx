@@ -1,89 +1,23 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import dynamic from "next/dynamic";
-import { useUiStore } from "@/store/uiStore";
-import { WORLDS, WORLD_STORAGE_KEY } from '@/config/worlds';
-import BootOverlay from "./BootOverlay";
-import Desktop from "./Desktop";
+import { useSyncExternalStore } from 'react';
+import dynamic from 'next/dynamic';
+import MobilePortfolio from '@/components/mobile/MobilePortfolio';
+import LeafMark from '@/components/mobile/LeafMark';
+import styles from '@/components/mobile/MobilePortfolio.module.css';
 
-const WebsiteMode = dynamic(() => import("@/components/website/WebsiteMode"), {
-  ssr: false,
-});
-
-const WelcomeLanding = dynamic(
-  () => import("@/components/welcome/WelcomeLanding"),
-  { ssr: false }
-);
-
-const SG_ENTERED_KEY = 'sg_entered_ghibli';
+const mobileQuery = '(max-width: 767px), (max-width: 1023px) and (hover: none) and (pointer: coarse)';
+const DesktopExperience = dynamic(() => import('./DesktopExperience'), { ssr: false });
+function subscribe(callback) {
+  const media = window.matchMedia(mobileQuery);
+  media.addEventListener('change', callback);
+  return () => media.removeEventListener('change', callback);
+}
+const getSnapshot = () => window.matchMedia(mobileQuery).matches;
+const getServerSnapshot = () => null;
 
 export default function DesktopPage({ githubData }) {
-  const [booted, setBooted] = useState(false);
-  const [initialApp, setInitialApp] = useState(null);
-  const websiteMode = useUiStore((s) => s.websiteMode);
-  const [worldBootConfig, setWorldBootConfig] = useState(null);
-  const [entrySurface, setEntrySurface] = useState(null);
-
-  useEffect(() => {
-    let savedWorldId = 'ghibli';
-    try {
-      savedWorldId = localStorage.getItem(WORLD_STORAGE_KEY) || savedWorldId;
-      const world = WORLDS.find(w => w.id === savedWorldId);
-      if (world?.bootLines) {
-        setWorldBootConfig({
-          bootLines: world.bootLines,
-          bootAccentColor: world.bootAccentColor ?? null,
-        });
-      }
-
-      if (window.innerWidth >= 768 && savedWorldId === 'ghibli') {
-        const entered = localStorage.getItem(SG_ENTERED_KEY) === '1';
-        setEntrySurface(entered ? 'desktop' : 'welcome');
-      } else {
-        setEntrySurface('desktop');
-      }
-    } catch {
-      // If storage is unavailable, preserve the existing fallback of entering
-      // the desktop instead of trapping the visitor at an unpersistable gate.
-      setEntrySurface('desktop');
-    }
-  }, []);
-
-  // Read ?app= from URL on mount (client-side, compatible with ISR pages)
-  useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    const app = params.get("app");
-    if (app) setInitialApp(app);
-  }, []);
-
-  // Website Mode: skip boot overlay and render website layout
-  if (websiteMode) {
-    return <WebsiteMode />;
-  }
-
-  if (!booted) {
-    return (
-      <BootOverlay
-        bootLines={worldBootConfig?.bootLines ?? null}
-        bootAccentColor={worldBootConfig?.bootAccentColor ?? null}
-        onBootComplete={() => setBooted(true)}
-      />
-    );
-  }
-
-  if (entrySurface === 'welcome') {
-    return (
-      <WelcomeLanding
-        worldSkin="ghibli"
-        onEnter={() => setEntrySurface('desktop')}
-      />
-    );
-  }
-
-  if (entrySurface === 'desktop') {
-    return <Desktop githubData={githubData} initialApp={initialApp} />;
-  }
-
-  return null;
+  const mobile = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
+  if (mobile === null) return <div className={styles.initialLoader} role="status"><LeafMark /><span>Opening a little world…</span></div>;
+  return mobile ? <MobilePortfolio /> : <DesktopExperience githubData={githubData} />;
 }

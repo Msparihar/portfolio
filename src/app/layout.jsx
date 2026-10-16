@@ -153,7 +153,8 @@ export const viewport = {
     { media: '(prefers-color-scheme: light)', color: '#ffffff' }
   ],
   width: 'device-width',
-  initialScale: 1
+  initialScale: 1,
+  viewportFit: 'cover'
 };
 
 export default function RootLayout({ children }) {
@@ -166,7 +167,8 @@ export default function RootLayout({ children }) {
         <link rel="dns-prefetch" href="//images.unsplash.com" />
         <link rel="dns-prefetch" href="//res.cloudinary.com" />
         {/* Preload Ghibli wallpaper — first-paint LCP asset for Welcome screen */}
-        <link rel="preload" as="image" href="/images/worlds/ghibli/wallpaper.webp" type="image/webp" />
+        <link rel="preload" as="image" href="/images/worlds/ghibli/wallpaper.webp" type="image/webp" media="(min-width: 1024px), (min-width: 768px) and (hover: hover)" />
+        <link rel="preload" as="image" href="/images/worlds/ghibli/mobile-landscape.webp" type="image/webp" media="(max-width: 767px), (max-width: 1023px) and (hover: none) and (pointer: coarse)" />
       </head>
       <body suppressHydrationWarning>
         {/* FOUC prevention — apply saved world vars to :root before React mounts */}

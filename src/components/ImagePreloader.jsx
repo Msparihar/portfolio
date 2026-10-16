@@ -5,6 +5,8 @@ import portfolioConfig from '@/config/portfolio.json';
 
 const ImagePreloader = () => {
   useEffect(() => {
+    // Mobile loads project previews on demand and skips desktop prefetches.
+    if (window.matchMedia('(max-width: 767px), (max-width: 1023px) and (hover: none) and (pointer: coarse)').matches) return;
     // Defer image preloading until after initial paint to avoid blocking render
     const preloadImages = () => {
       // Reduce to only first 3 project images (truly critical, above-the-fold)
@@ -35,13 +37,13 @@ const ImagePreloader = () => {
     };
 
     // Use requestIdleCallback to defer until browser is idle
-    const idleCallback = requestIdleCallback
+    const idleCallback = typeof requestIdleCallback === 'function'
       ? requestIdleCallback(preloadImages, { timeout: 2000 })
       : setTimeout(preloadImages, 1000);
 
     // Cleanup function
     return () => {
-      if (requestIdleCallback) {
+      if (typeof requestIdleCallback === 'function') {
         cancelIdleCallback(idleCallback);
       } else {
         clearTimeout(idleCallback);
