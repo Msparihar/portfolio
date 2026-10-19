@@ -27,7 +27,7 @@ function readLocation() {
 function ProjectMedia({ project, detail = false }) {
   if (/\.(webm|mp4)$/i.test(project.image)) {
     return detail ? (
-      <video className={styles.projectImage} src={project.image} controls playsInline preload="metadata" aria-label={`${project.name} preview`} />
+      <video className={styles.projectImage} src={project.image} autoPlay muted loop playsInline preload="auto" aria-label={`${project.name} preview`} />
     ) : (
       <img className={styles.projectImage} src={`/images/mobile/${project.image.split('/').pop().replace(/\.(webm|mp4)$/i, '.webp')}`} alt={`${project.name} preview`} loading="lazy" decoding="async" />
     );
@@ -43,12 +43,16 @@ function ExternalLink({ href, children, className }) {
 export default function MobilePortfolio() {
   const [view, setView] = useState('home');
   const [landscapeReady, setLandscapeReady] = useState(false);
+  const [expanded, setExpanded] = useState(false);
+  const [dragHeight, setDragHeight] = useState(null);
+  const dragRef = useRef(null);
   const headingRef = useRef(null);
   const sheetRef = useRef(null);
   const menuRef = useRef(null);
   const workRef = useRef(null);
   const returnFocusRef = useRef(null);
   const wallpaperRef = useRef(null);
+  const sheetFrameRef = useRef(null);
   const selectedProject = view.startsWith('project/') ? projects.find(project => slug(project) === view.slice(8)) : null;
   const open = view !== 'home';
   const selectedDock = view === 'work' || selectedProject ? 'work' : ['me', 'resume', 'contact'].includes(view) ? 'me' : 'home';
@@ -61,14 +65,43 @@ export default function MobilePortfolio() {
     window.history.pushState(null, '', url);
     if (view === 'home' || next === 'menu') returnFocusRef.current = document.activeElement;
     setView(next);
+    setDragHeight(null);
   }
 
   function dismiss() {
     navigate(selectedProject ? 'work' : 'home');
   }
 
+  function startDrag(event) {
+    if (view === 'menu' || event.button !== 0) return;
+    if (event.target.closest('button') && !event.target.closest('[data-drag-handle]')) return;
+    dragRef.current = { startY: event.clientY, startHeight: sheetFrameRef.current.getBoundingClientRect().height, dragged: false };
+  }
+
+  function moveDrag(event) {
+    const drag = dragRef.current;
+    if (!drag) return;
+    const distance = drag.startY - event.clientY;
+    if (Math.abs(distance) < 8 && !drag.dragged) return;
+    if (!drag.dragged) event.currentTarget.setPointerCapture(event.pointerId);
+    drag.dragged = true;
+    setDragHeight(Math.max(200, Math.min(window.innerHeight - 12, drag.startHeight + distance)));
+  }
+
+  function endDrag(event) {
+    const drag = dragRef.current;
+    if (!drag) return;
+    if (drag.dragged) {
+      const distance = drag.startY - event.clientY;
+      if (Math.abs(distance) > 35) setExpanded(distance > 0);
+      if (event.currentTarget.hasPointerCapture(event.pointerId)) event.currentTarget.releasePointerCapture(event.pointerId);
+    }
+    setDragHeight(null);
+    dragRef.current = null;
+  }
+
   useEffect(() => {
-    const restore = () => setView(readLocation());
+    const restore = () => { setView(readLocation()); setDragHeight(null); };
     restore();
     window.addEventListener('popstate', restore);
     window.addEventListener('hashchange', restore);
@@ -97,6 +130,7 @@ export default function MobilePortfolio() {
         url.hash = next === 'home' ? '' : next;
         window.history.pushState(null, '', url);
         setView(next);
+        setDragHeight(null);
         if (view === 'menu') menuRef.current?.focus();
       }
     };
@@ -125,19 +159,22 @@ export default function MobilePortfolio() {
 
       {!open && <section className={styles.hero} aria-label="Introduction">
         <h1>Software, built<br />with purpose.</h1>
-        <p>Full stack &amp; AI engineer.</p>
+        <p>{portfolio.title}.</p>
         <button className={`${styles.glass} ${styles.explore}`} onClick={() => navigate('work')}>Explore work<ArrowRight size={20} /></button>
       </section>}
 
       {open && <>
         <button className={styles.backdrop} onClick={dismiss} aria-label="Dismiss panel" tabIndex={-1} />
-        <section ref={sheetRef} id="mobile-sheet" role="dialog" aria-labelledby="mobile-sheet-title" className={`${styles.sheet} ${styles.glass} ${view === 'menu' ? styles.menuSheet : ''} ${selectedProject || ['me', 'resume', 'contact'].includes(view) ? styles.tallSheet : ''}`}>
-          {view !== 'menu' && <span className={styles.handle} aria-hidden="true" />}
+        <section ref={sheetFrameRef} id="mobile-sheet" role="dialog" aria-labelledby="mobile-sheet-title" style={dragHeight === null ? undefined : { height: dragHeight }} className={`${styles.sheet} ${styles.glass} ${view === 'menu' ? styles.menuSheet : ''} ${selectedProject || ['me', 'resume', 'contact'].includes(view) ? styles.tallSheet : ''} ${expanded && view !== 'menu' ? styles.expandedSheet : ''} ${dragHeight !== null ? styles.draggingSheet : ''}`}>
+          <div className={`${styles.sheetHeader} ${view !== 'menu' ? styles.draggableHeader : ''}`} onPointerDown={startDrag} onPointerMove={moveDrag} onPointerUp={endDrag} onPointerCancel={() => { dragRef.current = null; setDragHeight(null); }}>
+          {view !== 'menu' && <button data-drag-handle className={styles.dragHandle} aria-label={expanded ? 'Collapse panel' : 'Expand panel to fullscreen'} aria-expanded={expanded} onClick={() => setExpanded(value => !value)}><span className={styles.handle} aria-hidden="true" /></button>}
           <div className={styles.sheetTop}>
             {selectedProject ? <button className={styles.backButton} onClick={() => navigate('work')}><ArrowLeft size={18} />Back to work</button> : <span />}
             <button className={styles.iconButton} onClick={dismiss} aria-label={selectedProject ? 'Back to work' : 'Close panel'}><X size={21} /></button>
           </div>
           <h2 id="mobile-sheet-title" ref={headingRef} tabIndex={-1} className={styles.sheetTitle}>{selectedProject ? (selectedProject === novel ? 'Novel Writing AI' : selectedProject.name) : titles[view] || 'Selected work'}</h2>
+          </div>
+          <div ref={sheetRef} className={styles.sheetScroll}>
 
           {view === 'work' && <div className={styles.projectList}>
             {orderedProjects.map(project => <button className={styles.projectRow} key={project.name} onClick={() => navigate(`project/${slug(project)}`)}>
@@ -159,11 +196,10 @@ export default function MobilePortfolio() {
           </div>}
 
           {view === 'me' && <div className={styles.body}>
-            <p className={styles.subtitle}>Full stack &amp; AI engineer.</p>
-            <p>I build web applications and AI systems, from the first idea to a product people can use.</p>
-            <p>My work spans language models, computer vision, and intelligent document processing.</p>
+            <p className={styles.subtitle}>{portfolio.title}.</p>
+            <p>{portfolio.bio}</p>
             <h3>Things I work with</h3>
-            <ul className={styles.tags}>{['React / Next.js', 'Python', 'FastAPI', 'PyTorch', 'Language models', 'Docker'].map(skill => <li key={skill}>{skill}</li>)}</ul>
+            <ul className={styles.tags}>{['Python', 'React / Next.js', 'TypeScript', 'Voice agents', 'LangGraph', 'FastAPI', 'AWS'].map(skill => <li key={skill}>{skill}</li>)}</ul>
             <div className={styles.actions}><button className={styles.primaryButton} onClick={() => navigate('contact')}>Get in touch<ArrowRight size={18} /></button><button className={styles.textLink} onClick={() => navigate('resume')}>Résumé<ArrowRight size={18} /></button></div>
             <div className={styles.socialLinks}>{portfolio.socials.slice(0, 2).map(social => <ExternalLink key={social.platform} className={styles.textLink} href={social.url}>{social.platform}</ExternalLink>)}</div>
           </div>}
@@ -178,9 +214,10 @@ export default function MobilePortfolio() {
             <p className={styles.subtitle}>Experience, skills, and education.</p>
             <h3>Experience</h3>{portfolio.experience.map(job => <article className={styles.resumeEntry} key={`${job.company}-${job.position}`}><h4>{job.position}</h4><span>{job.company} · {job.duration}</span><p>{job.description}</p></article>)}
             <h3>Skills</h3>{Object.entries(portfolio.skills).map(([category, skills]) => <div className={styles.skillGroup} key={category}><h4>{{languages: 'Languages', frameworks: 'Frameworks', tools: 'Tools', ai_ml: 'AI & machine learning'}[category]}</h4><p>{skills.join(' · ')}</p></div>)}
-            <h3>Education</h3>{portfolio.education.map(item => <article className={styles.resumeEntry} key={item.degree || item.certification}><h4>{item.degree || item.certification}</h4><p>{item.institution} · {item.year}</p></article>)}
+            <h3>Education</h3>{portfolio.education.map(item => <article className={styles.resumeEntry} key={item.degree || item.certification}><h4>{item.degree || item.certification}</h4><p>{item.institution} · {item.year}</p>{item.cgpa && <p>CGPA: {item.cgpa}</p>}</article>)}
             <button className={styles.primaryButton} onClick={() => navigate('contact')}>Get in touch<ArrowRight size={18} /></button>
           </div>}
+          </div>
         </section>
       </>}
 

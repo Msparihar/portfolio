@@ -27,11 +27,11 @@ const INFO_LINES = [
   { label: 'Kernel', value: 'Next.js 15' },
   { label: 'Shell', value: 'bash 5.0' },
   { label: 'Terminal', value: 'IBM Plex Mono' },
-  { label: 'Name', value: 'Manish Singh Parihar' },
-  { label: 'Role', value: 'Full Stack & AI Engineer' },
-  { label: 'Location', value: 'India' },
-  { label: 'Company', value: 'StringifyAI' },
-  { label: 'Education', value: 'B.Sc. CS — VIT (2020-2024)' },
+  { label: 'Name', value: portfolioData.name },
+  { label: 'Role', value: portfolioData.title },
+  { label: 'Location', value: 'Bengaluru, India' },
+  { label: 'Company', value: experience[0]?.company },
+  { label: 'Education', value: 'B.Tech CS (AI & ML) — VIT (2020–2024)' },
 ];
 
 const SKILL_CATEGORIES = [
@@ -138,7 +138,7 @@ function GhibliAbout() {
           fontSize: '14px',
           color: 'var(--dt-accent)',
         }}>
-          Full Stack &amp; AI Engineer
+          {portfolioData.title}
         </div>
         <div style={{ height: '1px', background: 'rgba(138, 116, 68, 0.20)', margin: '6px 0' }} />
         <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
